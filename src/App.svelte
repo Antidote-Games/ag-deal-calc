@@ -210,7 +210,6 @@
 <div class="min-h-screen flex items-center justify-center px-4">
   <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-sm text-center">
     <img src="{base}logo.png" alt="Antidote Games" class="h-16 mx-auto mb-4" />
-    <h1 class="text-xl font-bold text-purple mb-1">Deal Calculator</h1>
     <p class="text-sm text-gray-mid mb-6">Enter passkey to continue</p>
     <form onsubmit={(e) => { e.preventDefault(); tryUnlock(); }}>
       <input
