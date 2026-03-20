@@ -4,6 +4,8 @@
   import TabIpRetail from './lib/TabIpRetail.svelte';
   import TabSummary from './lib/TabSummary.svelte';
 
+  const base = import.meta.env.BASE_URL;
+
   let unlocked = $state(false);
   let passkey = $state('');
   let passError = $state(false);
@@ -207,7 +209,7 @@
 {#if !unlocked}
 <div class="min-h-screen flex items-center justify-center px-4">
   <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-sm text-center">
-    <img src="/logo.png" alt="Antidote Games" class="h-16 mx-auto mb-4" />
+    <img src="{base}logo.png" alt="Antidote Games" class="h-16 mx-auto mb-4" />
     <h1 class="text-xl font-bold text-purple mb-1">Deal Calculator</h1>
     <p class="text-sm text-gray-mid mb-6">Enter passkey to continue</p>
     <form onsubmit={(e) => { e.preventDefault(); tryUnlock(); }}>
@@ -230,7 +232,7 @@
 <div class="max-w-6xl mx-auto px-4 py-6">
   <!-- Header -->
   <div class="bg-gradient-to-r from-purple to-purple-light rounded-xl p-6 mb-6 flex items-center gap-4">
-    <img src="/logo.png" alt="Antidote Games" class="h-12 w-auto" />
+    <img src="{base}logo.png" alt="Antidote Games" class="h-12 w-auto" />
     <div>
       <h1 class="text-xl font-bold text-white">Deal Calculator</h1>
       <p class="text-sm text-white/80">Define tiers. Model KS revenue. Validate the deal.</p>
