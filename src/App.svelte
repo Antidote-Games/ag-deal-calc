@@ -43,6 +43,9 @@
     creatorIpAdvance: 0,
     // Products
     products: [],
+    // Budget line items
+    devLineItems: [],
+    marketingLineItems: [],
     // Campaign
     totalBackers: 0,
     printRun: 0,
@@ -338,6 +341,8 @@
       }));
     }
     state.addons = (v.addons || []).map(a => ({ ...a }));
+    state.devLineItems = (v.devLineItems || []).map(li => ({ ...li }));
+    state.marketingLineItems = (v.marketingLineItems || []).map(li => ({ ...li }));
   }
 
   function saveScenario() {
@@ -353,6 +358,8 @@
         creatorMarketingCost: state.creatorMarketingCost,
         creatorIpAdvance: state.creatorIpAdvance,
         products: state.products,
+        devLineItems: state.devLineItems,
+        marketingLineItems: state.marketingLineItems,
         totalBackers: state.totalBackers,
         printRun: state.printRun,
         devCost: state.devCost,

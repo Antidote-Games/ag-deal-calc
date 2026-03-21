@@ -4,7 +4,18 @@
   "values": {
     "projectName": "RPG Quickstart / Zine (Small)",
     "devCost": 3000,
+    "devLineItems": [
+      { "name": "Illustration", "cost": 1500 },
+      { "name": "Layout ($12/pg x 30)", "cost": 360 },
+      { "name": "Editing", "cost": 300 },
+      { "name": "Art Direction", "cost": 500 },
+      { "name": "Trade Dress", "cost": 340 }
+    ],
     "marketingCost": 500,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 200 },
+      { "name": "KS Launch Ads", "cost": 300 }
+    ],
     "printRun": 500,
     "totalBackers": 300,
     "platformFeeRate": 8,
