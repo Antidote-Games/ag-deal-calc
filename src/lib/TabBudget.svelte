@@ -60,7 +60,7 @@
           <input type="number" bind:value={inputState.creatorDevCost} min="0" max={inputState.devCost} step="500"
             class="w-full px-2 py-1.5 border border-gray-light rounded text-sm focus:outline-none focus:border-purple" />
         </label>
-        <div class="text-xs text-gray-mid mt-1">Antidote: {fmt(Math.max(0, state.devCost - (Number(state.creatorDevCost) || 0)))}</div>
+        <div class="text-xs text-gray-mid mt-1">Antidote: {fmt(Math.max(0, inputState.devCost - (Number(inputState.creatorDevCost) || 0)))}</div>
       </div>
     {/if}
 
@@ -71,7 +71,7 @@
     </button>
 
     {#if devExpanded}
-      {#if state.devLineItems.length > 0}
+      {#if inputState.devLineItems.length > 0}
         <div class="overflow-x-auto mb-2">
           <table class="w-full text-sm">
             <thead>
@@ -82,7 +82,7 @@
               </tr>
             </thead>
             <tbody>
-              {#each state.devLineItems as li, i}
+              {#each inputState.devLineItems as li, i}
                 <tr class="border-b border-gray-light/20">
                   <td class="py-1">
                     <input type="text" bind:value={li.name} placeholder="e.g., Illustration"
@@ -109,7 +109,7 @@
           </table>
         </div>
 
-        {#if devLineTotal !== state.devCost}
+        {#if devLineTotal !== inputState.devCost}
           <button onclick={syncDevFromLines}
             class="mb-2 w-full py-1.5 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors">
             Set total to line items ({fmtFull(devLineTotal)})
@@ -119,7 +119,7 @@
 
       <div class="flex flex-wrap gap-1 mb-2">
         {#each devPresets as preset}
-          <button onclick={() => { state.devLineItems = [...state.devLineItems, { name: preset, cost: 0 }]; }}
+          <button onclick={() => { inputState.devLineItems = [...inputState.devLineItems, { name: preset, cost: 0 }]; }}
             class="px-2 py-1 text-[10px] font-medium rounded border border-purple/15 text-purple hover:bg-purple hover:text-white transition-colors">
             + {preset}
           </button>
@@ -130,7 +130,7 @@
           class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors">
           + Add Line Item
         </button>
-        <RateCalculator onAdd={(item) => { state.devLineItems = [...state.devLineItems, item]; syncDevFromLines(); }} />
+        <RateCalculator onAdd={(item) => { inputState.devLineItems = [...inputState.devLineItems, item]; syncDevFromLines(); }} />
       </div>
     {/if}
   </Card>
@@ -145,7 +145,7 @@
           <input type="number" bind:value={inputState.creatorMarketingCost} min="0" max={inputState.marketingCost} step="500"
             class="w-full px-2 py-1.5 border border-gray-light rounded text-sm focus:outline-none focus:border-purple" />
         </label>
-        <div class="text-xs text-gray-mid mt-1">Antidote: {fmt(Math.max(0, state.marketingCost - (Number(state.creatorMarketingCost) || 0)))}</div>
+        <div class="text-xs text-gray-mid mt-1">Antidote: {fmt(Math.max(0, inputState.marketingCost - (Number(inputState.creatorMarketingCost) || 0)))}</div>
       </div>
     {/if}
 
@@ -156,7 +156,7 @@
     </button>
 
     {#if marketingExpanded}
-      {#if state.marketingLineItems.length > 0}
+      {#if inputState.marketingLineItems.length > 0}
         <div class="overflow-x-auto mb-2">
           <table class="w-full text-sm">
             <thead>
@@ -167,7 +167,7 @@
               </tr>
             </thead>
             <tbody>
-              {#each state.marketingLineItems as li, i}
+              {#each inputState.marketingLineItems as li, i}
                 <tr class="border-b border-gray-light/20">
                   <td class="py-1">
                     <input type="text" bind:value={li.name} placeholder="e.g., Social Ads"
@@ -194,7 +194,7 @@
           </table>
         </div>
 
-        {#if marketingLineTotal !== state.marketingCost}
+        {#if marketingLineTotal !== inputState.marketingCost}
           <button onclick={syncMarketingFromLines}
             class="mb-2 w-full py-1.5 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors">
             Set total to line items ({fmtFull(marketingLineTotal)})
@@ -204,7 +204,7 @@
 
       <div class="flex flex-wrap gap-1 mb-2">
         {#each marketingPresets as preset}
-          <button onclick={() => { state.marketingLineItems = [...state.marketingLineItems, { name: preset, cost: 0 }]; }}
+          <button onclick={() => { inputState.marketingLineItems = [...inputState.marketingLineItems, { name: preset, cost: 0 }]; }}
             class="px-2 py-1 text-[10px] font-medium rounded border border-purple/15 text-purple hover:bg-purple hover:text-white transition-colors">
             + {preset}
           </button>
@@ -215,7 +215,7 @@
           class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors">
           + Add Line Item
         </button>
-        <RateCalculator onAdd={(item) => { state.marketingLineItems = [...state.marketingLineItems, item]; syncMarketingFromLines(); }} />
+        <RateCalculator onAdd={(item) => { inputState.marketingLineItems = [...inputState.marketingLineItems, item]; syncMarketingFromLines(); }} />
       </div>
     {/if}
   </Card>
@@ -227,24 +227,24 @@
     <Slider label="Print Run (total units)" bind:value={inputState.printRun} min={100} max={25000} step={100} format={(v) => Number(v).toLocaleString()} />
     {#if validations.printRunLow}
       <div class="mt-2 text-xs text-pink-hot font-medium bg-pink-hot/10 rounded px-3 py-2">
-        Print run ({Number(state.printRun).toLocaleString()}) is less than total backers ({Number(state.totalBackers).toLocaleString()}). You won't have enough units.
+        Print run ({Number(inputState.printRun).toLocaleString()}) is less than total backers ({Number(inputState.totalBackers).toLocaleString()}). You won't have enough units.
       </div>
     {/if}
 
-    {@const overage = Math.max(0, state.printRun - state.totalBackers)}
-    {@const postKsPlanned = (Number(state.wholesaleUnitsSold) || 0) + (Number(state.directUnitsSold) || 0)}
-    {@const suggestedRun = state.totalBackers + postKsPlanned}
+    {@const overage = Math.max(0, inputState.printRun - inputState.totalBackers)}
+    {@const postKsPlanned = (Number(inputState.wholesaleUnitsSold) || 0) + (Number(inputState.directUnitsSold) || 0)}
+    {@const suggestedRun = inputState.totalBackers + postKsPlanned}
     {@const unallocated = overage - postKsPlanned}
 
     <div class="mt-2 mb-4 bg-cream rounded-lg p-3 text-xs">
       <div class="grid grid-cols-2 gap-x-4 gap-y-1">
         <span class="text-gray-mid">Backer units</span>
-        <span class="text-right font-semibold text-purple">{Number(state.totalBackers).toLocaleString()}</span>
+        <span class="text-right font-semibold text-purple">{Number(inputState.totalBackers).toLocaleString()}</span>
         <span class="text-gray-mid">Overage</span>
         <span class="text-right font-semibold text-purple">{overage.toLocaleString()}</span>
-        {#if state.projectType === 'own' || state.supportContract}
+        {#if inputState.projectType === 'own' || inputState.supportContract}
           <span class="text-gray-mid">Post-KS planned</span>
-          <span class="text-right font-semibold">{postKsPlanned.toLocaleString()} <span class="font-normal text-gray-mid">({Number(state.wholesaleUnitsSold).toLocaleString()}W + {Number(state.directUnitsSold).toLocaleString()}D)</span></span>
+          <span class="text-right font-semibold">{postKsPlanned.toLocaleString()} <span class="font-normal text-gray-mid">({Number(inputState.wholesaleUnitsSold).toLocaleString()}W + {Number(inputState.directUnitsSold).toLocaleString()}D)</span></span>
           <span class="text-gray-mid">Unallocated</span>
           <span class="text-right font-semibold {unallocated < 0 ? 'text-pink-hot' : unallocated === 0 ? 'text-green-700' : 'text-amber-600'}">{unallocated.toLocaleString()}{unallocated < 0 ? ' (short!)' : ''}</span>
         {:else}
@@ -252,9 +252,9 @@
           <span class="text-right font-semibold text-pink-hot">Creator's cost</span>
         {/if}
       </div>
-      {#if state.projectType === 'own' || state.supportContract}
+      {#if inputState.projectType === 'own' || inputState.supportContract}
         <button
-          onclick={() => state.printRun = suggestedRun}
+          onclick={() => inputState.printRun = suggestedRun}
           class="mt-2 w-full py-1.5 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors"
         >
           Match to post-KS plan ({suggestedRun.toLocaleString()} units)
@@ -277,7 +277,7 @@
       </div>
       <div>
         <div class="text-xs uppercase text-gray-mid mb-1">Creator Fronts</div>
-        <div class="text-2xl font-bold text-pink-hot">{fmt((Number(state.creatorDevCost) || 0) + (Number(state.creatorMarketingCost) || 0))}</div>
+        <div class="text-2xl font-bold text-pink-hot">{fmt((Number(inputState.creatorDevCost) || 0) + (Number(inputState.creatorMarketingCost) || 0))}</div>
       </div>
     </div>
   {:else}
