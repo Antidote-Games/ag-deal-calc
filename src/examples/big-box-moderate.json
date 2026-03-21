@@ -1,0 +1,45 @@
+{
+  "label": "Big Box \u00e2\u20ac\u201d Moderate",
+  "sub": "~3K backers",
+  "values": {
+    "projectName": "Big Box (Moderate)",
+    "devCost": 60000,
+    "marketingCost": 60000,
+    "ppu": 7,
+    "printRun": 4000,
+    "totalBackers": 3000,
+    "platformFeeRate": 8,
+    "ipAdvance": 15000,
+    "ipRoyaltyRate": 6,
+    "wholesalePrice": 30,
+    "tiers": [
+      {
+        "price": 50,
+        "pct": 60,
+        "shippingCost": 10
+      },
+      {
+        "price": 80,
+        "pct": 20,
+        "shippingCost": 11
+      },
+      {
+        "price": 120,
+        "pct": 12,
+        "shippingCost": 13
+      },
+      {
+        "price": 175,
+        "pct": 5,
+        "shippingCost": 15
+      },
+      {
+        "price": 250,
+        "pct": 3,
+        "shippingCost": 16
+      }
+    ],
+    "wholesaleUnitsSold": 536,
+    "directUnitsSold": 264
+  }
+}

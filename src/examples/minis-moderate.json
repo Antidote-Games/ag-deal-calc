@@ -1,0 +1,45 @@
+{
+  "label": "Minis \u00e2\u20ac\u201d Moderate",
+  "sub": "~3K backers",
+  "values": {
+    "projectName": "Minis (Moderate)",
+    "devCost": 80000,
+    "marketingCost": 75000,
+    "ppu": 12,
+    "printRun": 4000,
+    "totalBackers": 3000,
+    "platformFeeRate": 8,
+    "ipAdvance": 20000,
+    "ipRoyaltyRate": 6,
+    "wholesalePrice": 40,
+    "tiers": [
+      {
+        "price": 80,
+        "pct": 55,
+        "shippingCost": 12
+      },
+      {
+        "price": 120,
+        "pct": 22,
+        "shippingCost": 14
+      },
+      {
+        "price": 175,
+        "pct": 13,
+        "shippingCost": 16
+      },
+      {
+        "price": 250,
+        "pct": 7,
+        "shippingCost": 18
+      },
+      {
+        "price": 400,
+        "pct": 3,
+        "shippingCost": 22
+      }
+    ],
+    "wholesaleUnitsSold": 536,
+    "directUnitsSold": 264
+  }
+}

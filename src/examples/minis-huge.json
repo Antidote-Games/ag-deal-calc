@@ -1,0 +1,45 @@
+{
+  "label": "Minis \u00e2\u20ac\u201d Huge",
+  "sub": "~8K backers",
+  "values": {
+    "projectName": "Minis (Huge)",
+    "devCost": 100000,
+    "marketingCost": 150000,
+    "ppu": 10,
+    "printRun": 10000,
+    "totalBackers": 8000,
+    "platformFeeRate": 8,
+    "ipAdvance": 25000,
+    "ipRoyaltyRate": 6,
+    "wholesalePrice": 40,
+    "tiers": [
+      {
+        "price": 80,
+        "pct": 50,
+        "shippingCost": 12
+      },
+      {
+        "price": 130,
+        "pct": 25,
+        "shippingCost": 14
+      },
+      {
+        "price": 200,
+        "pct": 14,
+        "shippingCost": 16
+      },
+      {
+        "price": 300,
+        "pct": 7,
+        "shippingCost": 20
+      },
+      {
+        "price": 500,
+        "pct": 4,
+        "shippingCost": 24
+      }
+    ],
+    "wholesaleUnitsSold": 1005,
+    "directUnitsSold": 495
+  }
+}

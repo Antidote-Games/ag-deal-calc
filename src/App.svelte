@@ -1,8 +1,15 @@
 <script>
-  import TabInputs from './lib/TabInputs.svelte';
-  import TabKsResults from './lib/TabKsResults.svelte';
-  import TabIpRetail from './lib/TabIpRetail.svelte';
+  import TabCampaign from './lib/TabCampaign.svelte';
+  import TabBudget from './lib/TabBudget.svelte';
+  import TabIpRoyalties from './lib/TabIpRoyalties.svelte';
+  import TabKsAnalysis from './lib/TabKsAnalysis.svelte';
+  import TabRetailInventory from './lib/TabRetailInventory.svelte';
+  import TabProfitShare from './lib/TabProfitShare.svelte';
   import TabSummary from './lib/TabSummary.svelte';
+
+  // Import example scenarios from JSON files
+  const exampleModules = import.meta.glob('./examples/*.json', { eager: true });
+  const presets = Object.values(exampleModules).map(m => m.default).sort((a, b) => a.label.localeCompare(b.label));
 
   const base = import.meta.env.BASE_URL;
 
@@ -19,191 +26,317 @@
     }
   }
 
-  let activeTab = $state('inputs');
+  let activeTab = $state('campaign');
 
   let state = $state({
-    devCost: 40000,
-    marketingCost: 30000,
+    projectName: 'Untitled Campaign',
+    projectType: 'own', // 'own' or 'partner'
+    antidoteProfitPct: 24,
+    supportContract: false,
+    // Creator budget contributions (partner projects only)
+    creatorDevCost: 0,
+    creatorMarketingCost: 0,
+    creatorIpAdvance: 0,
+    // Campaign
+    totalBackers: 800,
     ppu: 4.5,
     printRun: 1200,
-    totalBackers: 800,
-    commissionMode: 'phase1',
+    devCost: 40000,
+    marketingCost: 30000,
+    platformFeeRate: 8,
     ipAdvance: 10000,
     ipRoyaltyRate: 6,
-    retailUnitsSold: 300,
+    // Deal partner (own titles only)
+    partnerEnabled: false,
+    partnerCommissionRate: 20,
+    partnerRetailBonusRate: 3,
+    // Post-KS sales
+    wholesaleUnitsSold: 200,
     wholesalePrice: 20,
+    directUnitsSold: 100,
     tiers: [
-      { price: 20, pct: 70 },
-      { price: 35, pct: 15 },
-      { price: 60, pct: 10 },
-      { price: 100, pct: 3 },
-      { price: 150, pct: 2 },
+      { name: 'Base Game', price: 20, pct: 70, shippingCost: 6 },
+      { name: 'Deluxe', price: 35, pct: 15, shippingCost: 8 },
+      { name: 'Collector', price: 60, pct: 10, shippingCost: 10 },
+      { name: 'All-In', price: 100, pct: 3, shippingCost: 12 },
+      { name: 'Ultimate', price: 150, pct: 2, shippingCost: 15 },
     ],
+    scenarios: [],
   });
 
   // Validations
   let validations = $derived(() => {
     const tierPctTotal = state.tiers.reduce((sum, t) => sum + (Number(t.pct) || 0), 0);
-    const extraUnits = state.printRun - state.totalBackers;
+    const overageUnits = Math.max(0, state.printRun - state.totalBackers);
+    const totalRetailUnits = (Number(state.wholesaleUnitsSold) || 0) + (Number(state.directUnitsSold) || 0);
     return {
       tierPctOff: Math.abs(tierPctTotal - 100) > 0.01,
       tierPctTotal,
       printRunLow: state.printRun < state.totalBackers,
-      retailExceedsExtra: state.retailUnitsSold > Math.max(0, extraUnits),
+      retailExceedsExtra: totalRetailUnits > overageUnits,
+      totalRetailUnits,
     };
   });
 
   // All derived calculations
   let calc = $derived(() => {
-    const devCost = Number(state.devCost) || 0;
-    const marketingCost = Number(state.marketingCost) || 0;
+    const totalBackers = Number(state.totalBackers) || 0;
     const ppu = Number(state.ppu) || 0;
     const printRun = Number(state.printRun) || 0;
-    const totalBackers = Number(state.totalBackers) || 0;
-    const commissionMode = state.commissionMode;
+    const devCost = Number(state.devCost) || 0;
+    const marketingCost = Number(state.marketingCost) || 0;
+    const platformFeeRate = (Number(state.platformFeeRate) || 0) / 100;
     const ipAdvance = Number(state.ipAdvance) || 0;
-    const ipRoyaltyRate = Number(state.ipRoyaltyRate) || 0;
-    const retailUnitsSold = Number(state.retailUnitsSold) || 0;
+    const ipRoyaltyRate = (Number(state.ipRoyaltyRate) || 0) / 100;
+    const wholesaleUnitsSold = Number(state.wholesaleUnitsSold) || 0;
     const wholesalePrice = Number(state.wholesalePrice) || 0;
+    const directUnitsSold = Number(state.directUnitsSold) || 0;
 
     // Tier breakdown
-    // Tier 1 = base product (cost = PPU). Tiers 2-5 premium above tier 1:
-    // 50% of the premium is additional cost, 50% is additional margin.
     const basePrice = Number(state.tiers[0]?.price) || 0;
     const tierBreakdown = state.tiers.map((t, i) => {
+      const name = t.name || `Tier ${i + 1}`;
       const price = Number(t.price) || 0;
       const pct = Number(t.pct) || 0;
+      const shipping = Number(t.shippingCost) || 0;
       const backers = Math.round(totalBackers * (pct / 100));
       const revenue = backers * price;
       const premium = i === 0 ? 0 : Math.max(0, price - basePrice);
       const premiumCostPerUnit = premium * 0.50;
       const costPerUnit = ppu + premiumCostPerUnit;
-      const tierCost = backers * costPerUnit;
-      return { price, pct, backers, revenue, premium, premiumCostPerUnit, costPerUnit, tierCost };
+      const mfgCost = backers * costPerUnit;
+      const shippingTotal = backers * shipping;
+      return { name, price, pct, backers, revenue, premium, premiumCostPerUnit, costPerUnit, mfgCost, shipping, shippingTotal };
     });
 
-    // KS
+    // KS Revenue
     const ksRevenue = tierBreakdown.reduce((sum, t) => sum + t.revenue, 0);
     const avgPledge = totalBackers > 0 ? ksRevenue / totalBackers : 0;
-    // Mfg: backer units at tier-specific costs + extra units at base PPU
-    const backerMfgCost = tierBreakdown.reduce((sum, t) => sum + t.tierCost, 0);
-    const extraUnits = Math.max(0, printRun - totalBackers);
-    const extraMfgCost = extraUnits * ppu;
-    const mfgCost = backerMfgCost + extraMfgCost;
-    const totalCosts = devCost + marketingCost + mfgCost;
-    const ksProfit = ksRevenue - totalCosts;
 
-    // IP & Retail
-    const ipRoyaltyKS = ksRevenue * (ipRoyaltyRate / 100);
-    const retailRevenue = retailUnitsSold * wholesalePrice;
-    const retailIPRoyalty = retailRevenue * (ipRoyaltyRate / 100);
-    const retailMargin = retailRevenue - retailIPRoyalty;
-    const totalIPRoyalties = ipRoyaltyKS + retailIPRoyalty;
-    const totalIPCost = ipAdvance + totalIPRoyalties;
+    // KS Costs — all 6 deductions (backer units only for mfg)
+    const backerMfgCost = tierBreakdown.reduce((sum, t) => sum + t.mfgCost, 0);
+    const platformFees = ksRevenue * platformFeeRate;
+    const shippingCost = tierBreakdown.reduce((sum, t) => sum + t.shippingTotal, 0);
+    const ksCosts = devCost + marketingCost + ipAdvance + backerMfgCost + platformFees + shippingCost;
+    const ksProfit = ksRevenue - ksCosts;
 
-    // Jordan's commission — depends on selected mode
-    let jordanCommission = 0;
-    let commissionRate = 0;
-    let commissionBasis = '';
-    let commissionBase = 0;
-    if (commissionMode === 'phase1') {
-      commissionRate = 20;
-      commissionBase = ksProfit;
-      commissionBasis = '20% of KS Profit';
-      jordanCommission = Math.max(0, ksProfit * 0.20);
-    } else if (commissionMode === 'phase2') {
-      commissionRate = 18;
-      commissionBase = ksProfit;
-      commissionBasis = '18% of KS Profit';
-      jordanCommission = Math.max(0, ksProfit * 0.18);
-    } else if (commissionMode === 'jordan-agr') {
-      commissionRate = 10;
-      const agr = ksRevenue - mfgCost - ipRoyaltyKS;
-      commissionBase = agr;
-      commissionBasis = '10% of Adjusted Gross Revenue';
-      jordanCommission = Math.max(0, agr * 0.10);
+    // Break-even backers
+    const avgMfgPerBacker = totalBackers > 0 ? backerMfgCost / totalBackers : 0;
+    const avgShipPerBacker = totalBackers > 0 ? shippingCost / totalBackers : 0;
+    const fixedCosts = devCost + marketingCost + ipAdvance;
+    const revenuePerBacker = avgPledge * (1 - platformFeeRate) - avgMfgPerBacker - avgShipPerBacker;
+    const breakEvenBackers = revenuePerBacker > 0 ? Math.ceil(fixedCosts / revenuePerBacker) : Infinity;
+
+    // Overage / Inventory (separate from KS costs)
+    const overageUnits = Math.max(0, printRun - totalBackers);
+    const overageCost = overageUnits * ppu;
+
+    // IP Royalties (not a KS Profit deduction — separate expense)
+    const ipRoyaltyKS = ksRevenue * ipRoyaltyRate;
+
+    // MSRP = Tier 1 price + 15%
+    const msrp = Math.round(basePrice * 1.15 * 100) / 100;
+
+    const isPartnerProject = state.projectType === 'partner';
+    const antidoteProfitPct = (Number(state.antidoteProfitPct) || 0) / 100;
+    const creatorProfitPct = 1 - antidoteProfitPct;
+
+    // Creator budget contributions (partner projects)
+    const creatorDevCost = isPartnerProject ? (Number(state.creatorDevCost) || 0) : 0;
+    const creatorMarketingCost = isPartnerProject ? (Number(state.creatorMarketingCost) || 0) : 0;
+    const creatorIpAdvance = isPartnerProject ? (Number(state.creatorIpAdvance) || 0) : 0;
+    const creatorTotalContribution = creatorDevCost + creatorMarketingCost + creatorIpAdvance;
+
+    // Antidote's contributions (total minus creator's share)
+    const antidoteDevCost = devCost - creatorDevCost;
+    const antidoteMarketingCost = marketingCost - creatorMarketingCost;
+    const antidoteIpAdvance = ipAdvance - creatorIpAdvance;
+    // Antidote always fronts operational costs (mfg, platform, shipping)
+    const antidoteTotalContribution = antidoteDevCost + antidoteMarketingCost + antidoteIpAdvance + backerMfgCost + platformFees + shippingCost;
+    const totalBudget = antidoteTotalContribution + creatorTotalContribution;
+    const antidoteContribRatio = totalBudget > 0 ? antidoteTotalContribution / totalBudget : 1;
+    const creatorContribRatio = totalBudget > 0 ? creatorTotalContribution / totalBudget : 0;
+
+    // Partner project splits
+    let creatorKsShare = 0;
+    let antidoteKsShare = 0;
+    let creatorLoss = 0;
+    let antidoteLoss = 0;
+    if (isPartnerProject) {
+      if (ksProfit >= 0) {
+        creatorKsShare = ksProfit * creatorProfitPct;
+        antidoteKsShare = ksProfit * antidoteProfitPct;
+      } else {
+        // Losses shared by contribution ratio
+        creatorLoss = Math.abs(ksProfit) * creatorContribRatio;
+        antidoteLoss = Math.abs(ksProfit) * antidoteContribRatio;
+      }
     }
-    const antidoteKS = ksProfit - jordanCommission;
 
-    // Summary
-    const grossRevenue = ksRevenue + retailRevenue;
-    const totalExpenses = devCost + marketingCost + mfgCost + ipAdvance + totalIPRoyalties + jordanCommission;
+    // Deal partner commission (own titles only)
+    const dealPartnerActive = !isPartnerProject && state.partnerEnabled;
+    const partnerCommissionRate = dealPartnerActive ? (Number(state.partnerCommissionRate) || 0) : 0;
+    const partnerRetailBonusRate = dealPartnerActive ? (Number(state.partnerRetailBonusRate) || 0) : 0;
+    const partnerCommission = Math.max(0, ksProfit * (partnerCommissionRate / 100));
+    const antidoteKS = isPartnerProject
+      ? antidoteKsShare - ipRoyaltyKS
+      : ksProfit - partnerCommission - ipRoyaltyKS;
+
+    // Overage — creator's cost on partner projects, Antidote's on own titles
+    const overageCostAntidote = isPartnerProject ? 0 : overageCost;
+
+    // Wholesale (retailer/distribution sales)
+    const wholesaleRevenue = wholesaleUnitsSold * wholesalePrice;
+    const wholesaleIPRoyalty = wholesaleRevenue * ipRoyaltyRate;
+
+    // Direct sales (conventions, website — sold at MSRP)
+    const directRevenue = directUnitsSold * msrp;
+    const directIPRoyalty = directRevenue * ipRoyaltyRate;
+
+    // Combined post-KS sales
+    const showPostKs = !isPartnerProject || state.supportContract;
+    const totalPostKsRevenue = showPostKs ? wholesaleRevenue + directRevenue : 0;
+    const totalPostKsIPRoyalty = showPostKs ? wholesaleIPRoyalty + directIPRoyalty : 0;
+    const totalPostKsUnits = showPostKs ? wholesaleUnitsSold + directUnitsSold : 0;
+    const partnerRetailBonus = totalPostKsRevenue * (partnerRetailBonusRate / 100);
+
+    // Post-KS split for partner projects with support contract
+    let postKsCreatorShare = 0;
+    let postKsAntidoteShare = 0;
+    const postKsNetBeforeSplit = totalPostKsRevenue - totalPostKsIPRoyalty;
+    if (isPartnerProject && state.supportContract) {
+      postKsCreatorShare = postKsNetBeforeSplit * creatorProfitPct;
+      postKsAntidoteShare = postKsNetBeforeSplit * antidoteProfitPct;
+    }
+    const postKsMargin = showPostKs
+      ? (isPartnerProject ? postKsAntidoteShare : postKsNetBeforeSplit - partnerRetailBonus)
+      : 0;
+
+    // Summary P&L
+    const grossRevenue = ksRevenue + totalPostKsRevenue;
+    const totalExpenses = isPartnerProject
+      ? ksCosts + ipRoyaltyKS + creatorKsShare + (state.supportContract ? totalPostKsIPRoyalty + postKsCreatorShare : 0)
+      : ksCosts + ipRoyaltyKS + partnerCommission + overageCostAntidote + totalPostKsIPRoyalty + partnerRetailBonus;
     const netProfit = grossRevenue - totalExpenses;
 
     return {
-      devCost, marketingCost, mfgCost, backerMfgCost, extraMfgCost, totalCosts,
-      tierBreakdown, ksRevenue, avgPledge, basePrice,
-      ksProfit, jordanCommission, antidoteKS, extraUnits,
-      commissionRate, commissionBasis, commissionBase,
-      ipAdvance, ipRoyaltyKS, retailRevenue, retailIPRoyalty,
-      retailMargin, totalIPRoyalties, totalIPCost,
+      // Tier
+      tierBreakdown, basePrice, msrp,
+      // KS
+      ksRevenue, avgPledge, backerMfgCost, platformFees, shippingCost,
+      ksCosts, ksProfit, fixedCosts, revenuePerBacker, breakEvenBackers,
+      // Costs
+      devCost, marketingCost, ipAdvance,
+      // Overage
+      overageUnits, overageCost, overageCostAntidote,
+      // IP
+      ipRoyaltyKS, ipRoyaltyRate,
+      // Project type
+      isPartnerProject, showPostKs,
+      // Partner project splits
+      antidoteProfitPct, creatorProfitPct,
+      creatorDevCost, creatorMarketingCost, creatorIpAdvance, creatorTotalContribution,
+      antidoteDevCost, antidoteMarketingCost, antidoteIpAdvance, antidoteTotalContribution,
+      totalBudget, antidoteContribRatio, creatorContribRatio,
+      creatorKsShare, antidoteKsShare, creatorLoss, antidoteLoss,
+      postKsCreatorShare, postKsAntidoteShare,
+      // Deal partner (own titles)
+      dealPartnerActive, partnerCommission, partnerCommissionRate, partnerRetailBonusRate, partnerRetailBonus, antidoteKS,
+      // Wholesale
+      wholesaleRevenue, wholesaleIPRoyalty, wholesaleUnitsSold,
+      // Direct
+      directRevenue, directIPRoyalty, directUnitsSold,
+      // Combined post-KS
+      totalPostKsRevenue, totalPostKsIPRoyalty, totalPostKsUnits, postKsMargin,
+      // Summary
       grossRevenue, totalExpenses, netProfit,
     };
   });
 
-  const presets = [
-    { label: 'Card Game — Low', sub: '~800 backers', values: {
-      devCost: 15000, marketingCost: 15000, ppu: 3.5, printRun: 1200, totalBackers: 800,
-      ipAdvance: 2000, ipRoyaltyRate: 6, retailUnitsSold: 300, wholesalePrice: 15,
-      tiers: [{ price: 20, pct: 70 }, { price: 30, pct: 15 }, { price: 45, pct: 10 }, { price: 75, pct: 3 }, { price: 100, pct: 2 }],
-    }},
-    { label: 'Card Game — Huge', sub: '~8K backers', values: {
-      devCost: 30000, marketingCost: 60000, ppu: 3, printRun: 10000, totalBackers: 8000,
-      ipAdvance: 10000, ipRoyaltyRate: 6, retailUnitsSold: 1500, wholesalePrice: 15,
-      tiers: [{ price: 20, pct: 60 }, { price: 35, pct: 20 }, { price: 50, pct: 12 }, { price: 80, pct: 5 }, { price: 120, pct: 3 }],
-    }},
-    { label: 'Big Box — Low', sub: '~800 backers', values: {
-      devCost: 40000, marketingCost: 30000, ppu: 8, printRun: 1200, totalBackers: 800,
-      ipAdvance: 10000, ipRoyaltyRate: 6, retailUnitsSold: 300, wholesalePrice: 30,
-      tiers: [{ price: 50, pct: 65 }, { price: 75, pct: 18 }, { price: 100, pct: 10 }, { price: 150, pct: 5 }, { price: 250, pct: 2 }],
-    }},
-    { label: 'Big Box — Moderate', sub: '~3K backers', values: {
-      devCost: 60000, marketingCost: 60000, ppu: 7, printRun: 4000, totalBackers: 3000,
-      ipAdvance: 15000, ipRoyaltyRate: 6, retailUnitsSold: 800, wholesalePrice: 30,
-      tiers: [{ price: 50, pct: 60 }, { price: 80, pct: 20 }, { price: 120, pct: 12 }, { price: 175, pct: 5 }, { price: 250, pct: 3 }],
-    }},
-    { label: 'Minis — Moderate', sub: '~3K backers', values: {
-      devCost: 80000, marketingCost: 75000, ppu: 12, printRun: 4000, totalBackers: 3000,
-      ipAdvance: 20000, ipRoyaltyRate: 6, retailUnitsSold: 800, wholesalePrice: 40,
-      tiers: [{ price: 80, pct: 55 }, { price: 120, pct: 22 }, { price: 175, pct: 13 }, { price: 250, pct: 7 }, { price: 400, pct: 3 }],
-    }},
-    { label: 'Minis — Huge', sub: '~8K backers', values: {
-      devCost: 100000, marketingCost: 150000, ppu: 10, printRun: 10000, totalBackers: 8000,
-      ipAdvance: 25000, ipRoyaltyRate: 6, retailUnitsSold: 1500, wholesalePrice: 40,
-      tiers: [{ price: 80, pct: 50 }, { price: 130, pct: 25 }, { price: 200, pct: 14 }, { price: 300, pct: 7 }, { price: 500, pct: 4 }],
-    }},
-    { label: 'Big Box — Blowout', sub: '~15K backers', values: {
-      devCost: 100000, marketingCost: 200000, ppu: 6, printRun: 18000, totalBackers: 15000,
-      ipAdvance: 50000, ipRoyaltyRate: 5, retailUnitsSold: 2500, wholesalePrice: 30,
-      tiers: [{ price: 60, pct: 50 }, { price: 100, pct: 25 }, { price: 150, pct: 14 }, { price: 225, pct: 7 }, { price: 350, pct: 4 }],
-    }},
-    { label: 'Minis — Blowout', sub: '~15K backers', values: {
-      devCost: 150000, marketingCost: 250000, ppu: 9, printRun: 18000, totalBackers: 15000,
-      ipAdvance: 75000, ipRoyaltyRate: 5, retailUnitsSold: 2500, wholesalePrice: 45,
-      tiers: [{ price: 100, pct: 45 }, { price: 175, pct: 25 }, { price: 250, pct: 16 }, { price: 400, pct: 9 }, { price: 600, pct: 5 }],
-    }},
-  ];
-
   function applyPreset(preset) {
     const v = preset.values;
+    state.projectName = v.projectName;
     state.devCost = v.devCost;
     state.marketingCost = v.marketingCost;
     state.ppu = v.ppu;
     state.printRun = v.printRun;
     state.totalBackers = v.totalBackers;
+    state.platformFeeRate = v.platformFeeRate;
     state.ipAdvance = v.ipAdvance;
     state.ipRoyaltyRate = v.ipRoyaltyRate;
-    state.retailUnitsSold = v.retailUnitsSold;
+    state.wholesaleUnitsSold = v.wholesaleUnitsSold ?? v.retailUnitsSold ?? 200;
     state.wholesalePrice = v.wholesalePrice;
-    state.tiers = v.tiers.map(t => ({ ...t }));
+    state.directUnitsSold = v.directUnitsSold ?? Math.round((v.wholesaleUnitsSold ?? v.retailUnitsSold ?? 200) * 0.5);
+    state.tiers = v.tiers.map((t, i) => ({ name: t.name || `Tier ${i + 1}`, ...t }));
   }
 
-  const tabs = [
-    { id: 'inputs', label: 'Inputs' },
-    { id: 'ks', label: 'KS Results' },
-    { id: 'ip', label: 'IP & Retail' },
-    { id: 'summary', label: 'Summary' },
-  ];
+  function saveScenario() {
+    const snapshot = {
+      name: state.projectName,
+      savedAt: new Date().toLocaleString(),
+      inputs: JSON.parse(JSON.stringify({
+        projectName: state.projectName,
+        projectType: state.projectType,
+        antidoteProfitPct: state.antidoteProfitPct,
+        supportContract: state.supportContract,
+        creatorDevCost: state.creatorDevCost,
+        creatorMarketingCost: state.creatorMarketingCost,
+        creatorIpAdvance: state.creatorIpAdvance,
+        totalBackers: state.totalBackers,
+        ppu: state.ppu,
+        printRun: state.printRun,
+        devCost: state.devCost,
+        marketingCost: state.marketingCost,
+        platformFeeRate: state.platformFeeRate,
+        ipAdvance: state.ipAdvance,
+        ipRoyaltyRate: state.ipRoyaltyRate,
+        partnerEnabled: state.partnerEnabled,
+        partnerCommissionRate: state.partnerCommissionRate,
+        partnerRetailBonusRate: state.partnerRetailBonusRate,
+        wholesaleUnitsSold: state.wholesaleUnitsSold,
+        wholesalePrice: state.wholesalePrice,
+        directUnitsSold: state.directUnitsSold,
+        tiers: state.tiers,
+      })),
+      results: {
+        ksRevenue: calc().ksRevenue,
+        ksCosts: calc().ksCosts,
+        ksProfit: calc().ksProfit,
+        breakEvenBackers: calc().breakEvenBackers,
+        partnerCommission: calc().partnerCommission,
+        overageCost: calc().overageCost,
+        postKsMargin: calc().postKsMargin,
+        wholesaleRevenue: calc().wholesaleRevenue,
+        directRevenue: calc().directRevenue,
+        netProfit: calc().netProfit,
+      },
+    };
+    state.scenarios = [...state.scenarios, snapshot];
+  }
+
+  function loadScenario(index) {
+    const s = state.scenarios[index].inputs;
+    Object.assign(state, JSON.parse(JSON.stringify(s)));
+  }
+
+  function deleteScenario(index) {
+    state.scenarios = state.scenarios.filter((_, i) => i !== index);
+  }
+
+  let tabs = $derived((() => {
+    const base = [
+      { id: 'campaign', label: 'Campaign' },
+      { id: 'budget', label: 'Budget' },
+      { id: 'ip', label: 'IP & Royalties' },
+      { id: 'ks', label: 'KS Analysis' },
+    ];
+    if (state.projectType === 'own' || state.supportContract) {
+      base.push({ id: 'retail', label: 'Retail & Inventory' });
+    }
+    base.push({ id: 'profit', label: 'Profit Share' });
+    base.push({ id: 'summary', label: 'Summary' });
+    return base;
+  })());
 </script>
 
 {#if !unlocked}
@@ -233,8 +366,8 @@
   <div class="bg-gradient-to-r from-purple to-purple-light rounded-xl p-6 mb-6 flex items-center gap-4">
     <img src="{base}logo.png" alt="Antidote Games" class="h-12 w-auto" />
     <div>
-      <h1 class="text-xl font-bold text-white">Deal Calculator</h1>
-      <p class="text-sm text-white/80">Define tiers. Model KS revenue. Validate the deal.</p>
+      <h1 class="text-xl font-bold text-white">Campaign Planner</h1>
+      <p class="text-sm text-white/80">Plan campaigns. Model revenue. Validate the deal.</p>
     </div>
   </div>
 
@@ -257,7 +390,7 @@
   <div class="flex gap-1 mb-6 border-b-2 border-gray-light/30 overflow-x-auto">
     {#each tabs as tab}
       <button
-        class="px-5 py-2.5 text-sm font-semibold border-b-3 transition-colors {activeTab === tab.id ? 'text-purple border-pink' : 'text-gray-mid border-transparent hover:text-purple'}"
+        class="px-5 py-2.5 text-sm font-semibold border-b-3 transition-colors whitespace-nowrap {activeTab === tab.id ? 'text-purple border-pink' : 'text-gray-mid border-transparent hover:text-purple'}"
         onclick={() => activeTab = tab.id}
       >
         {tab.label}
@@ -266,14 +399,20 @@
   </div>
 
   <!-- Tab Content -->
-  {#if activeTab === 'inputs'}
-    <TabInputs bind:state validations={validations()} />
-  {:else if activeTab === 'ks'}
-    <TabKsResults calc={calc()} />
+  {#if activeTab === 'campaign'}
+    <TabCampaign bind:state validations={validations()} />
+  {:else if activeTab === 'budget'}
+    <TabBudget bind:state validations={validations()} />
   {:else if activeTab === 'ip'}
-    <TabIpRetail bind:state calc={calc()} validations={validations()} />
+    <TabIpRoyalties bind:state calc={calc()} />
+  {:else if activeTab === 'ks'}
+    <TabKsAnalysis bind:state calc={calc()} />
+  {:else if activeTab === 'retail'}
+    <TabRetailInventory bind:state calc={calc()} validations={validations()} />
+  {:else if activeTab === 'profit'}
+    <TabProfitShare bind:state calc={calc()} />
   {:else if activeTab === 'summary'}
-    <TabSummary calc={calc()} />
+    <TabSummary {state} calc={calc()} {saveScenario} {loadScenario} {deleteScenario} />
   {/if}
 </div>
 {/if}
