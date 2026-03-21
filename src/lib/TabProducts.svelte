@@ -103,7 +103,7 @@
 </div>
 
 <Card title="Product Presets">
-  <p class="text-xs text-gray-mid mb-3">Click a preset to add it to your product catalog. PPU and weight are based on industry averages at 1,000-3,000 unit runs. Adjust after adding.</p>
+  <p class="text-xs text-gray-mid mb-3">Click a preset to add it to your product catalog. PPU and weight are based on industry averages at 500+ runs. Adjust after adding.</p>
   <div class="flex flex-wrap gap-2">
     {#each productPresets as preset}
       <button
@@ -115,6 +115,6 @@
     {/each}
   </div>
   <div class="bg-blue-light/10 border-l-4 border-l-blue-light rounded p-3 mt-4 text-xs text-purple leading-relaxed">
-    PPU estimates assume 1,000-3,000 unit print runs. Costs decrease significantly at higher volumes. Digital products (PDF, STL) have $0 PPU and weight.
+    PPU estimates assume 500+ print runs. Costs decrease significantly at higher volumes. Digital products (PDF, STL) have $0 PPU and weight.
   </div>
 </Card>

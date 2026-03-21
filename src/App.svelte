@@ -484,7 +484,7 @@
   {:else if activeTab === 'products'}
     <TabProducts bind:state {genProductId} />
   {:else if activeTab === 'budget'}
-    <TabBudget bind:state validations={validations()} />
+    <TabBudget bind:inputState={state} validations={validations()} />
   {:else if activeTab === 'ip'}
     <TabIpRoyalties bind:state calc={calc()} />
   {:else if activeTab === 'ks'}
