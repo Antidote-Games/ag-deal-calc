@@ -1,0 +1,26 @@
+{
+  "label": "Box Game Expansion (Small)",
+  "sub": "~800 backers",
+  "values": {
+    "projectName": "Box Game Expansion (Small)",
+    "devCost": 12000,
+    "marketingCost": 8000,
+    "printRun": 1200,
+    "totalBackers": 800,
+    "platformFeeRate": 8,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 15,
+    "wholesaleUnitsSold": 250,
+    "directUnitsSold": 100,
+    "products": [
+      { "id": "p1", "name": "Expansion (Small Box)", "ppu": 4, "weight": 0.8, "suggestedPrice": 25 },
+      { "id": "p2", "name": "Expansion (Large Box)", "ppu": 8, "weight": 1.5, "suggestedPrice": 40 }
+    ],
+    "tiers": [
+      { "name": "Small Expansion", "products": [{ "productId": "p1", "qty": 1 }], "price": 25, "pct": 55, "shippingCost": 5 },
+      { "name": "Large Expansion", "products": [{ "productId": "p2", "qty": 1 }], "price": 40, "pct": 30, "shippingCost": 7 },
+      { "name": "Both Expansions", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 60, "pct": 15, "shippingCost": 9 }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "label": "200+ Page TTRPG Product (Large)",
+  "sub": "~2K backers",
+  "values": {
+    "projectName": "200+ Page TTRPG Product (Large)",
+    "devCost": 40000,
+    "marketingCost": 20000,
+    "printRun": 3000,
+    "totalBackers": 2000,
+    "platformFeeRate": 8,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 30,
+    "wholesaleUnitsSold": 600,
+    "directUnitsSold": 300,
+    "products": [
+      { "id": "p1", "name": "Digital PDF", "ppu": 0, "weight": 0, "suggestedPrice": 20 },
+      { "id": "p2", "name": "Hardcover Rulebook (200+ pg)", "ppu": 10, "weight": 1.5, "suggestedPrice": 50 },
+      { "id": "p3", "name": "Premium Hardcover (Leather, Foil)", "ppu": 14, "weight": 1.8, "suggestedPrice": 75 },
+      { "id": "p4", "name": "GM Screen", "ppu": 3, "weight": 0.4, "suggestedPrice": 15 }
+    ],
+    "tiers": [
+      { "name": "PDF Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 20, "pct": 25, "shippingCost": 0 },
+      { "name": "Standard Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 55, "pct": 40, "shippingCost": 8 },
+      { "name": "Premium Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 80, "pct": 20, "shippingCost": 9 },
+      { "name": "Premium + GM Screen + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 100, "pct": 12, "shippingCost": 10 },
+      { "name": "Collector (2x Premium + GM Screen)", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 2 }, { "productId": "p4", "qty": 1 }], "price": 160, "pct": 3, "shippingCost": 14 }
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "label": "Card Game (Moderate)",
+  "sub": "~1.5K backers",
+  "values": {
+    "projectName": "Card Game (Moderate)",
+    "devCost": 15000,
+    "marketingCost": 10000,
+    "printRun": 2500,
+    "totalBackers": 1500,
+    "platformFeeRate": 8,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 12,
+    "wholesaleUnitsSold": 600,
+    "directUnitsSold": 300,
+    "products": [
+      { "id": "p1", "name": "Core Card Game", "ppu": 4, "weight": 0.8, "suggestedPrice": 25 },
+      { "id": "p2", "name": "Expansion Pack", "ppu": 2.5, "weight": 0.3, "suggestedPrice": 15 },
+      { "id": "p3", "name": "Card Sleeves (100-pack)", "ppu": 1.5, "weight": 0.1, "suggestedPrice": 8 }
+    ],
+    "tiers": [
+      { "name": "Core Game", "products": [{ "productId": "p1", "qty": 1 }], "price": 25, "pct": 55, "shippingCost": 5 },
+      { "name": "Core + Expansion", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 38, "pct": 28, "shippingCost": 6 },
+      { "name": "Core + Expansion + Sleeves", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 45, "pct": 12, "shippingCost": 6 },
+      { "name": "2x Everything", "products": [{ "productId": "p1", "qty": 2 }, { "productId": "p2", "qty": 2 }, { "productId": "p3", "qty": 2 }], "price": 80, "pct": 5, "shippingCost": 8 }
+    ]
+  }
+}

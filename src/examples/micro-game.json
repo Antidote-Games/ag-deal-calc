@@ -1,0 +1,27 @@
+{
+  "label": "Micro Game (Small)",
+  "sub": "~600 backers",
+  "values": {
+    "projectName": "Micro Game (Small)",
+    "devCost": 5000,
+    "marketingCost": 3000,
+    "printRun": 1000,
+    "totalBackers": 600,
+    "platformFeeRate": 8,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 10,
+    "wholesaleUnitsSold": 200,
+    "directUnitsSold": 150,
+    "products": [
+      { "id": "p1", "name": "Micro Game (Cards + Meeples + Rules)", "ppu": 3.5, "weight": 0.5, "suggestedPrice": 20 },
+      { "id": "p2", "name": "Micro Game Premium (Upgraded Components)", "ppu": 5, "weight": 0.6, "suggestedPrice": 28 }
+    ],
+    "tiers": [
+      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 20, "pct": 60, "shippingCost": 4 },
+      { "name": "Premium", "products": [{ "productId": "p2", "qty": 1 }], "price": 28, "pct": 25, "shippingCost": 4 },
+      { "name": "2x Standard (Gift Pack)", "products": [{ "productId": "p1", "qty": 2 }], "price": 35, "pct": 10, "shippingCost": 5 },
+      { "name": "2x Premium", "products": [{ "productId": "p2", "qty": 2 }], "price": 50, "pct": 5, "shippingCost": 6 }
+    ]
+  }
+}

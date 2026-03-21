@@ -1,0 +1,28 @@
+{
+  "label": "Party Game (Moderate)",
+  "sub": "~2K backers",
+  "values": {
+    "projectName": "Party Game (Moderate)",
+    "devCost": 10000,
+    "marketingCost": 15000,
+    "printRun": 3500,
+    "totalBackers": 2000,
+    "platformFeeRate": 8,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 12,
+    "wholesaleUnitsSold": 800,
+    "directUnitsSold": 500,
+    "products": [
+      { "id": "p1", "name": "Party Game (Cards + Simple Components)", "ppu": 3, "weight": 0.6, "suggestedPrice": 20 },
+      { "id": "p2", "name": "Party Game Deluxe Box", "ppu": 6, "weight": 1.2, "suggestedPrice": 35 },
+      { "id": "p3", "name": "Expansion Pack", "ppu": 2, "weight": 0.3, "suggestedPrice": 12 }
+    ],
+    "tiers": [
+      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 20, "pct": 50, "shippingCost": 5 },
+      { "name": "Deluxe", "products": [{ "productId": "p2", "qty": 1 }], "price": 35, "pct": 25, "shippingCost": 6 },
+      { "name": "Deluxe + Expansion", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 45, "pct": 18, "shippingCost": 7 },
+      { "name": "Party Pack (2x Deluxe + Expansion)", "products": [{ "productId": "p2", "qty": 2 }, { "productId": "p3", "qty": 1 }], "price": 75, "pct": 7, "shippingCost": 10 }
+    ]
+  }
+}

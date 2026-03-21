@@ -1,0 +1,28 @@
+{
+  "label": "40-Page TTRPG Product (Moderate)",
+  "sub": "~1K backers",
+  "values": {
+    "projectName": "40-Page TTRPG Product (Moderate)",
+    "devCost": 12000,
+    "marketingCost": 8000,
+    "printRun": 1500,
+    "totalBackers": 1000,
+    "platformFeeRate": 8,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 15,
+    "wholesaleUnitsSold": 300,
+    "directUnitsSold": 150,
+    "products": [
+      { "id": "p1", "name": "Digital PDF", "ppu": 0, "weight": 0, "suggestedPrice": 12 },
+      { "id": "p2", "name": "Softcover Book (40pg)", "ppu": 5, "weight": 0.6, "suggestedPrice": 25 },
+      { "id": "p3", "name": "Hardcover Book (40pg)", "ppu": 7, "weight": 0.8, "suggestedPrice": 30 }
+    ],
+    "tiers": [
+      { "name": "PDF Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 12, "pct": 30, "shippingCost": 0 },
+      { "name": "Softcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 30, "pct": 40, "shippingCost": 5 },
+      { "name": "Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 40, "pct": 25, "shippingCost": 6 },
+      { "name": "Hardcover + Softcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 60, "pct": 5, "shippingCost": 8 }
+    ]
+  }
+}

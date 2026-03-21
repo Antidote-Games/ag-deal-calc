@@ -1,0 +1,29 @@
+{
+  "label": "Box Game (Moderate)",
+  "sub": "~2K backers",
+  "values": {
+    "projectName": "Box Game (Moderate)",
+    "devCost": 35000,
+    "marketingCost": 25000,
+    "printRun": 3500,
+    "totalBackers": 2000,
+    "platformFeeRate": 8,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 25,
+    "wholesaleUnitsSold": 800,
+    "directUnitsSold": 500,
+    "products": [
+      { "id": "p1", "name": "Box Game (Standard)", "ppu": 8, "weight": 2.0, "suggestedPrice": 45 },
+      { "id": "p2", "name": "Box Game (Premium / Big Box)", "ppu": 14, "weight": 3.0, "suggestedPrice": 70 },
+      { "id": "p3", "name": "Playmat (Neoprene)", "ppu": 4, "weight": 0.5, "suggestedPrice": 20 },
+      { "id": "p4", "name": "Metal Coin Set", "ppu": 4, "weight": 0.3, "suggestedPrice": 18 }
+    ],
+    "tiers": [
+      { "name": "Standard Edition", "products": [{ "productId": "p1", "qty": 1 }], "price": 50, "pct": 45, "shippingCost": 10 },
+      { "name": "Premium Edition", "products": [{ "productId": "p2", "qty": 1 }], "price": 75, "pct": 30, "shippingCost": 12 },
+      { "name": "Premium + Playmat", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 95, "pct": 15, "shippingCost": 13 },
+      { "name": "All-In (Premium + Playmat + Coins)", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 115, "pct": 10, "shippingCost": 14 }
+    ]
+  }
+}

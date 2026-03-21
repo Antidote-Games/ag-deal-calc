@@ -1,33 +1,11 @@
 <script>
   import Card from './Card.svelte';
   import { fmt } from './utils.js';
+  import productPresetsData from '../product-presets/products.json';
 
   let { state = $bindable(), genProductId } = $props();
 
-  const productPresets = [
-    { name: 'Digital PDF', ppu: 0, weight: 0, suggestedPrice: 15 },
-    { name: 'Card Game (Simple Deck)', ppu: 1.50, weight: 0.3, suggestedPrice: 15 },
-    { name: 'Card Game (Multi-Deck + Tokens)', ppu: 4, weight: 0.8, suggestedPrice: 25 },
-    { name: 'Micro Game (Cards + Meeples + Booklet)', ppu: 3.50, weight: 0.5, suggestedPrice: 20 },
-    { name: 'Micro Game (Premium Components)', ppu: 5, weight: 0.6, suggestedPrice: 25 },
-    { name: 'LCG / TCG Starter Set', ppu: 5, weight: 0.7, suggestedPrice: 30 },
-    { name: 'LCG Booster / Expansion', ppu: 2.50, weight: 0.3, suggestedPrice: 15 },
-    { name: 'RPG Supplement (Softcover)', ppu: 5, weight: 0.6, suggestedPrice: 25 },
-    { name: 'RPG Supplement (Hardcover)', ppu: 8, weight: 1.2, suggestedPrice: 40 },
-    { name: 'TTRPG Core Rulebook', ppu: 10, weight: 1.5, suggestedPrice: 50 },
-    { name: 'Board Game (Standard)', ppu: 8, weight: 2.0, suggestedPrice: 40 },
-    { name: 'Board Game (Premium / Big Box)', ppu: 14, weight: 3.0, suggestedPrice: 65 },
-    { name: 'Miniatures Set (Resin, 5-10 minis)', ppu: 15, weight: 1.0, suggestedPrice: 45 },
-    { name: 'Miniatures Set (Injection Mold, 20+)', ppu: 25, weight: 2.0, suggestedPrice: 80 },
-    { name: 'Dice Set (7-piece poly)', ppu: 2, weight: 0.2, suggestedPrice: 12 },
-    { name: 'Playmat (Neoprene)', ppu: 4, weight: 0.5, suggestedPrice: 20 },
-    { name: 'Art Book / Lore Book', ppu: 6, weight: 0.8, suggestedPrice: 25 },
-    { name: 'T-Shirt', ppu: 5, weight: 0.3, suggestedPrice: 20 },
-    { name: 'GM Screen', ppu: 3, weight: 0.4, suggestedPrice: 15 },
-    { name: 'Map / Poster Set', ppu: 2, weight: 0.2, suggestedPrice: 10 },
-    { name: 'Premium Box / Slipcase', ppu: 3, weight: 0.5, suggestedPrice: 0 },
-    { name: 'STL Digital Files', ppu: 0, weight: 0, suggestedPrice: 20 },
-  ];
+  const productPresets = productPresetsData;
 
   function addProduct(preset) {
     state.products = [...state.products, {

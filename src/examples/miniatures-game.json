@@ -1,0 +1,31 @@
+{
+  "label": "Miniatures Game (Large)",
+  "sub": "~3K backers",
+  "values": {
+    "projectName": "Miniatures Game (Large)",
+    "devCost": 80000,
+    "marketingCost": 50000,
+    "printRun": 4500,
+    "totalBackers": 3000,
+    "platformFeeRate": 8,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 40,
+    "wholesaleUnitsSold": 800,
+    "directUnitsSold": 500,
+    "products": [
+      { "id": "p1", "name": "STL Digital Files", "ppu": 0, "weight": 0, "suggestedPrice": 25 },
+      { "id": "p2", "name": "Quickstart Rules + 10 Minis (Resin)", "ppu": 20, "weight": 2.5, "suggestedPrice": 70 },
+      { "id": "p3", "name": "Full Starter Set (Rules + 20 Minis)", "ppu": 30, "weight": 3.5, "suggestedPrice": 120 },
+      { "id": "p4", "name": "Expansion Minis Pack (10 Minis)", "ppu": 15, "weight": 1.0, "suggestedPrice": 45 },
+      { "id": "p5", "name": "Playmat (Neoprene)", "ppu": 4, "weight": 0.5, "suggestedPrice": 20 }
+    ],
+    "tiers": [
+      { "name": "Digital STLs Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 25, "pct": 15, "shippingCost": 0 },
+      { "name": "Quickstart", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 80, "pct": 35, "shippingCost": 12 },
+      { "name": "Full Starter", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 130, "pct": 30, "shippingCost": 14 },
+      { "name": "Starter + Expansion", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 170, "pct": 14, "shippingCost": 16 },
+      { "name": "All-In (Starter + Expansion + Playmat)", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }, { "productId": "p5", "qty": 1 }], "price": 190, "pct": 6, "shippingCost": 18 }
+    ]
+  }
+}

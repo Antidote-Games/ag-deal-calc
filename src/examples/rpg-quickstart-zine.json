@@ -1,0 +1,26 @@
+{
+  "label": "RPG Quickstart / Zine (Small)",
+  "sub": "~500 backers",
+  "values": {
+    "projectName": "RPG Quickstart / Zine (Small)",
+    "devCost": 5000,
+    "marketingCost": 3000,
+    "printRun": 800,
+    "totalBackers": 500,
+    "platformFeeRate": 8,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 8,
+    "wholesaleUnitsSold": 150,
+    "directUnitsSold": 100,
+    "products": [
+      { "id": "p1", "name": "Digital PDF", "ppu": 0, "weight": 0, "suggestedPrice": 8 },
+      { "id": "p2", "name": "Zine (Saddle-Stitch, 32pg)", "ppu": 2, "weight": 0.2, "suggestedPrice": 12 }
+    ],
+    "tiers": [
+      { "name": "PDF Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 8, "pct": 40, "shippingCost": 0 },
+      { "name": "Print + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 15, "pct": 45, "shippingCost": 3 },
+      { "name": "2x Print + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 2 }], "price": 25, "pct": 15, "shippingCost": 4 }
+    ]
+  }
+}
