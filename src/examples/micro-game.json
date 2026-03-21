@@ -4,7 +4,20 @@
   "values": {
     "projectName": "Micro Game (Small)",
     "devCost": 5000,
+    "devLineItems": [
+      { "name": "Illustration (8x FC Simple)", "cost": 1200 },
+      { "name": "Graphic Design (Cards + Box)", "cost": 1500 },
+      { "name": "Game Design / Development", "cost": 1000 },
+      { "name": "Rulebook Writing + Editing", "cost": 600 },
+      { "name": "Art Direction", "cost": 500 },
+      { "name": "Trade Dress", "cost": 200 }
+    ],
     "marketingCost": 3000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 1000 },
+      { "name": "KS Ad Campaign", "cost": 1500 },
+      { "name": "Video Production", "cost": 500 }
+    ],
     "printRun": 1000,
     "totalBackers": 600,
     "platformFeeRate": 8,

@@ -4,7 +4,22 @@
   "values": {
     "projectName": "Party Game (Moderate)",
     "devCost": 10000,
+    "devLineItems": [
+      { "name": "Illustration (20x FC Simple)", "cost": 3000 },
+      { "name": "Graphic Design (Cards + Box)", "cost": 2500 },
+      { "name": "Game Design / Development", "cost": 2000 },
+      { "name": "Rulebook Writing + Editing", "cost": 800 },
+      { "name": "Art Direction", "cost": 1200 },
+      { "name": "Trade Dress", "cost": 500 }
+    ],
     "marketingCost": 15000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 4000 },
+      { "name": "KS Ad Campaign", "cost": 5000 },
+      { "name": "Influencer / Reviewer", "cost": 3000 },
+      { "name": "Video Production", "cost": 2000 },
+      { "name": "Email Marketing", "cost": 1000 }
+    ],
     "printRun": 3500,
     "totalBackers": 2000,
     "platformFeeRate": 8,

@@ -4,7 +4,21 @@
   "values": {
     "projectName": "Box Game Expansion (Small)",
     "devCost": 12000,
+    "devLineItems": [
+      { "name": "Illustration (12x FC, mixed)", "cost": 4000 },
+      { "name": "Graphic Design (New Components)", "cost": 2000 },
+      { "name": "Game Design / Development", "cost": 3000 },
+      { "name": "Rulebook Writing + Editing", "cost": 1000 },
+      { "name": "Art Direction", "cost": 1500 },
+      { "name": "Trade Dress", "cost": 500 }
+    ],
     "marketingCost": 8000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 2500 },
+      { "name": "KS Ad Campaign", "cost": 3000 },
+      { "name": "Influencer / Reviewer", "cost": 1500 },
+      { "name": "Video Production", "cost": 1000 }
+    ],
     "printRun": 1200,
     "totalBackers": 800,
     "platformFeeRate": 8,

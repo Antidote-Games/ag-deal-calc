@@ -1,0 +1,37 @@
+{
+  "illustration": [
+    { "id": "bw_simple", "label": "B&W Spot (Simple)", "low": 80, "high": 100 },
+    { "id": "bw_medium", "label": "B&W Spot (Medium)", "low": 100, "high": 150 },
+    { "id": "bw_complex", "label": "B&W Spot (Complex)", "low": 150, "high": 250 },
+    { "id": "fc_simple", "label": "Full Color Spot (Simple)", "low": 125, "high": 175 },
+    { "id": "fc_medium", "label": "Full Color Spot (Medium)", "low": 200, "high": 350 },
+    { "id": "fc_complex", "label": "Full Color Spot (Complex)", "low": 350, "high": 600 },
+    { "id": "cover", "label": "Cover", "low": 500, "high": 900 }
+  ],
+  "writing": {
+    "newRate": 0.08,
+    "establishedRate": 0.12,
+    "markup": 0.02,
+    "note": "Flat rate calculated from per-word rate + 2%. New = first time working with us. Established = proven track record with Antidote."
+  },
+  "editing": {
+    "newRate": 0.04,
+    "establishedRate": 0.06,
+    "markup": 0.02,
+    "note": "Same structure as writing at roughly half the rate."
+  },
+  "layout": {
+    "newRate": 6,
+    "establishedRate": 12,
+    "unit": "per page",
+    "note": "Flat per-page rate. New vs established based on working history with Antidote."
+  },
+  "graphicDesign": [
+    { "id": "logo", "label": "Logo", "low": 300, "high": 800 },
+    { "id": "box_art", "label": "Box Art / Package Design", "low": 500, "high": 2000 },
+    { "id": "marketing", "label": "Marketing Materials (ads, banners, social)", "low": 200, "high": 500 },
+    { "id": "card_frame", "label": "Card Frame / Component Template", "low": 150, "high": 400 },
+    { "id": "icon_set", "label": "Icon Set", "low": 200, "high": 600 },
+    { "id": "full_brand", "label": "Full Brand Package (logo + box + templates)", "low": 2000, "high": 6000 }
+  ]
+}

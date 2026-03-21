@@ -4,7 +4,28 @@
   "values": {
     "projectName": "Miniatures Game (Large)",
     "devCost": 80000,
+    "devLineItems": [
+      { "name": "Concept Art (Characters + Factions)", "cost": 8000 },
+      { "name": "Sculpting / 3D Modeling (30 minis)", "cost": 25000 },
+      { "name": "Steel Mold Tooling", "cost": 15000 },
+      { "name": "Illustration (Rulebook + Cards)", "cost": 8000 },
+      { "name": "Graphic Design (Full Brand + Components)", "cost": 5000 },
+      { "name": "Game Design / Development", "cost": 8000 },
+      { "name": "Rulebook Writing + Editing", "cost": 4000 },
+      { "name": "Art Direction", "cost": 4000 },
+      { "name": "Playtesting", "cost": 2500 },
+      { "name": "Trade Dress", "cost": 500 }
+    ],
     "marketingCost": 50000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 12000 },
+      { "name": "KS Ad Campaign", "cost": 15000 },
+      { "name": "Influencer / Reviewer", "cost": 8000 },
+      { "name": "Video Production", "cost": 5000 },
+      { "name": "Convention Booth", "cost": 5000 },
+      { "name": "Community Management", "cost": 3000 },
+      { "name": "Email Marketing", "cost": 2000 }
+    ],
     "printRun": 4500,
     "totalBackers": 3000,
     "platformFeeRate": 8,

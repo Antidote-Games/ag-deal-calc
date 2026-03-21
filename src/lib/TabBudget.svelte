@@ -1,6 +1,7 @@
 <script>
   import Card from './Card.svelte';
   import Slider from './Slider.svelte';
+  import RateCalculator from './RateCalculator.svelte';
   import { fmt, fmtFull } from './utils.js';
 
   let { state = $bindable(), validations } = $props();
@@ -124,10 +125,13 @@
           </button>
         {/each}
       </div>
-      <button onclick={addDevLine}
-        class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors">
-        + Add Line Item
-      </button>
+      <div class="flex gap-2">
+        <button onclick={addDevLine}
+          class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors">
+          + Add Line Item
+        </button>
+        <RateCalculator onAdd={(item) => { state.devLineItems = [...state.devLineItems, item]; syncDevFromLines(); }} />
+      </div>
     {/if}
   </Card>
 
@@ -206,10 +210,13 @@
           </button>
         {/each}
       </div>
-      <button onclick={addMarketingLine}
-        class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors">
-        + Add Line Item
-      </button>
+      <div class="flex gap-2">
+        <button onclick={addMarketingLine}
+          class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors">
+          + Add Line Item
+        </button>
+        <RateCalculator onAdd={(item) => { state.marketingLineItems = [...state.marketingLineItems, item]; syncMarketingFromLines(); }} />
+      </div>
     {/if}
   </Card>
 </div>

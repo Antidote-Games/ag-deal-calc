@@ -4,7 +4,25 @@
   "values": {
     "projectName": "200+ Page TTRPG Product (Large)",
     "devCost": 40000,
+    "devLineItems": [
+      { "name": "Illustration (30x FC, mixed)", "cost": 10000 },
+      { "name": "Cover Art", "cost": 900 },
+      { "name": "Writing (100K words, established)", "cost": 12240 },
+      { "name": "Editing (100K words, established)", "cost": 6120 },
+      { "name": "Layout (200 pages, established)", "cost": 2400 },
+      { "name": "Cartography (10 maps)", "cost": 2000 },
+      { "name": "Art Direction", "cost": 3000 },
+      { "name": "Graphic Design (Full Brand Package)", "cost": 3000 },
+      { "name": "Trade Dress", "cost": 340 }
+    ],
     "marketingCost": 20000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 5000 },
+      { "name": "KS Ad Campaign", "cost": 7000 },
+      { "name": "Influencer / Reviewer", "cost": 4000 },
+      { "name": "Video Production", "cost": 2500 },
+      { "name": "Convention Booth", "cost": 1500 }
+    ],
     "printRun": 3000,
     "totalBackers": 2000,
     "platformFeeRate": 8,

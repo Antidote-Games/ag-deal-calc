@@ -4,7 +4,24 @@
   "values": {
     "projectName": "40-Page TTRPG Product (Moderate)",
     "devCost": 12000,
+    "devLineItems": [
+      { "name": "Illustration (10x FC Medium)", "cost": 3000 },
+      { "name": "Cover Art", "cost": 700 },
+      { "name": "Writing (20K words, established)", "cost": 2450 },
+      { "name": "Editing (20K words, established)", "cost": 1224 },
+      { "name": "Layout (40 pages, established)", "cost": 480 },
+      { "name": "Cartography (4 maps)", "cost": 800 },
+      { "name": "Art Direction", "cost": 1500 },
+      { "name": "Graphic Design (Component Templates)", "cost": 400 },
+      { "name": "Trade Dress", "cost": 500 }
+    ],
     "marketingCost": 8000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 2000 },
+      { "name": "KS Ad Campaign", "cost": 3000 },
+      { "name": "Influencer / Reviewer", "cost": 2000 },
+      { "name": "Video Production", "cost": 1000 }
+    ],
     "printRun": 1500,
     "totalBackers": 1000,
     "platformFeeRate": 8,
