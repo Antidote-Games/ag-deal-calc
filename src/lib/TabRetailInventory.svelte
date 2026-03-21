@@ -30,7 +30,7 @@
 <!-- Overage / Inventory -->
 <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
   <Metric label="Overage Units" value={calc.overageUnits.toLocaleString()} sub="Print run minus backer units" variant="default" />
-  <Metric label="Inventory Investment" value={fmt(calc.overageCost)} sub="Overage x base tier PPU" variant="warning" />
+  <Metric label="Inventory Investment" value={fmt(calc.overageCost)} sub="Post-KS planned units x PPU" variant="warning" />
   <Metric label="Post-KS Units Planned" value={validations.totalRetailUnits.toLocaleString()} sub={validations.retailExceedsExtra ? 'Exceeds overage!' : 'Within overage'} variant={validations.retailExceedsExtra ? 'danger' : 'success'} />
 </div>
 

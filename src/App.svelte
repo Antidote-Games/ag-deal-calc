@@ -176,10 +176,14 @@
     const breakEvenBackers = revenuePerBacker > 0 ? Math.ceil(fixedCosts / revenuePerBacker) : Infinity;
 
     // Overage / Inventory (separate from KS costs)
-    // Overage units are manufactured at the base tier's cost
-    const baseTierPpu = tierBreakdown.length > 0 ? tierBreakdown[0].costPerUnit : 0;
+    // Overage cost = sum of each post-KS product's planned units x PPU
     const overageUnits = Math.max(0, printRun - totalBackers);
-    const overageCost = overageUnits * baseTierPpu;
+    const overageCost = (state.postKsSales || []).reduce((sum, s) => {
+      const product = getProduct(s.productId);
+      const ppu = product ? Number(product.ppu) || 0 : 0;
+      const units = (Number(s.directUnits) || 0) + (Number(s.wholesaleUnits) || 0);
+      return sum + (units * ppu);
+    }, 0);
 
     // IP Royalties (not a KS Profit deduction — separate expense)
     const ipRoyaltyKS = ksRevenue * ipRoyaltyRate;
