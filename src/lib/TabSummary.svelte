@@ -3,7 +3,7 @@
   import Metric from './Metric.svelte';
   import { fmt, fmtFull } from './utils.js';
 
-  let { state, calc, saveScenario, loadScenario, deleteScenario } = $props();
+  let { appState: state, calc, saveScenario, loadScenario, deleteScenario } = $props();
 </script>
 
 <!-- P&L -->

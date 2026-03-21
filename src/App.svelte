@@ -480,21 +480,21 @@
 
   <!-- Tab Content -->
   {#if activeTab === 'campaign'}
-    <TabCampaign bind:state validations={validations()} {tierPpu} {tierWeight} {tierSuggestedPrice} />
+    <TabCampaign bind:appState={state} validations={validations()} {tierPpu} {tierWeight} {tierSuggestedPrice} />
   {:else if activeTab === 'products'}
-    <TabProducts bind:state {genProductId} />
+    <TabProducts bind:appState={state} {genProductId} />
   {:else if activeTab === 'budget'}
-    <TabBudget bind:inputState={state} validations={validations()} />
+    <TabBudget bind:appState={state} validations={validations()} />
   {:else if activeTab === 'ip'}
-    <TabIpRoyalties bind:state calc={calc()} />
+    <TabIpRoyalties bind:appState={state} calc={calc()} />
   {:else if activeTab === 'ks'}
-    <TabKsAnalysis bind:state calc={calc()} />
+    <TabKsAnalysis bind:appState={state} calc={calc()} />
   {:else if activeTab === 'retail'}
-    <TabRetailInventory bind:state calc={calc()} validations={validations()} />
+    <TabRetailInventory bind:appState={state} calc={calc()} validations={validations()} />
   {:else if activeTab === 'profit'}
-    <TabProfitShare bind:state calc={calc()} />
+    <TabProfitShare bind:appState={state} calc={calc()} />
   {:else if activeTab === 'summary'}
-    <TabSummary {state} calc={calc()} {saveScenario} {loadScenario} {deleteScenario} />
+    <TabSummary appState={state} calc={calc()} {saveScenario} {loadScenario} {deleteScenario} />
   {/if}
 </div>
 {/if}

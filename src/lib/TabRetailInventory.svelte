@@ -4,7 +4,7 @@
   import Metric from './Metric.svelte';
   import { fmt, fmtFull } from './utils.js';
 
-  let { state = $bindable(), calc, validations } = $props();
+  let { appState: state = $bindable(), calc, validations } = $props();
 </script>
 
 <!-- Overage / Inventory -->

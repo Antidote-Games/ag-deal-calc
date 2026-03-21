@@ -4,7 +4,7 @@
   import Slider from './Slider.svelte';
   import { fmt, fmtFull } from './utils.js';
 
-  let { state: inputState = $bindable(), calc } = $props();
+  let { appState: inputState = $bindable(), calc } = $props();
 
   let sensitivityPct = $state(100);
 

@@ -4,7 +4,7 @@
   import RateCalculator from './RateCalculator.svelte';
   import { fmt, fmtFull } from './utils.js';
 
-  let { state: inputState = $bindable(), validations } = $props();
+  let { appState: inputState = $bindable(), validations } = $props();
 
   let isPartner = $derived(inputState.projectType === 'partner');
   let totalFixed = $derived(Number(inputState.devCost) + Number(inputState.marketingCost));

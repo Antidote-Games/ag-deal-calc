@@ -3,7 +3,7 @@
   import { fmt } from './utils.js';
   import productPresetsData from '../product-presets/products.json';
 
-  let { state = $bindable(), genProductId } = $props();
+  let { appState: state = $bindable(), genProductId } = $props();
 
   const productPresets = productPresetsData;
 

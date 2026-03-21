@@ -3,7 +3,7 @@
   import Slider from './Slider.svelte';
   import { fmt } from './utils.js';
 
-  let { state = $bindable(), validations, tierPpu, tierWeight, tierSuggestedPrice } = $props();
+  let { appState: state = $bindable(), validations, tierPpu, tierWeight, tierSuggestedPrice } = $props();
 
   function distribute(mode) {
     const n = state.tiers.length;
