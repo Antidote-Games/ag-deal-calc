@@ -4,36 +4,36 @@
   import RateCalculator from './RateCalculator.svelte';
   import { fmt, fmtFull } from './utils.js';
 
-  let { state = $bindable(), validations } = $props();
+  let { state: inputState = $bindable(), validations } = $props();
 
-  let isPartner = $derived(state.projectType === 'partner');
-  let totalFixed = $derived(Number(state.devCost) + Number(state.marketingCost));
-  let antidoteFixed = $derived(totalFixed - (Number(state.creatorDevCost) || 0) - (Number(state.creatorMarketingCost) || 0));
+  let isPartner = $derived(inputState.projectType === 'partner');
+  let totalFixed = $derived(Number(inputState.devCost) + Number(inputState.marketingCost));
+  let antidoteFixed = $derived(totalFixed - (Number(inputState.creatorDevCost) || 0) - (Number(inputState.creatorMarketingCost) || 0));
 
   let devExpanded = $state(false);
   let marketingExpanded = $state(false);
 
-  let devLineTotal = $derived(state.devLineItems.reduce((sum, li) => sum + (Number(li.cost) || 0), 0));
-  let marketingLineTotal = $derived(state.marketingLineItems.reduce((sum, li) => sum + (Number(li.cost) || 0), 0));
+  let devLineTotal = $derived(inputState.devLineItems.reduce((sum, li) => sum + (Number(li.cost) || 0), 0));
+  let marketingLineTotal = $derived(inputState.marketingLineItems.reduce((sum, li) => sum + (Number(li.cost) || 0), 0));
 
-  function syncDevFromLines() { state.devCost = devLineTotal; }
-  function syncMarketingFromLines() { state.marketingCost = marketingLineTotal; }
+  function syncDevFromLines() { inputState.devCost = devLineTotal; }
+  function syncMarketingFromLines() { inputState.marketingCost = marketingLineTotal; }
 
   function addDevLine() {
-    state.devLineItems = [...state.devLineItems, { name: '', cost: 0 }];
+    inputState.devLineItems = [...inputState.devLineItems, { name: '', cost: 0 }];
     devExpanded = true;
   }
   function removeDevLine(i) {
-    state.devLineItems = state.devLineItems.filter((_, idx) => idx !== i);
+    inputState.devLineItems = inputState.devLineItems.filter((_, idx) => idx !== i);
     syncDevFromLines();
   }
 
   function addMarketingLine() {
-    state.marketingLineItems = [...state.marketingLineItems, { name: '', cost: 0 }];
+    inputState.marketingLineItems = [...inputState.marketingLineItems, { name: '', cost: 0 }];
     marketingExpanded = true;
   }
   function removeMarketingLine(i) {
-    state.marketingLineItems = state.marketingLineItems.filter((_, idx) => idx !== i);
+    inputState.marketingLineItems = inputState.marketingLineItems.filter((_, idx) => idx !== i);
     syncMarketingFromLines();
   }
 
@@ -52,12 +52,12 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
   <Card title="Development Budget">
     <p class="text-xs text-gray-mid mb-3">Fixed development costs. Use the slider for quick estimates, or expand to plan line items.</p>
-    <Slider label="Dev Cost (Total)" bind:value={state.devCost} min={0} max={200000} step={1000} format={(v) => fmt(v)} />
+    <Slider label="Dev Cost (Total)" bind:value={inputState.devCost} min={0} max={200000} step={1000} format={(v) => fmt(v)} />
 
     {#if isPartner}
       <div class="ml-4 mb-4 pl-3 border-l-2 border-pink/30">
         <label class="text-xs font-medium text-gray-mid flex-1">Creator Contribution
-          <input type="number" bind:value={state.creatorDevCost} min="0" max={state.devCost} step="500"
+          <input type="number" bind:value={inputState.creatorDevCost} min="0" max={inputState.devCost} step="500"
             class="w-full px-2 py-1.5 border border-gray-light rounded text-sm focus:outline-none focus:border-purple" />
         </label>
         <div class="text-xs text-gray-mid mt-1">Antidote: {fmt(Math.max(0, state.devCost - (Number(state.creatorDevCost) || 0)))}</div>
@@ -67,7 +67,7 @@
     <!-- Line item breakdown -->
     <button onclick={() => devExpanded = !devExpanded}
       class="text-xs font-semibold text-purple hover:text-purple-light transition-colors mb-2">
-      {devExpanded ? 'Hide' : 'Show'} budget breakdown {state.devLineItems.length > 0 ? `(${state.devLineItems.length} items)` : ''}
+      {devExpanded ? 'Hide' : 'Show'} budget breakdown {inputState.devLineItems.length > 0 ? `(${inputState.devLineItems.length} items)` : ''}
     </button>
 
     {#if devExpanded}
@@ -137,12 +137,12 @@
 
   <Card title="Marketing Budget">
     <p class="text-xs text-gray-mid mb-3">Marketing and promotion costs. Use the slider for quick estimates, or expand to plan line items.</p>
-    <Slider label="Marketing Cost (Total)" bind:value={state.marketingCost} min={0} max={300000} step={1000} format={(v) => fmt(v)} />
+    <Slider label="Marketing Cost (Total)" bind:value={inputState.marketingCost} min={0} max={300000} step={1000} format={(v) => fmt(v)} />
 
     {#if isPartner}
       <div class="ml-4 mb-4 pl-3 border-l-2 border-pink/30">
         <label class="text-xs font-medium text-gray-mid flex-1">Creator Contribution
-          <input type="number" bind:value={state.creatorMarketingCost} min="0" max={state.marketingCost} step="500"
+          <input type="number" bind:value={inputState.creatorMarketingCost} min="0" max={inputState.marketingCost} step="500"
             class="w-full px-2 py-1.5 border border-gray-light rounded text-sm focus:outline-none focus:border-purple" />
         </label>
         <div class="text-xs text-gray-mid mt-1">Antidote: {fmt(Math.max(0, state.marketingCost - (Number(state.creatorMarketingCost) || 0)))}</div>
@@ -152,7 +152,7 @@
     <!-- Line item breakdown -->
     <button onclick={() => marketingExpanded = !marketingExpanded}
       class="text-xs font-semibold text-purple hover:text-purple-light transition-colors mb-2">
-      {marketingExpanded ? 'Hide' : 'Show'} budget breakdown {state.marketingLineItems.length > 0 ? `(${state.marketingLineItems.length} items)` : ''}
+      {marketingExpanded ? 'Hide' : 'Show'} budget breakdown {inputState.marketingLineItems.length > 0 ? `(${inputState.marketingLineItems.length} items)` : ''}
     </button>
 
     {#if marketingExpanded}
@@ -224,7 +224,7 @@
 <div class="mb-5">
   <Card title="Manufacturing & Fees">
     <p class="text-xs text-gray-mid mb-3">PPU per tier is auto-calculated from products assigned on the Campaign tab. Set print run and platform fees here.</p>
-    <Slider label="Print Run (total units)" bind:value={state.printRun} min={100} max={25000} step={100} format={(v) => Number(v).toLocaleString()} />
+    <Slider label="Print Run (total units)" bind:value={inputState.printRun} min={100} max={25000} step={100} format={(v) => Number(v).toLocaleString()} />
     {#if validations.printRunLow}
       <div class="mt-2 text-xs text-pink-hot font-medium bg-pink-hot/10 rounded px-3 py-2">
         Print run ({Number(state.printRun).toLocaleString()}) is less than total backers ({Number(state.totalBackers).toLocaleString()}). You won't have enough units.
@@ -262,7 +262,7 @@
       {/if}
     </div>
 
-    <Slider label="Platform Fee %" bind:value={state.platformFeeRate} min={0} max={15} step={0.5} format={(v) => Number(v).toFixed(1) + '%'} />
+    <Slider label="Platform Fee %" bind:value={inputState.platformFeeRate} min={0} max={15} step={0.5} format={(v) => Number(v).toFixed(1) + '%'} />
     <p class="text-xs text-gray-mid -mt-2">Kickstarter + payment processing. Industry standard ~8%.</p>
   </Card>
 </div>
