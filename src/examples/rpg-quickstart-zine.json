@@ -21,9 +21,9 @@
     "platformFeeRate": 8,
     "ipAdvance": 0,
     "ipRoyaltyRate": 0,
-    "wholesalePrice": 10,
-    "wholesaleUnitsSold": 75,
-    "directUnitsSold": 100,
+    "postKsSales": [
+      { "productId": "p2", "msrp": 26, "wholesalePrice": 10, "directUnits": 100, "wholesaleUnits": 75 }
+    ],
     "products": [
       { "id": "p1", "name": "Digital PDF", "ppu": 0, "weight": 0, "suggestedPrice": 15 },
       { "id": "p2", "name": "Zine (Saddle-Stitch, 32pg)", "ppu": 5, "weight": 0.2, "suggestedPrice": 23 },

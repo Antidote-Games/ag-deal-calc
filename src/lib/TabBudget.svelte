@@ -232,7 +232,7 @@
     {/if}
 
     {@const overage = Math.max(0, inputState.printRun - inputState.totalBackers)}
-    {@const postKsPlanned = (Number(inputState.wholesaleUnitsSold) || 0) + (Number(inputState.directUnitsSold) || 0)}
+    {@const postKsPlanned = (inputState.postKsSales || []).reduce((sum, s) => sum + (Number(s.directUnits) || 0) + (Number(s.wholesaleUnits) || 0), 0)}
     {@const suggestedRun = inputState.totalBackers + postKsPlanned}
     {@const unallocated = overage - postKsPlanned}
 
@@ -244,7 +244,9 @@
         <span class="text-right font-semibold text-purple">{overage.toLocaleString()}</span>
         {#if inputState.projectType === 'own' || inputState.supportContract}
           <span class="text-gray-mid">Post-KS planned</span>
-          <span class="text-right font-semibold">{postKsPlanned.toLocaleString()} <span class="font-normal text-gray-mid">({Number(inputState.wholesaleUnitsSold).toLocaleString()}W + {Number(inputState.directUnitsSold).toLocaleString()}D)</span></span>
+          {@const directTotal = (inputState.postKsSales || []).reduce((sum, s) => sum + (Number(s.directUnits) || 0), 0)}
+          {@const wholesaleTotal = (inputState.postKsSales || []).reduce((sum, s) => sum + (Number(s.wholesaleUnits) || 0), 0)}
+          <span class="text-right font-semibold">{postKsPlanned.toLocaleString()} <span class="font-normal text-gray-mid">({wholesaleTotal.toLocaleString()}W + {directTotal.toLocaleString()}D)</span></span>
           <span class="text-gray-mid">Unallocated</span>
           <span class="text-right font-semibold {unallocated < 0 ? 'text-pink-hot' : unallocated === 0 ? 'text-green-700' : 'text-amber-600'}">{unallocated.toLocaleString()}{unallocated < 0 ? ' (short!)' : ''}</span>
         {:else}

@@ -59,10 +59,8 @@
     partnerEnabled: false,
     partnerCommissionRate: 20,
     partnerRetailBonusRate: 3,
-    // Post-KS sales
-    wholesaleUnitsSold: 0,
-    wholesalePrice: 0,
-    directUnitsSold: 0,
+    // Post-KS sales (per product)
+    postKsSales: [],
     tiers: [],
     // Addons — products backers can add to any tier
     addons: [],
@@ -73,7 +71,7 @@
   let validations = $derived(() => {
     const tierPctTotal = state.tiers.reduce((sum, t) => sum + (Number(t.pct) || 0), 0);
     const overageUnits = Math.max(0, state.printRun - state.totalBackers);
-    const totalRetailUnits = (Number(state.wholesaleUnitsSold) || 0) + (Number(state.directUnitsSold) || 0);
+    const totalRetailUnits = (state.postKsSales || []).reduce((sum, s) => sum + (Number(s.directUnits) || 0) + (Number(s.wholesaleUnits) || 0), 0);
     return {
       tierPctOff: Math.abs(tierPctTotal - 100) > 0.01,
       tierPctTotal,
@@ -118,9 +116,6 @@
     const platformFeeRate = (Number(state.platformFeeRate) || 0) / 100;
     const ipAdvance = state.ipEnabled ? (Number(state.ipAdvance) || 0) : 0;
     const ipRoyaltyRate = state.ipEnabled ? (Number(state.ipRoyaltyRate) || 0) / 100 : 0;
-    const wholesaleUnitsSold = Number(state.wholesaleUnitsSold) || 0;
-    const wholesalePrice = Number(state.wholesalePrice) || 0;
-    const directUnitsSold = Number(state.directUnitsSold) || 0;
 
     // Tier breakdown — cost per unit from products
     const basePrice = Number(state.tiers[0]?.price) || 0;
@@ -240,19 +235,31 @@
     // Overage — creator's cost on partner projects, Antidote's on own titles
     const overageCostAntidote = isPartnerProject ? 0 : overageCost;
 
-    // Wholesale (retailer/distribution sales)
-    const wholesaleRevenue = wholesaleUnitsSold * wholesalePrice;
-    const wholesaleIPRoyalty = wholesaleRevenue * ipRoyaltyRate;
-
-    // Direct sales (conventions, website — sold at MSRP)
-    const directRevenue = directUnitsSold * msrp;
-    const directIPRoyalty = directRevenue * ipRoyaltyRate;
-
-    // Combined post-KS sales
+    // Post-KS sales — per product
     const showPostKs = !isPartnerProject || state.supportContract;
-    const totalPostKsRevenue = showPostKs ? wholesaleRevenue + directRevenue : 0;
-    const totalPostKsIPRoyalty = showPostKs ? wholesaleIPRoyalty + directIPRoyalty : 0;
-    const totalPostKsUnits = showPostKs ? wholesaleUnitsSold + directUnitsSold : 0;
+    const postKsSalesBreakdown = (state.postKsSales || []).map(s => {
+      const product = getProduct(s.productId);
+      const name = product?.name || '?';
+      const ppu = product ? Number(product.ppu) || 0 : 0;
+      const msrpPrice = Math.round((Number(s.msrp) || 0) * 100) / 100;
+      const wholesalePrice = Math.round((Number(s.wholesalePrice) || 0) * 100) / 100;
+      const directUnits = showPostKs ? (Number(s.directUnits) || 0) : 0;
+      const wholesaleUnits = showPostKs ? (Number(s.wholesaleUnits) || 0) : 0;
+      const directRevenue = directUnits * msrpPrice;
+      const wholesaleRevenue = wholesaleUnits * wholesalePrice;
+      const totalRevenue = directRevenue + wholesaleRevenue;
+      const totalUnits = directUnits + wholesaleUnits;
+      const totalIPRoyalty = totalRevenue * ipRoyaltyRate;
+      return { productId: s.productId, name, ppu, msrpPrice, wholesalePrice, directUnits, wholesaleUnits, directRevenue, wholesaleRevenue, totalRevenue, totalUnits, totalIPRoyalty };
+    });
+
+    const wholesaleRevenue = postKsSalesBreakdown.reduce((sum, s) => sum + s.wholesaleRevenue, 0);
+    const directRevenue = postKsSalesBreakdown.reduce((sum, s) => sum + s.directRevenue, 0);
+    const wholesaleUnitsSold = postKsSalesBreakdown.reduce((sum, s) => sum + s.wholesaleUnits, 0);
+    const directUnitsSold = postKsSalesBreakdown.reduce((sum, s) => sum + s.directUnits, 0);
+    const totalPostKsRevenue = wholesaleRevenue + directRevenue;
+    const totalPostKsIPRoyalty = totalPostKsRevenue * ipRoyaltyRate;
+    const totalPostKsUnits = wholesaleUnitsSold + directUnitsSold;
     const partnerRetailBonus = totalPostKsRevenue * (partnerRetailBonusRate / 100);
 
     // Post-KS split for partner projects with support contract
@@ -276,7 +283,7 @@
 
     return {
       // Tier
-      tierBreakdown, basePrice, msrp, tierRevenue,
+      tierBreakdown, basePrice, tierRevenue,
       // Addons
       addonBreakdown, addonRevenue, addonMfgCost, addonShippingCost,
       // KS
@@ -299,10 +306,8 @@
       postKsCreatorShare, postKsAntidoteShare,
       // Deal partner (own titles)
       dealPartnerActive, partnerCommission, partnerCommissionRate, partnerRetailBonusRate, partnerRetailBonus, antidoteKS,
-      // Wholesale
-      wholesaleRevenue, wholesaleIPRoyalty, wholesaleUnitsSold,
-      // Direct
-      directRevenue, directIPRoyalty, directUnitsSold,
+      // Post-KS sales
+      postKsSalesBreakdown, wholesaleRevenue, directRevenue, wholesaleUnitsSold, directUnitsSold,
       // Combined post-KS
       totalPostKsRevenue, totalPostKsIPRoyalty, totalPostKsUnits, postKsMargin,
       // Summary
@@ -320,9 +325,12 @@
     state.platformFeeRate = v.platformFeeRate;
     state.ipAdvance = v.ipAdvance;
     state.ipRoyaltyRate = v.ipRoyaltyRate;
-    state.wholesaleUnitsSold = v.wholesaleUnitsSold ?? v.retailUnitsSold ?? 200;
-    state.wholesalePrice = v.wholesalePrice;
-    state.directUnitsSold = v.directUnitsSold ?? Math.round((v.wholesaleUnitsSold ?? v.retailUnitsSold ?? 200) * 0.5);
+    if (v.postKsSales) {
+      state.postKsSales = v.postKsSales.map(s => ({ ...s }));
+    } else {
+      // Legacy preset — no post-KS sales
+      state.postKsSales = [];
+    }
     if (v.products) {
       state.products = v.products.map(p => ({ ...p }));
       state.tiers = v.tiers.map((t, i) => ({
@@ -371,9 +379,7 @@
         partnerEnabled: state.partnerEnabled,
         partnerCommissionRate: state.partnerCommissionRate,
         partnerRetailBonusRate: state.partnerRetailBonusRate,
-        wholesaleUnitsSold: state.wholesaleUnitsSold,
-        wholesalePrice: state.wholesalePrice,
-        directUnitsSold: state.directUnitsSold,
+        postKsSales: state.postKsSales,
         tiers: state.tiers,
         addons: state.addons,
       })),
