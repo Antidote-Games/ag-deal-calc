@@ -74,8 +74,6 @@
     return {
       tierPctOff: Math.abs(tierPctTotal - 100) > 0.01,
       tierPctTotal,
-      printRunLow: false, // checked via calc.physicalBackers now
-      retailExceedsExtra: totalRetailUnits > overageUnits,
       totalRetailUnits,
     };
   });
@@ -546,7 +544,7 @@
   {:else if activeTab === 'ks'}
     <TabKsAnalysis bind:appState={state} calc={calc()} />
   {:else if activeTab === 'retail'}
-    <TabRetailInventory bind:appState={state} calc={calc()} validations={validations()} />
+    <TabRetailInventory bind:appState={state} calc={calc()} />
   {:else if activeTab === 'profit'}
     <TabProfitShare bind:appState={state} calc={calc()} />
   {:else if activeTab === 'summary'}

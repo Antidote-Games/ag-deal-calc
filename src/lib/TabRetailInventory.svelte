@@ -3,7 +3,7 @@
   import Metric from './Metric.svelte';
   import { fmt, fmtFull } from './utils.js';
 
-  let { appState: state = $bindable(), calc, validations } = $props();
+  let { appState: state = $bindable(), calc } = $props();
 
   function addPostKsProduct(productId) {
     if (state.postKsSales.some(s => s.productId === productId)) return;
@@ -31,7 +31,7 @@
 <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
   <Metric label="Overage Units" value={calc.overageUnits.toLocaleString()} sub="Print run minus backer units" variant="default" />
   <Metric label="Inventory Investment" value={fmt(calc.overageCost)} sub="Post-KS planned units x PPU" variant="warning" />
-  <Metric label="Post-KS Units Planned" value={validations.totalRetailUnits.toLocaleString()} sub={validations.retailExceedsExtra ? 'Exceeds overage!' : 'Within overage'} variant={validations.retailExceedsExtra ? 'danger' : 'success'} />
+  <Metric label="Post-KS Units Planned" value={calc.totalPostKsUnits.toLocaleString()} sub={calc.totalPostKsUnits > calc.overageUnits ? 'Exceeds overage!' : 'Within overage'} variant={calc.totalPostKsUnits > calc.overageUnits ? 'danger' : 'success'} />
 </div>
 
 <!-- Post-KS Sales Planner -->
