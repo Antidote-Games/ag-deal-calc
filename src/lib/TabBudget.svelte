@@ -4,7 +4,7 @@
   import RateCalculator from './RateCalculator.svelte';
   import { fmt, fmtFull } from './utils.js';
 
-  let { appState: inputState = $bindable(), validations } = $props();
+  let { appState: inputState = $bindable(), validations, calc } = $props();
 
   let isPartner = $derived(inputState.projectType === 'partner');
   let totalFixed = $derived(Number(inputState.devCost) + Number(inputState.marketingCost));
@@ -225,21 +225,21 @@
   <Card title="Manufacturing & Fees">
     <p class="text-xs text-gray-mid mb-3">PPU per tier is auto-calculated from products assigned on the Campaign tab. Set print run and platform fees here.</p>
     <Slider label="Print Run (total units)" bind:value={inputState.printRun} min={100} max={25000} step={100} format={(v) => Number(v).toLocaleString()} />
-    {#if validations.printRunLow}
+    {#if inputState.printRun < calc.physicalBackers}
       <div class="mt-2 text-xs text-pink-hot font-medium bg-pink-hot/10 rounded px-3 py-2">
-        Print run ({Number(inputState.printRun).toLocaleString()}) is less than total backers ({Number(inputState.totalBackers).toLocaleString()}). You won't have enough units.
+        Print run ({Number(inputState.printRun).toLocaleString()}) is less than physical tier backers ({calc.physicalBackers.toLocaleString()}). You won't have enough units.
       </div>
     {/if}
 
-    {@const overage = Math.max(0, inputState.printRun - inputState.totalBackers)}
+    {@const overage = Math.max(0, inputState.printRun - calc.physicalBackers)}
     {@const postKsPlanned = (inputState.postKsSales || []).reduce((sum, s) => sum + (Number(s.directUnits) || 0) + (Number(s.wholesaleUnits) || 0), 0)}
-    {@const suggestedRun = inputState.totalBackers + postKsPlanned}
+    {@const suggestedRun = calc.physicalBackers + postKsPlanned}
     {@const unallocated = overage - postKsPlanned}
 
     <div class="mt-2 mb-4 bg-cream rounded-lg p-3 text-xs">
       <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-        <span class="text-gray-mid">Backer units</span>
-        <span class="text-right font-semibold text-purple">{Number(inputState.totalBackers).toLocaleString()}</span>
+        <span class="text-gray-mid">Physical backer units</span>
+        <span class="text-right font-semibold text-purple">{calc.physicalBackers.toLocaleString()}</span>
         <span class="text-gray-mid">Overage</span>
         <span class="text-right font-semibold text-purple">{overage.toLocaleString()}</span>
         {#if inputState.projectType === 'own' || inputState.supportContract}

@@ -70,12 +70,11 @@
   // Validations
   let validations = $derived(() => {
     const tierPctTotal = state.tiers.reduce((sum, t) => sum + (Number(t.pct) || 0), 0);
-    const overageUnits = Math.max(0, state.printRun - state.totalBackers);
     const totalRetailUnits = (state.postKsSales || []).reduce((sum, s) => sum + (Number(s.directUnits) || 0) + (Number(s.wholesaleUnits) || 0), 0);
     return {
       tierPctOff: Math.abs(tierPctTotal - 100) > 0.01,
       tierPctTotal,
-      printRunLow: state.printRun < state.totalBackers,
+      printRunLow: false, // checked via calc.physicalBackers now
       retailExceedsExtra: totalRetailUnits > overageUnits,
       totalRetailUnits,
     };
@@ -176,8 +175,11 @@
     const breakEvenBackers = revenuePerBacker > 0 ? Math.ceil(fixedCosts / revenuePerBacker) : Infinity;
 
     // Overage / Inventory (separate from KS costs)
-    // Overage cost = sum of each post-KS product's planned units x PPU
-    const overageUnits = Math.max(0, printRun - totalBackers);
+    // Only backers receiving physical products need manufactured units
+    const physicalBackers = tierBreakdown
+      .filter(t => t.costPerUnit > 0)
+      .reduce((sum, t) => sum + t.backers, 0);
+    const overageUnits = Math.max(0, printRun - physicalBackers);
     const overageCost = (state.postKsSales || []).reduce((sum, s) => {
       const product = getProduct(s.productId);
       const ppu = product ? Number(product.ppu) || 0 : 0;
@@ -187,9 +189,6 @@
 
     // IP Royalties (not a KS Profit deduction — separate expense)
     const ipRoyaltyKS = ksRevenue * ipRoyaltyRate;
-
-    // MSRP = Tier 1 price + 15%
-    const msrp = Math.round(basePrice * 1.15 * 100) / 100;
 
     const isPartnerProject = state.projectType === 'partner';
     const antidoteProfitPct = (Number(state.antidoteProfitPct) || 0) / 100;
@@ -278,12 +277,23 @@
       ? (isPartnerProject ? postKsAntidoteShare : postKsNetBeforeSplit - partnerRetailBonus)
       : 0;
 
-    // Summary P&L
+    // Summary P&L — always from Antidote's perspective
     const grossRevenue = ksRevenue + totalPostKsRevenue;
-    const totalExpenses = isPartnerProject
-      ? ksCosts + ipRoyaltyKS + creatorKsShare + (state.supportContract ? totalPostKsIPRoyalty + postKsCreatorShare : 0)
-      : ksCosts + ipRoyaltyKS + partnerCommission + overageCostAntidote + totalPostKsIPRoyalty + partnerRetailBonus;
-    const netProfit = grossRevenue - totalExpenses;
+    let netProfit;
+    let totalExpenses;
+    if (isPartnerProject) {
+      if (ksProfit >= 0) {
+        // Antidote gets their share of profit minus IP royalties
+        netProfit = antidoteKsShare - ipRoyaltyKS + (state.supportContract ? postKsAntidoteShare : 0);
+      } else {
+        // Antidote absorbs their share of loss plus IP royalties
+        netProfit = -antidoteLoss - ipRoyaltyKS + (state.supportContract ? postKsAntidoteShare : 0);
+      }
+      totalExpenses = grossRevenue - netProfit;
+    } else {
+      totalExpenses = ksCosts + ipRoyaltyKS + partnerCommission + overageCostAntidote + totalPostKsIPRoyalty + partnerRetailBonus;
+      netProfit = grossRevenue - totalExpenses;
+    }
 
     return {
       // Tier
@@ -296,7 +306,7 @@
       // Costs
       devCost, marketingCost, ipAdvance,
       // Overage
-      overageUnits, overageCost, overageCostAntidote,
+      physicalBackers, overageUnits, overageCost, overageCostAntidote,
       // IP
       ipEnabled: state.ipEnabled, ipRoyaltyKS, ipRoyaltyRate,
       // Project type
@@ -321,6 +331,18 @@
 
   function applyPreset(preset) {
     const v = preset.values;
+    // Reset all toggles/modes to defaults
+    state.projectType = v.projectType || 'own';
+    state.antidoteProfitPct = v.antidoteProfitPct ?? 24;
+    state.supportContract = v.supportContract ?? false;
+    state.creatorDevCost = v.creatorDevCost ?? 0;
+    state.creatorMarketingCost = v.creatorMarketingCost ?? 0;
+    state.creatorIpAdvance = v.creatorIpAdvance ?? 0;
+    state.ipEnabled = v.ipEnabled ?? false;
+    state.partnerEnabled = v.partnerEnabled ?? false;
+    state.partnerCommissionRate = v.partnerCommissionRate ?? 20;
+    state.partnerRetailBonusRate = v.partnerRetailBonusRate ?? 3;
+    // Core values
     state.projectName = v.projectName;
     state.devCost = v.devCost;
     state.marketingCost = v.marketingCost;
@@ -404,8 +426,32 @@
   }
 
   function loadScenario(index) {
-    const s = state.scenarios[index].inputs;
-    Object.assign(state, JSON.parse(JSON.stringify(s)));
+    const s = JSON.parse(JSON.stringify(state.scenarios[index].inputs));
+    // Apply with defaults for any missing fields
+    state.projectName = s.projectName ?? 'Untitled Campaign';
+    state.projectType = s.projectType ?? 'own';
+    state.antidoteProfitPct = s.antidoteProfitPct ?? 24;
+    state.supportContract = s.supportContract ?? false;
+    state.creatorDevCost = s.creatorDevCost ?? 0;
+    state.creatorMarketingCost = s.creatorMarketingCost ?? 0;
+    state.creatorIpAdvance = s.creatorIpAdvance ?? 0;
+    state.products = s.products ?? [];
+    state.devLineItems = s.devLineItems ?? [];
+    state.marketingLineItems = s.marketingLineItems ?? [];
+    state.totalBackers = s.totalBackers ?? 0;
+    state.printRun = s.printRun ?? 0;
+    state.devCost = s.devCost ?? 0;
+    state.marketingCost = s.marketingCost ?? 0;
+    state.platformFeeRate = s.platformFeeRate ?? 8;
+    state.ipEnabled = s.ipEnabled ?? false;
+    state.ipAdvance = s.ipAdvance ?? 0;
+    state.ipRoyaltyRate = s.ipRoyaltyRate ?? 0;
+    state.partnerEnabled = s.partnerEnabled ?? false;
+    state.partnerCommissionRate = s.partnerCommissionRate ?? 20;
+    state.partnerRetailBonusRate = s.partnerRetailBonusRate ?? 3;
+    state.postKsSales = s.postKsSales ?? [];
+    state.tiers = s.tiers ?? [];
+    state.addons = s.addons ?? [];
   }
 
   function deleteScenario(index) {
@@ -494,7 +540,7 @@
   {:else if activeTab === 'products'}
     <TabProducts bind:appState={state} {genProductId} />
   {:else if activeTab === 'budget'}
-    <TabBudget bind:appState={state} validations={validations()} />
+    <TabBudget bind:appState={state} validations={validations()} calc={calc()} />
   {:else if activeTab === 'ip'}
     <TabIpRoyalties bind:appState={state} calc={calc()} />
   {:else if activeTab === 'ks'}
