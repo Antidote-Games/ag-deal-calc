@@ -1,8 +1,9 @@
 <script>
   import Card from './Card.svelte';
   import Slider from './Slider.svelte';
+  import { fmt } from './utils.js';
 
-  let { state = $bindable(), validations } = $props();
+  let { state = $bindable(), validations, tierPpu, tierWeight, tierSuggestedPrice } = $props();
 
   function distribute(mode) {
     const n = state.tiers.length;
@@ -11,18 +12,33 @@
     if (mode === 'even') {
       weights = state.tiers.map(() => 1);
     } else if (mode === 'low') {
-      // Exponential decay — heavily bottom-weighted
       weights = state.tiers.map((_, i) => Math.pow(0.4, i));
     } else {
-      // High-heavy — inverted curve weighted toward top tiers
       weights = state.tiers.map((_, i) => Math.pow(0.55, n - 1 - i));
     }
     const total = weights.reduce((s, w) => s + w, 0);
     const pcts = weights.map(w => Math.round((w / total) * 100));
-    // Fix rounding to hit exactly 100
     const diff = 100 - pcts.reduce((s, p) => s + p, 0);
     pcts[0] += diff;
     state.tiers.forEach((t, i) => t.pct = pcts[i]);
+  }
+
+  function addProductToTier(tierIndex, productId) {
+    const tier = state.tiers[tierIndex];
+    const existing = tier.products.find(tp => tp.productId === productId);
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      tier.products = [...tier.products, { productId, qty: 1 }];
+    }
+  }
+
+  function removeProductFromTier(tierIndex, tpIndex) {
+    state.tiers[tierIndex].products = state.tiers[tierIndex].products.filter((_, i) => i !== tpIndex);
+  }
+
+  function autoPrice(tierIndex) {
+    state.tiers[tierIndex].price = tierSuggestedPrice(state.tiers[tierIndex]);
   }
 </script>
 
@@ -96,7 +112,7 @@
 </div>
 
 <Card title="Pledge Tier Structure">
-  <p class="text-xs text-gray-mid mb-4">Define tier names, prices, backer distribution, and per-tier shipping cost. Percentages must add to 100%.</p>
+  <p class="text-xs text-gray-mid mb-4">Define tiers and assign products from your catalog. PPU and weight auto-calculate from products. Price can be set manually or auto-filled from suggested prices.</p>
 
   {#if validations.tierPctOff}
     <div class="mb-4 text-xs text-pink-hot font-medium bg-pink-hot/10 rounded px-3 py-2">
@@ -120,66 +136,95 @@
     </button>
   </div>
 
-  <div class="overflow-x-auto">
-    <table class="w-full text-sm">
-      <thead>
-        <tr class="border-b-2 border-gray-light/40">
-          <th class="py-2 text-left text-xs font-semibold text-gray-mid w-8">#</th>
-          <th class="py-2 text-left text-xs font-semibold text-gray-mid">Name</th>
-          <th class="py-2 text-center text-xs font-semibold text-gray-mid">Price ($)</th>
-          <th class="py-2 text-center text-xs font-semibold text-gray-mid">% Backers</th>
-          <th class="py-2 text-center text-xs font-semibold text-gray-mid">Shipping ($)</th>
-          <th class="py-2 text-right text-xs font-semibold text-gray-mid">Backers</th>
-          <th class="py-2 w-8"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each state.tiers as tier, i}
-          <tr class="border-b border-gray-light/20 hover:bg-cream/50">
-            <td class="py-2 text-xs font-bold text-purple">{i + 1}{i === 0 ? '*' : ''}</td>
-            <td class="py-2">
-              <input type="text" bind:value={tier.name} placeholder="Tier {i + 1}"
-                class="w-full px-2 py-1.5 border border-gray-light rounded text-sm focus:outline-none focus:border-purple" />
-            </td>
-            <td class="py-2">
-              <input type="number" bind:value={tier.price} min="0" step="1"
-                class="w-24 mx-auto block px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
-            </td>
-            <td class="py-2">
-              <input type="number" bind:value={tier.pct} min="0" max="100" step="1"
-                class="w-20 mx-auto block px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
-            </td>
-            <td class="py-2">
-              <input type="number" bind:value={tier.shippingCost} min="0" step="0.5"
-                class="w-24 mx-auto block px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
-            </td>
-            <td class="py-2 text-right font-bold text-purple">
-              {Math.round(state.totalBackers * (tier.pct / 100)).toLocaleString()}
-            </td>
-            <td class="py-2 text-center">
-              {#if state.tiers.length > 1}
-                <button
-                  onclick={() => state.tiers = state.tiers.filter((_, idx) => idx !== i)}
-                  class="text-pink-hot hover:text-pink-hot/70 font-bold text-sm"
-                  title="Remove tier"
-                >X</button>
-              {/if}
-            </td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
+  {#each state.tiers as tier, i}
+    <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-light/30 mb-3">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="text-xs font-bold text-purple">#{i + 1}{i === 0 ? ' (Base)' : ''}</span>
+        <input type="text" bind:value={tier.name} placeholder="Tier name"
+          class="flex-1 px-2 py-1.5 border border-gray-light rounded text-sm font-semibold focus:outline-none focus:border-purple" />
+        {#if state.tiers.length > 1}
+          <button onclick={() => state.tiers = state.tiers.filter((_, idx) => idx !== i)}
+            class="text-pink-hot hover:text-pink-hot/70 font-bold text-sm" title="Remove tier">X</button>
+        {/if}
+      </div>
+
+      <div class="grid grid-cols-5 gap-3 mb-3">
+        <div>
+          <div class="text-[10px] uppercase text-gray-mid mb-1">Price ($)</div>
+          <div class="flex gap-1">
+            <input type="number" bind:value={tier.price} min="0" step="1"
+              class="w-full px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
+            <button onclick={() => autoPrice(i)} class="px-2 py-1 text-[10px] font-semibold rounded border border-purple/20 text-purple hover:bg-purple hover:text-white transition-colors" title="Auto-fill from product prices">Auto</button>
+          </div>
+        </div>
+        <div>
+          <div class="text-[10px] uppercase text-gray-mid mb-1">% Backers</div>
+          <input type="number" bind:value={tier.pct} min="0" max="100" step="1"
+            class="w-full px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
+        </div>
+        <div>
+          <div class="text-[10px] uppercase text-gray-mid mb-1">Shipping ($)</div>
+          <input type="number" bind:value={tier.shippingCost} min="0" step="0.5"
+            class="w-full px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
+        </div>
+        <div>
+          <div class="text-[10px] uppercase text-gray-mid mb-1">PPU (auto)</div>
+          <div class="px-2 py-1.5 bg-cream rounded text-sm text-center font-bold text-purple">${tierPpu(tier).toFixed(2)}</div>
+        </div>
+        <div>
+          <div class="text-[10px] uppercase text-gray-mid mb-1">Backers</div>
+          <div class="px-2 py-1.5 bg-cream rounded text-sm text-center font-bold text-purple">{Math.round(state.totalBackers * (tier.pct / 100)).toLocaleString()}</div>
+        </div>
+      </div>
+
+      <!-- Products in this tier -->
+      <div class="text-[10px] uppercase text-gray-mid mb-1">Products in this tier</div>
+      {#if tier.products && tier.products.length > 0}
+        <div class="flex flex-wrap gap-2 mb-2">
+          {#each tier.products as tp, tpIdx}
+            {@const product = state.products.find(p => p.id === tp.productId)}
+            {#if product}
+              <div class="flex items-center gap-1 bg-cream rounded-lg px-2 py-1 text-xs border border-gray-light/30">
+                <input type="number" bind:value={tp.qty} min="1" step="1"
+                  class="w-10 px-1 py-0.5 border border-gray-light rounded text-xs text-center focus:outline-none focus:border-purple" />
+                <span class="font-medium text-purple">x {product.name}</span>
+                <span class="text-gray-mid">(${product.ppu}/ea)</span>
+                <button onclick={() => removeProductFromTier(i, tpIdx)}
+                  class="ml-1 text-pink-hot hover:text-pink-hot/70 font-bold">x</button>
+              </div>
+            {/if}
+          {/each}
+        </div>
+      {:else}
+        <div class="text-xs text-gray-mid mb-2">No products assigned. Add from your catalog below.</div>
+      {/if}
+
+      {#if state.products.length > 0}
+        <div class="flex flex-wrap gap-1">
+          {#each state.products as product}
+            <button
+              onclick={() => addProductToTier(i, product.id)}
+              class="px-2 py-1 text-[10px] font-medium rounded border border-purple/15 text-purple hover:bg-purple hover:text-white transition-colors"
+            >
+              + {product.name}
+            </button>
+          {/each}
+        </div>
+      {:else}
+        <p class="text-xs text-pink-hot">No products defined. Go to the Products tab to add some.</p>
+      {/if}
+    </div>
+  {/each}
 
   <div class="flex items-center justify-between mt-3">
     <button
-      onclick={() => state.tiers = [...state.tiers, { name: `Tier ${state.tiers.length + 1}`, price: 0, pct: 0, shippingCost: 0 }]}
+      onclick={() => state.tiers = [...state.tiers, { name: `Tier ${state.tiers.length + 1}`, products: [], price: 0, pct: 0, shippingCost: 0 }]}
       class="px-4 py-2 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors"
     >
       + Add Tier
     </button>
     <div class="text-xs text-gray-mid">
-      * Tier 1 is the base product — its price sets the PPU baseline and MSRP.
+      Weight: auto-calculated from products. Shipping: set manually based on weight and destination.
     </div>
   </div>
 </Card>

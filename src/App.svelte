@@ -1,5 +1,6 @@
 <script>
   import TabCampaign from './lib/TabCampaign.svelte';
+  import TabProducts from './lib/TabProducts.svelte';
   import TabBudget from './lib/TabBudget.svelte';
   import TabIpRoyalties from './lib/TabIpRoyalties.svelte';
   import TabKsAnalysis from './lib/TabKsAnalysis.svelte';
@@ -28,6 +29,9 @@
 
   let activeTab = $state('campaign');
 
+  let nextProductId = $state(10);
+  function genProductId() { return 'p' + (nextProductId++); }
+
   let state = $state({
     projectName: 'Untitled Campaign',
     projectType: 'own', // 'own' or 'partner'
@@ -37,9 +41,13 @@
     creatorDevCost: 0,
     creatorMarketingCost: 0,
     creatorIpAdvance: 0,
+    // Products
+    products: [
+      { id: 'p1', name: 'Core Game', ppu: 4.5, weight: 1.0, suggestedPrice: 20 },
+      { id: 'p2', name: 'Expansion Pack', ppu: 3, weight: 0.5, suggestedPrice: 15 },
+    ],
     // Campaign
     totalBackers: 800,
-    ppu: 4.5,
     printRun: 1200,
     devCost: 40000,
     marketingCost: 30000,
@@ -55,11 +63,10 @@
     wholesalePrice: 20,
     directUnitsSold: 100,
     tiers: [
-      { name: 'Base Game', price: 20, pct: 70, shippingCost: 6 },
-      { name: 'Deluxe', price: 35, pct: 15, shippingCost: 8 },
-      { name: 'Collector', price: 60, pct: 10, shippingCost: 10 },
-      { name: 'All-In', price: 100, pct: 3, shippingCost: 12 },
-      { name: 'Ultimate', price: 150, pct: 2, shippingCost: 15 },
+      { name: 'Base Game', products: [{ productId: 'p1', qty: 1 }], price: 20, pct: 70, shippingCost: 6 },
+      { name: 'Deluxe', products: [{ productId: 'p1', qty: 1 }, { productId: 'p2', qty: 1 }], price: 35, pct: 15, shippingCost: 8 },
+      { name: 'Collector', products: [{ productId: 'p1', qty: 1 }, { productId: 'p2', qty: 1 }], price: 60, pct: 10, shippingCost: 10 },
+      { name: 'All-In', products: [{ productId: 'p1', qty: 2 }, { productId: 'p2', qty: 1 }], price: 100, pct: 3, shippingCost: 12 },
     ],
     scenarios: [],
   });
@@ -78,10 +85,35 @@
     };
   });
 
+  // Product lookup helper
+  function getProduct(id) {
+    return state.products.find(p => p.id === id);
+  }
+
+  function tierPpu(tier) {
+    return (tier.products || []).reduce((sum, tp) => {
+      const p = getProduct(tp.productId);
+      return sum + ((p ? Number(p.ppu) || 0 : 0) * (Number(tp.qty) || 0));
+    }, 0);
+  }
+
+  function tierWeight(tier) {
+    return (tier.products || []).reduce((sum, tp) => {
+      const p = getProduct(tp.productId);
+      return sum + ((p ? Number(p.weight) || 0 : 0) * (Number(tp.qty) || 0));
+    }, 0);
+  }
+
+  function tierSuggestedPrice(tier) {
+    return (tier.products || []).reduce((sum, tp) => {
+      const p = getProduct(tp.productId);
+      return sum + ((p ? Number(p.suggestedPrice) || 0 : 0) * (Number(tp.qty) || 0));
+    }, 0);
+  }
+
   // All derived calculations
   let calc = $derived(() => {
     const totalBackers = Number(state.totalBackers) || 0;
-    const ppu = Number(state.ppu) || 0;
     const printRun = Number(state.printRun) || 0;
     const devCost = Number(state.devCost) || 0;
     const marketingCost = Number(state.marketingCost) || 0;
@@ -92,7 +124,7 @@
     const wholesalePrice = Number(state.wholesalePrice) || 0;
     const directUnitsSold = Number(state.directUnitsSold) || 0;
 
-    // Tier breakdown
+    // Tier breakdown — cost per unit from products
     const basePrice = Number(state.tiers[0]?.price) || 0;
     const tierBreakdown = state.tiers.map((t, i) => {
       const name = t.name || `Tier ${i + 1}`;
@@ -101,12 +133,15 @@
       const shipping = Number(t.shippingCost) || 0;
       const backers = Math.round(totalBackers * (pct / 100));
       const revenue = backers * price;
-      const premium = i === 0 ? 0 : Math.max(0, price - basePrice);
-      const premiumCostPerUnit = premium * 0.50;
-      const costPerUnit = ppu + premiumCostPerUnit;
+      const costPerUnit = tierPpu(t);
+      const weight = tierWeight(t);
       const mfgCost = backers * costPerUnit;
       const shippingTotal = backers * shipping;
-      return { name, price, pct, backers, revenue, premium, premiumCostPerUnit, costPerUnit, mfgCost, shipping, shippingTotal };
+      const productList = (t.products || []).map(tp => {
+        const p = getProduct(tp.productId);
+        return { name: p?.name || '?', qty: tp.qty, ppu: p ? Number(p.ppu) || 0 : 0 };
+      });
+      return { name, price, pct, backers, revenue, costPerUnit, weight, mfgCost, shipping, shippingTotal, productList };
     });
 
     // KS Revenue
@@ -128,8 +163,10 @@
     const breakEvenBackers = revenuePerBacker > 0 ? Math.ceil(fixedCosts / revenuePerBacker) : Infinity;
 
     // Overage / Inventory (separate from KS costs)
+    // Overage units are manufactured at the base tier's cost
+    const baseTierPpu = tierBreakdown.length > 0 ? tierBreakdown[0].costPerUnit : 0;
     const overageUnits = Math.max(0, printRun - totalBackers);
-    const overageCost = overageUnits * ppu;
+    const overageCost = overageUnits * baseTierPpu;
 
     // IP Royalties (not a KS Profit deduction — separate expense)
     const ipRoyaltyKS = ksRevenue * ipRoyaltyRate;
@@ -258,7 +295,6 @@
     state.projectName = v.projectName;
     state.devCost = v.devCost;
     state.marketingCost = v.marketingCost;
-    state.ppu = v.ppu;
     state.printRun = v.printRun;
     state.totalBackers = v.totalBackers;
     state.platformFeeRate = v.platformFeeRate;
@@ -267,7 +303,23 @@
     state.wholesaleUnitsSold = v.wholesaleUnitsSold ?? v.retailUnitsSold ?? 200;
     state.wholesalePrice = v.wholesalePrice;
     state.directUnitsSold = v.directUnitsSold ?? Math.round((v.wholesaleUnitsSold ?? v.retailUnitsSold ?? 200) * 0.5);
-    state.tiers = v.tiers.map((t, i) => ({ name: t.name || `Tier ${i + 1}`, ...t }));
+    if (v.products) {
+      state.products = v.products.map(p => ({ ...p }));
+      state.tiers = v.tiers.map((t, i) => ({
+        name: t.name || `Tier ${i + 1}`,
+        products: (t.products || []).map(tp => ({ ...tp })),
+        price: t.price, pct: t.pct, shippingCost: t.shippingCost,
+      }));
+    } else {
+      // Legacy preset without products — create a single product from old PPU
+      const legacyPpu = v.ppu || 4.5;
+      state.products = [{ id: 'p1', name: 'Core Game', ppu: legacyPpu, weight: 1.0, suggestedPrice: v.tiers[0]?.price || 20 }];
+      state.tiers = v.tiers.map((t, i) => ({
+        name: t.name || `Tier ${i + 1}`,
+        products: [{ productId: 'p1', qty: 1 }],
+        price: t.price, pct: t.pct, shippingCost: t.shippingCost,
+      }));
+    }
   }
 
   function saveScenario() {
@@ -282,8 +334,8 @@
         creatorDevCost: state.creatorDevCost,
         creatorMarketingCost: state.creatorMarketingCost,
         creatorIpAdvance: state.creatorIpAdvance,
+        products: state.products,
         totalBackers: state.totalBackers,
-        ppu: state.ppu,
         printRun: state.printRun,
         devCost: state.devCost,
         marketingCost: state.marketingCost,
@@ -326,6 +378,7 @@
   let tabs = $derived((() => {
     const base = [
       { id: 'campaign', label: 'Campaign' },
+      { id: 'products', label: 'Products' },
       { id: 'budget', label: 'Budget' },
       { id: 'ip', label: 'IP & Royalties' },
       { id: 'ks', label: 'KS Analysis' },
@@ -400,7 +453,9 @@
 
   <!-- Tab Content -->
   {#if activeTab === 'campaign'}
-    <TabCampaign bind:state validations={validations()} />
+    <TabCampaign bind:state validations={validations()} {tierPpu} {tierWeight} {tierSuggestedPrice} />
+  {:else if activeTab === 'products'}
+    <TabProducts bind:state {genProductId} />
   {:else if activeTab === 'budget'}
     <TabBudget bind:state validations={validations()} />
   {:else if activeTab === 'ip'}

@@ -59,8 +59,7 @@
   </Card>
 
   <Card title="Manufacturing & Fees">
-    <p class="text-xs text-gray-mid mb-3">PPU is the base cost for Tier 1. Higher tiers add 50% of the price premium as additional cost.</p>
-    <Slider label="PPU (per-unit cost)" bind:value={state.ppu} min={1} max={20} step={0.25} format={(v) => '$' + Number(v).toFixed(2)} />
+    <p class="text-xs text-gray-mid mb-3">PPU per tier is auto-calculated from products assigned on the Campaign tab. Set print run and platform fees here.</p>
     <Slider label="Print Run (total units)" bind:value={state.printRun} min={100} max={25000} step={100} format={(v) => Number(v).toLocaleString()} />
     {#if validations.printRunLow}
       <div class="mt-2 text-xs text-pink-hot font-medium bg-pink-hot/10 rounded px-3 py-2">

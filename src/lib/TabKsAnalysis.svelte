@@ -94,7 +94,12 @@
           {#each calc.tierBreakdown as tier, i}
             {@const margin = tier.revenue - tier.mfgCost - tier.shippingTotal}
             <tr class="border-b border-gray-light/20 hover:bg-cream/50">
-              <td class="py-2 font-semibold">{tier.name}{i === 0 ? ' *' : ''}</td>
+              <td class="py-2">
+                <div class="font-semibold">{tier.name}{i === 0 ? ' *' : ''}</div>
+                {#if tier.productList.length > 0}
+                  <div class="text-[10px] text-gray-mid">{tier.productList.map(p => p.qty > 1 ? `${p.qty}x ${p.name}` : p.name).join(', ')}</div>
+                {/if}
+              </td>
               <td class="py-2 text-center">${tier.price}</td>
               <td class="py-2 text-center">{tier.backers.toLocaleString()}</td>
               <td class="py-2 text-right font-semibold text-purple">{fmtFull(tier.revenue)}</td>
@@ -121,7 +126,7 @@
     </div>
 
     <div class="bg-blue-light/10 border-l-4 border-l-blue-light rounded p-3 mt-4 text-xs text-purple leading-relaxed">
-      Tier 1 is the base product at PPU cost. For Tiers 2-5, each dollar above the Tier 1 price is 50% additional cost / 50% additional margin. Shipping is per-tier based on tier contents.
+      PPU per tier is calculated from assigned products. Each tier can contain different products at different quantities. Shipping is set manually per tier based on weight and destination.
     </div>
   </Card>
 </div>
