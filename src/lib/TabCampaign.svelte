@@ -23,6 +23,22 @@
     state.tiers.forEach((t, i) => t.pct = pcts[i]);
   }
 
+  function addAddon(productId) {
+    const existing = state.addons.find(a => a.productId === productId);
+    if (existing) return;
+    const product = state.products.find(p => p.id === productId);
+    state.addons = [...state.addons, {
+      productId,
+      price: product ? Number(product.suggestedPrice) || 0 : 0,
+      attachRate: 20,
+      shippingCost: (product && Number(product.weight) > 0) ? 2 : 0,
+    }];
+  }
+
+  function removeAddon(index) {
+    state.addons = state.addons.filter((_, i) => i !== index);
+  }
+
   function addProductToTier(tierIndex, productId) {
     const tier = state.tiers[tierIndex];
     const existing = tier.products.find(tp => tp.productId === productId);
@@ -228,3 +244,75 @@
     </div>
   </div>
 </Card>
+
+<div class="mt-5">
+  <Card title="Addons">
+    <p class="text-xs text-gray-mid mb-4">Products backers can add to any tier. Set a price and expected attach rate (% of backers who add it). Revenue and costs auto-calculate.</p>
+
+    {#if state.addons.length > 0}
+      <div class="overflow-x-auto mb-3">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b-2 border-gray-light/40">
+              <th class="py-2 text-left text-xs font-semibold text-gray-mid">Product</th>
+              <th class="py-2 text-center text-xs font-semibold text-gray-mid">Price ($)</th>
+              <th class="py-2 text-center text-xs font-semibold text-gray-mid">PPU ($)</th>
+              <th class="py-2 text-center text-xs font-semibold text-gray-mid">Attach Rate (%)</th>
+              <th class="py-2 text-center text-xs font-semibold text-gray-mid">Ship ($)</th>
+              <th class="py-2 text-right text-xs font-semibold text-gray-mid">Est. Units</th>
+              <th class="py-2 text-right text-xs font-semibold text-gray-mid">Est. Revenue</th>
+              <th class="py-2 w-8"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each state.addons as addon, i}
+              {@const product = state.products.find(p => p.id === addon.productId)}
+              {@const units = Math.round(state.totalBackers * ((Number(addon.attachRate) || 0) / 100))}
+              <tr class="border-b border-gray-light/20 hover:bg-cream/50">
+                <td class="py-2 font-medium text-purple">{product?.name || '?'}</td>
+                <td class="py-2">
+                  <input type="number" bind:value={addon.price} min="0" step="1"
+                    class="w-20 mx-auto block px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
+                </td>
+                <td class="py-2 text-center text-gray-mid">${product ? Number(product.ppu).toFixed(2) : '0.00'}</td>
+                <td class="py-2">
+                  <input type="number" bind:value={addon.attachRate} min="0" max="100" step="5"
+                    class="w-20 mx-auto block px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
+                </td>
+                <td class="py-2">
+                  <input type="number" bind:value={addon.shippingCost} min="0" step="0.5"
+                    class="w-20 mx-auto block px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
+                </td>
+                <td class="py-2 text-right font-semibold text-purple">{units.toLocaleString()}</td>
+                <td class="py-2 text-right font-semibold text-purple">{fmt(units * (Number(addon.price) || 0))}</td>
+                <td class="py-2 text-center">
+                  <button onclick={() => removeAddon(i)}
+                    class="text-pink-hot hover:text-pink-hot/70 font-bold text-sm">X</button>
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    {/if}
+
+    {#if state.products.length > 0}
+      <div class="flex flex-wrap gap-1">
+        {#each state.products.filter(p => !state.addons.some(a => a.productId === p.id)) as product}
+          <button
+            onclick={() => addAddon(product.id)}
+            class="px-2 py-1 text-[10px] font-medium rounded border border-purple/15 text-purple hover:bg-purple hover:text-white transition-colors"
+          >
+            + {product.name}
+          </button>
+        {/each}
+      </div>
+    {:else}
+      <p class="text-xs text-gray-mid">Add products on the Products tab first, then add them as addons here.</p>
+    {/if}
+
+    <div class="bg-blue-light/10 border-l-4 border-l-blue-light rounded p-3 mt-4 text-xs text-purple leading-relaxed">
+      Attach rate = % of total backers who add this product. A backer on the $15 PDF tier might add a $20 t-shirt and a $5 sticker pack. Addon revenue and costs are included in KS totals.
+    </div>
+  </Card>
+</div>

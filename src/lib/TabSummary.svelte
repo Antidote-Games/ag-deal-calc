@@ -20,9 +20,15 @@
         <tbody>
           <!-- Revenue -->
           <tr class="bg-green-50 font-bold">
-            <td class="py-2.5">KS Revenue</td>
-            <td class="py-2.5 text-right text-purple">{fmtFull(calc.ksRevenue)}</td>
+            <td class="py-2.5">KS Tier Revenue</td>
+            <td class="py-2.5 text-right text-purple">{fmtFull(calc.tierRevenue)}</td>
           </tr>
+          {#if calc.addonRevenue > 0}
+            <tr class="bg-green-50/70">
+              <td class="py-2">+ Addon Revenue ({calc.addonBreakdown.length} addons)</td>
+              <td class="py-2 text-right text-purple">{fmtFull(calc.addonRevenue)}</td>
+            </tr>
+          {/if}
 
           <!-- KS Deductions -->
           <tr class="bg-amber-50/60">
@@ -33,10 +39,12 @@
             <td class="py-2">- Marketing Cost{calc.isPartnerProject && calc.creatorMarketingCost > 0 ? ` (Antidote ${fmtFull(calc.antidoteMarketingCost)} + Creator ${fmtFull(calc.creatorMarketingCost)})` : ''}</td>
             <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.marketingCost)}</td>
           </tr>
-          <tr class="bg-amber-50/60">
-            <td class="py-2">- IP Advance</td>
-            <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.ipAdvance)}</td>
-          </tr>
+          {#if calc.ipEnabled}
+            <tr class="bg-amber-50/60">
+              <td class="py-2">- IP Advance</td>
+              <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.ipAdvance)}</td>
+            </tr>
+          {/if}
           <tr class="bg-amber-50/60">
             <td class="py-2">- Manufacturing (backer units)</td>
             <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.backerMfgCost)}</td>
@@ -79,10 +87,12 @@
             {/if}
 
             <!-- IP Royalties -->
-            <tr class="bg-amber-50/30">
-              <td class="py-2">- IP Royalties on KS ({(calc.ipRoyaltyRate * 100).toFixed(1)}%)</td>
-              <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.ipRoyaltyKS)}</td>
-            </tr>
+            {#if calc.ipEnabled}
+              <tr class="bg-amber-50/30">
+                <td class="py-2">- IP Royalties on KS ({(calc.ipRoyaltyRate * 100).toFixed(1)}%)</td>
+                <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.ipRoyaltyKS)}</td>
+              </tr>
+            {/if}
 
             <!-- Support contract post-KS -->
             {#if calc.showPostKs}
@@ -94,10 +104,12 @@
                 <td class="py-2">+ Direct Sales Revenue ({calc.directUnitsSold.toLocaleString()} units @ MSRP)</td>
                 <td class="py-2 text-right text-purple">{fmtFull(calc.directRevenue)}</td>
               </tr>
-              <tr class="bg-amber-50/30">
-                <td class="py-2">- Post-KS IP Royalties</td>
-                <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.totalPostKsIPRoyalty)}</td>
-              </tr>
+              {#if calc.ipEnabled}
+                <tr class="bg-amber-50/30">
+                  <td class="py-2">- Post-KS IP Royalties</td>
+                  <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.totalPostKsIPRoyalty)}</td>
+                </tr>
+              {/if}
               <tr class="bg-amber-50/30">
                 <td class="py-2">- Creator's Post-KS Share ({(calc.creatorProfitPct * 100).toFixed(0)}%)</td>
                 <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.postKsCreatorShare)}</td>
@@ -106,10 +118,12 @@
 
           {:else}
             <!-- Own Title: standard flow -->
-            <tr class="bg-amber-50/30">
-              <td class="py-2">- IP Royalties on KS ({(calc.ipRoyaltyRate * 100).toFixed(1)}%)</td>
-              <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.ipRoyaltyKS)}</td>
-            </tr>
+            {#if calc.ipEnabled}
+              <tr class="bg-amber-50/30">
+                <td class="py-2">- IP Royalties on KS ({(calc.ipRoyaltyRate * 100).toFixed(1)}%)</td>
+                <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.ipRoyaltyKS)}</td>
+              </tr>
+            {/if}
             {#if calc.dealPartnerActive && calc.partnerCommission > 0}
               <tr class="bg-amber-50/30">
                 <td class="py-2">- Deal Partner Commission ({calc.partnerCommissionRate}%)</td>
@@ -130,10 +144,12 @@
               <td class="py-2">+ Direct Sales Revenue ({calc.directUnitsSold.toLocaleString()} units @ MSRP)</td>
               <td class="py-2 text-right text-purple">{fmtFull(calc.directRevenue)}</td>
             </tr>
-            <tr class="bg-amber-50/30">
-              <td class="py-2">- Post-KS IP Royalties</td>
-              <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.totalPostKsIPRoyalty)}</td>
-            </tr>
+            {#if calc.ipEnabled}
+              <tr class="bg-amber-50/30">
+                <td class="py-2">- Post-KS IP Royalties</td>
+                <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.totalPostKsIPRoyalty)}</td>
+              </tr>
+            {/if}
             {#if calc.dealPartnerActive && calc.partnerRetailBonus > 0}
               <tr class="bg-amber-50/30">
                 <td class="py-2">- Deal Partner Retail Bonus ({calc.partnerRetailBonusRate}%)</td>

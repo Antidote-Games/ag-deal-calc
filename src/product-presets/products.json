@@ -1,6 +1,6 @@
 [
   { "name": "Digital PDF", "ppu": 0, "weight": 0, "suggestedPrice": 15 },
-  { "name": "RPG Zine (16-32 pages, saddle-stitch)", "ppu": 2, "weight": 0.2, "suggestedPrice": 10 },
+  { "name": "RPG Zine (16-32 pages, saddle-stitch)", "ppu": 4, "weight": 0.2, "suggestedPrice": 20 },
   { "name": "RPG Supplement (40pg, softcover)", "ppu": 5, "weight": 0.6, "suggestedPrice": 25 },
   { "name": "RPG Supplement (40pg, hardcover)", "ppu": 7, "weight": 0.8, "suggestedPrice": 30 },
   { "name": "RPG Core Rulebook (200+ pg, hardcover)", "ppu": 10, "weight": 1.5, "suggestedPrice": 50 },
@@ -30,5 +30,9 @@
   { "name": "Premium Box / Slipcase", "ppu": 3, "weight": 0.5, "suggestedPrice": 0 },
   { "name": "STL Digital Files", "ppu": 0, "weight": 0, "suggestedPrice": 20 },
   { "name": "Coin / Token Set (Metal)", "ppu": 4, "weight": 0.3, "suggestedPrice": 18 },
-  { "name": "Card Sleeves (100-pack)", "ppu": 1.50, "weight": 0.1, "suggestedPrice": 8 }
+  { "name": "Card Sleeves (100-pack)", "ppu": 1.50, "weight": 0.1, "suggestedPrice": 8 },
+  { "name": "Sticker Sheet", "ppu": 0.75, "weight": 0.05, "suggestedPrice": 5 },
+  { "name": "Enamel Pin", "ppu": 2, "weight": 0.05, "suggestedPrice": 10 },
+  { "name": "Digital Art Pack / Wallpapers", "ppu": 0, "weight": 0, "suggestedPrice": 5 },
+  { "name": "Patch (Embroidered)", "ppu": 1.50, "weight": 0.05, "suggestedPrice": 8 }
 ]

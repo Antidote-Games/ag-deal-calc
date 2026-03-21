@@ -13,7 +13,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
   <Card title="Development & Marketing">
     <p class="text-xs text-gray-mid mb-3">Fixed costs — do not change with backer count.{isPartner ? ' Set total budget, then specify creator contribution below.' : ''}</p>
-    <Slider label="Dev Cost (Total)" bind:value={state.devCost} min={0} max={200000} step={5000} format={(v) => fmt(v)} />
+    <Slider label="Dev Cost (Total)" bind:value={state.devCost} min={0} max={200000} step={1000} format={(v) => fmt(v)} />
     {#if isPartner}
       <div class="ml-4 mb-4 pl-3 border-l-2 border-pink/30">
         <div class="flex items-center gap-2 mb-1">
@@ -26,7 +26,7 @@
       </div>
     {/if}
 
-    <Slider label="Marketing Cost (Total)" bind:value={state.marketingCost} min={0} max={300000} step={5000} format={(v) => fmt(v)} />
+    <Slider label="Marketing Cost (Total)" bind:value={state.marketingCost} min={0} max={300000} step={1000} format={(v) => fmt(v)} />
     {#if isPartner}
       <div class="ml-4 mb-4 pl-3 border-l-2 border-pink/30">
         <div class="flex items-center gap-2 mb-1">

@@ -110,6 +110,23 @@
               <td class="py-2 text-right font-semibold {margin >= 0 ? 'text-green-700' : 'text-pink-hot'}">{fmtFull(margin)}</td>
             </tr>
           {/each}
+          {#each calc.addonBreakdown as addon}
+            {@const margin = addon.revenue - addon.mfgCost - addon.shippingTotal}
+            <tr class="border-b border-gray-light/20 bg-blue-light/5 hover:bg-cream/50">
+              <td class="py-2">
+                <div class="font-semibold text-gray-mid">Addon: {addon.name}</div>
+                <div class="text-[10px] text-gray-mid">{addon.attachRate}% attach rate</div>
+              </td>
+              <td class="py-2 text-center">${addon.price}</td>
+              <td class="py-2 text-center">{addon.unitsSold.toLocaleString()}</td>
+              <td class="py-2 text-right font-semibold text-purple">{fmtFull(addon.revenue)}</td>
+              <td class="py-2 text-center">${addon.ppu.toFixed(2)}</td>
+              <td class="py-2 text-right text-pink-hot">{fmtFull(addon.mfgCost)}</td>
+              <td class="py-2 text-center">${addon.shippingPerUnit.toFixed(2)}</td>
+              <td class="py-2 text-right text-pink-hot">{fmtFull(addon.shippingTotal)}</td>
+              <td class="py-2 text-right font-semibold {margin >= 0 ? 'text-green-700' : 'text-pink-hot'}">{fmtFull(margin)}</td>
+            </tr>
+          {/each}
         </tbody>
         <tfoot>
           <tr class="bg-green-50 font-bold">

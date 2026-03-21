@@ -42,32 +42,27 @@
     creatorMarketingCost: 0,
     creatorIpAdvance: 0,
     // Products
-    products: [
-      { id: 'p1', name: 'Core Game', ppu: 4.5, weight: 1.0, suggestedPrice: 20 },
-      { id: 'p2', name: 'Expansion Pack', ppu: 3, weight: 0.5, suggestedPrice: 15 },
-    ],
+    products: [],
     // Campaign
-    totalBackers: 800,
-    printRun: 1200,
-    devCost: 40000,
-    marketingCost: 30000,
+    totalBackers: 0,
+    printRun: 0,
+    devCost: 0,
+    marketingCost: 0,
     platformFeeRate: 8,
-    ipAdvance: 10000,
-    ipRoyaltyRate: 6,
+    ipEnabled: false,
+    ipAdvance: 0,
+    ipRoyaltyRate: 0,
     // Deal partner (own titles only)
     partnerEnabled: false,
     partnerCommissionRate: 20,
     partnerRetailBonusRate: 3,
     // Post-KS sales
-    wholesaleUnitsSold: 200,
-    wholesalePrice: 20,
-    directUnitsSold: 100,
-    tiers: [
-      { name: 'Base Game', products: [{ productId: 'p1', qty: 1 }], price: 20, pct: 70, shippingCost: 6 },
-      { name: 'Deluxe', products: [{ productId: 'p1', qty: 1 }, { productId: 'p2', qty: 1 }], price: 35, pct: 15, shippingCost: 8 },
-      { name: 'Collector', products: [{ productId: 'p1', qty: 1 }, { productId: 'p2', qty: 1 }], price: 60, pct: 10, shippingCost: 10 },
-      { name: 'All-In', products: [{ productId: 'p1', qty: 2 }, { productId: 'p2', qty: 1 }], price: 100, pct: 3, shippingCost: 12 },
-    ],
+    wholesaleUnitsSold: 0,
+    wholesalePrice: 0,
+    directUnitsSold: 0,
+    tiers: [],
+    // Addons — products backers can add to any tier
+    addons: [],
     scenarios: [],
   });
 
@@ -118,8 +113,8 @@
     const devCost = Number(state.devCost) || 0;
     const marketingCost = Number(state.marketingCost) || 0;
     const platformFeeRate = (Number(state.platformFeeRate) || 0) / 100;
-    const ipAdvance = Number(state.ipAdvance) || 0;
-    const ipRoyaltyRate = (Number(state.ipRoyaltyRate) || 0) / 100;
+    const ipAdvance = state.ipEnabled ? (Number(state.ipAdvance) || 0) : 0;
+    const ipRoyaltyRate = state.ipEnabled ? (Number(state.ipRoyaltyRate) || 0) / 100 : 0;
     const wholesaleUnitsSold = Number(state.wholesaleUnitsSold) || 0;
     const wholesalePrice = Number(state.wholesalePrice) || 0;
     const directUnitsSold = Number(state.directUnitsSold) || 0;
@@ -144,14 +139,34 @@
       return { name, price, pct, backers, revenue, costPerUnit, weight, mfgCost, shipping, shippingTotal, productList };
     });
 
-    // KS Revenue
-    const ksRevenue = tierBreakdown.reduce((sum, t) => sum + t.revenue, 0);
+    // Addon breakdown
+    const addonBreakdown = (state.addons || []).map(a => {
+      const product = getProduct(a.productId);
+      const name = product?.name || '?';
+      const price = Number(a.price) || 0;
+      const ppu = product ? Number(product.ppu) || 0 : 0;
+      const attachRate = (Number(a.attachRate) || 0) / 100;
+      const unitsSold = Math.round(totalBackers * attachRate);
+      const revenue = unitsSold * price;
+      const mfgCost = unitsSold * ppu;
+      const shippingPerUnit = Number(a.shippingCost) || 0;
+      const shippingTotal = unitsSold * shippingPerUnit;
+      return { name, price, ppu, attachRate: a.attachRate, unitsSold, revenue, mfgCost, shippingPerUnit, shippingTotal };
+    });
+
+    const addonRevenue = addonBreakdown.reduce((sum, a) => sum + a.revenue, 0);
+    const addonMfgCost = addonBreakdown.reduce((sum, a) => sum + a.mfgCost, 0);
+    const addonShippingCost = addonBreakdown.reduce((sum, a) => sum + a.shippingTotal, 0);
+
+    // KS Revenue (tiers + addons)
+    const tierRevenue = tierBreakdown.reduce((sum, t) => sum + t.revenue, 0);
+    const ksRevenue = tierRevenue + addonRevenue;
     const avgPledge = totalBackers > 0 ? ksRevenue / totalBackers : 0;
 
     // KS Costs — all 6 deductions (backer units only for mfg)
-    const backerMfgCost = tierBreakdown.reduce((sum, t) => sum + t.mfgCost, 0);
+    const backerMfgCost = tierBreakdown.reduce((sum, t) => sum + t.mfgCost, 0) + addonMfgCost;
     const platformFees = ksRevenue * platformFeeRate;
-    const shippingCost = tierBreakdown.reduce((sum, t) => sum + t.shippingTotal, 0);
+    const shippingCost = tierBreakdown.reduce((sum, t) => sum + t.shippingTotal, 0) + addonShippingCost;
     const ksCosts = devCost + marketingCost + ipAdvance + backerMfgCost + platformFees + shippingCost;
     const ksProfit = ksRevenue - ksCosts;
 
@@ -258,7 +273,9 @@
 
     return {
       // Tier
-      tierBreakdown, basePrice, msrp,
+      tierBreakdown, basePrice, msrp, tierRevenue,
+      // Addons
+      addonBreakdown, addonRevenue, addonMfgCost, addonShippingCost,
       // KS
       ksRevenue, avgPledge, backerMfgCost, platformFees, shippingCost,
       ksCosts, ksProfit, fixedCosts, revenuePerBacker, breakEvenBackers,
@@ -267,7 +284,7 @@
       // Overage
       overageUnits, overageCost, overageCostAntidote,
       // IP
-      ipRoyaltyKS, ipRoyaltyRate,
+      ipEnabled: state.ipEnabled, ipRoyaltyKS, ipRoyaltyRate,
       // Project type
       isPartnerProject, showPostKs,
       // Partner project splits
@@ -320,6 +337,7 @@
         price: t.price, pct: t.pct, shippingCost: t.shippingCost,
       }));
     }
+    state.addons = (v.addons || []).map(a => ({ ...a }));
   }
 
   function saveScenario() {
@@ -340,6 +358,7 @@
         devCost: state.devCost,
         marketingCost: state.marketingCost,
         platformFeeRate: state.platformFeeRate,
+        ipEnabled: state.ipEnabled,
         ipAdvance: state.ipAdvance,
         ipRoyaltyRate: state.ipRoyaltyRate,
         partnerEnabled: state.partnerEnabled,
@@ -349,6 +368,7 @@
         wholesalePrice: state.wholesalePrice,
         directUnitsSold: state.directUnitsSold,
         tiers: state.tiers,
+        addons: state.addons,
       })),
       results: {
         ksRevenue: calc().ksRevenue,
