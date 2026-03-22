@@ -71,12 +71,8 @@
             <td class="py-2 text-right font-semibold text-pink-hot">{fmtFull(calc.ipRoyaltyKS)}</td>
           </tr>
           <tr class="border-b border-gray-light/20">
-            <td class="py-2">Wholesale Royalty ({(calc.ipRoyaltyRate * 100).toFixed(1)}% of {fmtFull(calc.wholesaleRevenue)})</td>
-            <td class="py-2 text-right font-semibold text-pink-hot">{fmtFull(calc.wholesaleIPRoyalty)}</td>
-          </tr>
-          <tr class="border-b border-gray-light/20">
-            <td class="py-2">Direct Sales Royalty ({(calc.ipRoyaltyRate * 100).toFixed(1)}% of {fmtFull(calc.directRevenue)})</td>
-            <td class="py-2 text-right font-semibold text-pink-hot">{fmtFull(calc.directIPRoyalty)}</td>
+            <td class="py-2">Post-KS Sales Royalty ({(calc.ipRoyaltyRate * 100).toFixed(1)}% of {fmtFull(calc.totalPostKsRevenue)})</td>
+            <td class="py-2 text-right font-semibold text-pink-hot">{fmtFull(calc.totalPostKsIPRoyalty)}</td>
           </tr>
           <tr class="font-bold border-t-2 border-gray-light/40">
             <td class="py-2">Total IP Cost (Year 1)</td>
