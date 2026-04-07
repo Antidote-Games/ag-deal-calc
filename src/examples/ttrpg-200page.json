@@ -1,6 +1,8 @@
 {
   "label": "200+ Page TTRPG Product (Large)",
   "sub": "~2K backers",
+  "type": "TTRPG Book",
+  "size": "Large",
   "values": {
     "projectName": "200+ Page TTRPG Product (Large)",
     "devCost": 40000,
@@ -25,7 +27,7 @@
     ],
     "printRun": 3000,
     "totalBackers": 2000,
-    "platformFeeRate": 8,
+    "platformFeeRate": 13.5,
     "ipAdvance": 0,
     "ipRoyaltyRate": 0,
     "wholesalePrice": 30,

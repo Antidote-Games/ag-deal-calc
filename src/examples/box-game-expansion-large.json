@@ -1,0 +1,48 @@
+{
+  "label": "Box Game Expansion (Large)",
+  "sub": "~2.5K backers",
+  "type": "Box Game Expansion",
+  "size": "Large",
+  "values": {
+    "projectName": "Box Game Expansion (Large)",
+    "devCost": 40000,
+    "devLineItems": [
+      { "name": "Illustration (35x FC, mixed)", "cost": 12000 },
+      { "name": "Graphic Design (New Components)", "cost": 6000 },
+      { "name": "Game Design / Development", "cost": 8000 },
+      { "name": "Rulebook Writing + Editing", "cost": 4000 },
+      { "name": "Art Direction", "cost": 4000 },
+      { "name": "Sculpting / 3D (new minis/tokens)", "cost": 4500 },
+      { "name": "Playtesting", "cost": 1000 },
+      { "name": "Trade Dress", "cost": 500 }
+    ],
+    "marketingCost": 30000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 8000 },
+      { "name": "KS Ad Campaign", "cost": 12000 },
+      { "name": "Influencer / Reviewer", "cost": 5000 },
+      { "name": "Video Production", "cost": 3000 },
+      { "name": "Convention Booth", "cost": 2000 }
+    ],
+    "printRun": 3800,
+    "totalBackers": 2500,
+    "platformFeeRate": 13.5,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 28,
+    "wholesaleUnitsSold": 800,
+    "directUnitsSold": 400,
+    "products": [
+      { "id": "p1", "name": "Expansion (Standard)", "ppu": 8, "weight": 1.2, "suggestedPrice": 40 },
+      { "id": "p2", "name": "Expansion (Deluxe / Big Box)", "ppu": 14, "weight": 2.5, "suggestedPrice": 70 },
+      { "id": "p3", "name": "Playmat", "ppu": 4, "weight": 0.5, "suggestedPrice": 20 },
+      { "id": "p4", "name": "Promo Pack", "ppu": 2, "weight": 0.2, "suggestedPrice": 12 }
+    ],
+    "tiers": [
+      { "name": "Standard Expansion", "products": [{ "productId": "p1", "qty": 1 }], "price": 45, "pct": 40, "shippingCost": 8 },
+      { "name": "Deluxe Expansion", "products": [{ "productId": "p2", "qty": 1 }], "price": 75, "pct": 32, "shippingCost": 10 },
+      { "name": "Deluxe + Playmat", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 92, "pct": 18, "shippingCost": 11 },
+      { "name": "All-In (Deluxe + Playmat + Promo)", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 100, "pct": 10, "shippingCost": 12 }
+    ]
+  }
+}

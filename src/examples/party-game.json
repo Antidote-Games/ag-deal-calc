@@ -1,6 +1,8 @@
 {
   "label": "Party Game (Moderate)",
   "sub": "~2K backers",
+  "type": "Party Game",
+  "size": "Moderate",
   "values": {
     "projectName": "Party Game (Moderate)",
     "devCost": 10000,
@@ -22,7 +24,7 @@
     ],
     "printRun": 3500,
     "totalBackers": 2000,
-    "platformFeeRate": 8,
+    "platformFeeRate": 13.5,
     "ipAdvance": 0,
     "ipRoyaltyRate": 0,
     "wholesalePrice": 12,

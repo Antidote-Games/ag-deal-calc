@@ -1,6 +1,8 @@
 {
   "label": "Box Game Expansion (Small)",
   "sub": "~800 backers",
+  "type": "Box Game Expansion",
+  "size": "Small",
   "values": {
     "projectName": "Box Game Expansion (Small)",
     "devCost": 12000,
@@ -21,7 +23,7 @@
     ],
     "printRun": 1200,
     "totalBackers": 800,
-    "platformFeeRate": 8,
+    "platformFeeRate": 13.5,
     "ipAdvance": 0,
     "ipRoyaltyRate": 0,
     "wholesalePrice": 15,

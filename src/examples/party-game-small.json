@@ -1,0 +1,40 @@
+{
+  "label": "Party Game (Small)",
+  "sub": "~800 backers",
+  "type": "Party Game",
+  "size": "Small",
+  "values": {
+    "projectName": "Party Game (Small)",
+    "devCost": 4000,
+    "devLineItems": [
+      { "name": "Illustration (10x FC Simple)", "cost": 1200 },
+      { "name": "Graphic Design (Cards + Box)", "cost": 1200 },
+      { "name": "Game Design / Development", "cost": 800 },
+      { "name": "Rulebook Writing + Editing", "cost": 400 },
+      { "name": "Art Direction", "cost": 400 }
+    ],
+    "marketingCost": 5000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 1500 },
+      { "name": "KS Ad Campaign", "cost": 2000 },
+      { "name": "Influencer / Reviewer", "cost": 1000 },
+      { "name": "Video Production", "cost": 500 }
+    ],
+    "printRun": 1200,
+    "totalBackers": 800,
+    "platformFeeRate": 13.5,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 8,
+    "wholesaleUnitsSold": 250,
+    "directUnitsSold": 120,
+    "products": [
+      { "id": "p1", "name": "Party Game (Compact)", "ppu": 2, "weight": 0.4, "suggestedPrice": 15 }
+    ],
+    "tiers": [
+      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 15, "pct": 65, "shippingCost": 4 },
+      { "name": "2-Pack (Gift)", "products": [{ "productId": "p1", "qty": 2 }], "price": 26, "pct": 25, "shippingCost": 5 },
+      { "name": "Party Pack (4x)", "products": [{ "productId": "p1", "qty": 4 }], "price": 48, "pct": 10, "shippingCost": 7 }
+    ]
+  }
+}

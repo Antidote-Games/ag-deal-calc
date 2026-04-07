@@ -1,0 +1,45 @@
+{
+  "label": "Box Game (Small)",
+  "sub": "~800 backers",
+  "type": "Box Game",
+  "size": "Small",
+  "values": {
+    "projectName": "Box Game (Small)",
+    "devCost": 18000,
+    "devLineItems": [
+      { "name": "Illustration (15x FC, mixed)", "cost": 4500 },
+      { "name": "Cover / Box Art", "cost": 1200 },
+      { "name": "Graphic Design (Brand + Components)", "cost": 3500 },
+      { "name": "Game Design / Development", "cost": 4000 },
+      { "name": "Rulebook Writing + Editing", "cost": 1800 },
+      { "name": "Art Direction", "cost": 1500 },
+      { "name": "Sculpting / 3D (tokens)", "cost": 1000 },
+      { "name": "Trade Dress", "cost": 500 }
+    ],
+    "marketingCost": 10000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 3000 },
+      { "name": "KS Ad Campaign", "cost": 4000 },
+      { "name": "Influencer / Reviewer", "cost": 2000 },
+      { "name": "Video Production", "cost": 1000 }
+    ],
+    "printRun": 1200,
+    "totalBackers": 800,
+    "platformFeeRate": 13.5,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 18,
+    "wholesaleUnitsSold": 250,
+    "directUnitsSold": 120,
+    "products": [
+      { "id": "p1", "name": "Box Game (Standard)", "ppu": 6, "weight": 1.5, "suggestedPrice": 35 },
+      { "id": "p2", "name": "Box Game (Deluxe)", "ppu": 10, "weight": 2.0, "suggestedPrice": 50 }
+    ],
+    "tiers": [
+      { "name": "Standard Edition", "products": [{ "productId": "p1", "qty": 1 }], "price": 38, "pct": 55, "shippingCost": 8 },
+      { "name": "Deluxe Edition", "products": [{ "productId": "p2", "qty": 1 }], "price": 55, "pct": 30, "shippingCost": 10 },
+      { "name": "2x Standard (Gift Pack)", "products": [{ "productId": "p1", "qty": 2 }], "price": 68, "pct": 10, "shippingCost": 12 },
+      { "name": "2x Deluxe", "products": [{ "productId": "p2", "qty": 2 }], "price": 100, "pct": 5, "shippingCost": 14 }
+    ]
+  }
+}

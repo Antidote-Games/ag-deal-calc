@@ -1,0 +1,44 @@
+{
+  "label": "Micro Game (Moderate)",
+  "sub": "~1.2K backers",
+  "type": "Micro Game",
+  "size": "Moderate",
+  "values": {
+    "projectName": "Micro Game (Moderate)",
+    "devCost": 8000,
+    "devLineItems": [
+      { "name": "Illustration (15x FC Simple)", "cost": 2500 },
+      { "name": "Graphic Design (Cards + Box)", "cost": 2200 },
+      { "name": "Game Design / Development", "cost": 1500 },
+      { "name": "Rulebook Writing + Editing", "cost": 800 },
+      { "name": "Art Direction", "cost": 700 },
+      { "name": "Trade Dress", "cost": 300 }
+    ],
+    "marketingCost": 6000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 2000 },
+      { "name": "KS Ad Campaign", "cost": 2500 },
+      { "name": "Influencer / Reviewer", "cost": 1000 },
+      { "name": "Video Production", "cost": 500 }
+    ],
+    "printRun": 2000,
+    "totalBackers": 1200,
+    "platformFeeRate": 13.5,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 12,
+    "wholesaleUnitsSold": 500,
+    "directUnitsSold": 250,
+    "products": [
+      { "id": "p1", "name": "Micro Game (Standard)", "ppu": 4, "weight": 0.5, "suggestedPrice": 22 },
+      { "id": "p2", "name": "Micro Game (Premium Components)", "ppu": 6, "weight": 0.7, "suggestedPrice": 32 },
+      { "id": "p3", "name": "Mini Expansion", "ppu": 2, "weight": 0.2, "suggestedPrice": 10 }
+    ],
+    "tiers": [
+      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 22, "pct": 50, "shippingCost": 4 },
+      { "name": "Premium", "products": [{ "productId": "p2", "qty": 1 }], "price": 32, "pct": 25, "shippingCost": 5 },
+      { "name": "Premium + Expansion", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 40, "pct": 18, "shippingCost": 5 },
+      { "name": "2x Premium", "products": [{ "productId": "p2", "qty": 2 }], "price": 58, "pct": 7, "shippingCost": 6 }
+    ]
+  }
+}

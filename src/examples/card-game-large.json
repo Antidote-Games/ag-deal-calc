@@ -1,0 +1,48 @@
+{
+  "label": "Card Game (Large)",
+  "sub": "~3K backers",
+  "type": "Card Game",
+  "size": "Large",
+  "values": {
+    "projectName": "Card Game (Large)",
+    "devCost": 35000,
+    "devLineItems": [
+      { "name": "Card Illustration (150 cards)", "cost": 15000 },
+      { "name": "Graphic Design (Card Frames + Box)", "cost": 6000 },
+      { "name": "Game Design / Development", "cost": 6000 },
+      { "name": "Rulebook Writing + Editing", "cost": 3000 },
+      { "name": "Art Direction", "cost": 3500 },
+      { "name": "Trade Dress", "cost": 1000 },
+      { "name": "Playtesting", "cost": 500 }
+    ],
+    "marketingCost": 25000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 7000 },
+      { "name": "KS Ad Campaign", "cost": 10000 },
+      { "name": "Influencer / Reviewer", "cost": 4000 },
+      { "name": "Video Production", "cost": 2500 },
+      { "name": "Convention Booth", "cost": 1500 }
+    ],
+    "printRun": 5000,
+    "totalBackers": 3000,
+    "platformFeeRate": 13.5,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 20,
+    "wholesaleUnitsSold": 1200,
+    "directUnitsSold": 600,
+    "products": [
+      { "id": "p1", "name": "Core Card Game (Base Set)", "ppu": 6, "weight": 1.2, "suggestedPrice": 40 },
+      { "id": "p2", "name": "Expansion Pack 1", "ppu": 3, "weight": 0.4, "suggestedPrice": 18 },
+      { "id": "p3", "name": "Expansion Pack 2", "ppu": 3, "weight": 0.4, "suggestedPrice": 18 },
+      { "id": "p4", "name": "Card Sleeves (200-pack)", "ppu": 3, "weight": 0.2, "suggestedPrice": 15 },
+      { "id": "p5", "name": "Playmat", "ppu": 4, "weight": 0.5, "suggestedPrice": 20 }
+    ],
+    "tiers": [
+      { "name": "Core Game", "products": [{ "productId": "p1", "qty": 1 }], "price": 45, "pct": 40, "shippingCost": 6 },
+      { "name": "Core + Both Expansions", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 75, "pct": 30, "shippingCost": 8 },
+      { "name": "Complete + Sleeves", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 88, "pct": 18, "shippingCost": 8 },
+      { "name": "All-In (Everything + Playmat)", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }, { "productId": "p5", "qty": 1 }], "price": 105, "pct": 12, "shippingCost": 10 }
+    ]
+  }
+}

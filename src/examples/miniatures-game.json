@@ -1,6 +1,8 @@
 {
   "label": "Miniatures Game (Large)",
   "sub": "~3K backers",
+  "type": "Miniatures Game",
+  "size": "Large",
   "values": {
     "projectName": "Miniatures Game (Large)",
     "devCost": 80000,
@@ -28,7 +30,7 @@
     ],
     "printRun": 4500,
     "totalBackers": 3000,
-    "platformFeeRate": 8,
+    "platformFeeRate": 13.5,
     "ipAdvance": 0,
     "ipRoyaltyRate": 0,
     "wholesalePrice": 40,

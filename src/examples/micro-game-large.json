@@ -1,0 +1,46 @@
+{
+  "label": "Micro Game (Large)",
+  "sub": "~2K backers",
+  "type": "Micro Game",
+  "size": "Large",
+  "values": {
+    "projectName": "Micro Game (Large)",
+    "devCost": 15000,
+    "devLineItems": [
+      { "name": "Illustration (25x FC Mixed)", "cost": 5000 },
+      { "name": "Graphic Design (Cards + Box)", "cost": 3500 },
+      { "name": "Game Design / Development", "cost": 3000 },
+      { "name": "Rulebook Writing + Editing", "cost": 1200 },
+      { "name": "Art Direction", "cost": 1500 },
+      { "name": "Trade Dress", "cost": 500 },
+      { "name": "Playtesting", "cost": 300 }
+    ],
+    "marketingCost": 12000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 4000 },
+      { "name": "KS Ad Campaign", "cost": 5000 },
+      { "name": "Influencer / Reviewer", "cost": 2000 },
+      { "name": "Video Production", "cost": 1000 }
+    ],
+    "printRun": 3500,
+    "totalBackers": 2000,
+    "platformFeeRate": 13.5,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 15,
+    "wholesaleUnitsSold": 900,
+    "directUnitsSold": 500,
+    "products": [
+      { "id": "p1", "name": "Micro Game (Standard)", "ppu": 5, "weight": 0.6, "suggestedPrice": 25 },
+      { "id": "p2", "name": "Micro Game (Deluxe)", "ppu": 8, "weight": 0.9, "suggestedPrice": 40 },
+      { "id": "p3", "name": "Expansion Pack 1", "ppu": 2.5, "weight": 0.2, "suggestedPrice": 12 },
+      { "id": "p4", "name": "Expansion Pack 2", "ppu": 2.5, "weight": 0.2, "suggestedPrice": 12 }
+    ],
+    "tiers": [
+      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 25, "pct": 40, "shippingCost": 5 },
+      { "name": "Deluxe", "products": [{ "productId": "p2", "qty": 1 }], "price": 42, "pct": 28, "shippingCost": 5 },
+      { "name": "Deluxe + All Expansions", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 62, "pct": 22, "shippingCost": 6 },
+      { "name": "Collector (2x Deluxe + Expansions)", "products": [{ "productId": "p2", "qty": 2 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 95, "pct": 10, "shippingCost": 8 }
+    ]
+  }
+}

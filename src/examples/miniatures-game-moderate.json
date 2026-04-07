@@ -1,0 +1,50 @@
+{
+  "label": "Miniatures Game (Moderate)",
+  "sub": "~1.5K backers",
+  "type": "Miniatures Game",
+  "size": "Moderate",
+  "values": {
+    "projectName": "Miniatures Game (Moderate)",
+    "devCost": 45000,
+    "devLineItems": [
+      { "name": "Concept Art (Characters + Factions)", "cost": 4000 },
+      { "name": "Sculpting / 3D Modeling (18 minis)", "cost": 15000 },
+      { "name": "Steel Mold Tooling", "cost": 8000 },
+      { "name": "Illustration (Rulebook + Cards)", "cost": 5000 },
+      { "name": "Graphic Design (Full Brand + Components)", "cost": 3500 },
+      { "name": "Game Design / Development", "cost": 4500 },
+      { "name": "Rulebook Writing + Editing", "cost": 2500 },
+      { "name": "Art Direction", "cost": 2000 },
+      { "name": "Playtesting", "cost": 500 }
+    ],
+    "marketingCost": 25000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 6000 },
+      { "name": "KS Ad Campaign", "cost": 8000 },
+      { "name": "Influencer / Reviewer", "cost": 5000 },
+      { "name": "Video Production", "cost": 3000 },
+      { "name": "Convention Booth", "cost": 2000 },
+      { "name": "Email Marketing", "cost": 1000 }
+    ],
+    "printRun": 2500,
+    "totalBackers": 1500,
+    "platformFeeRate": 13.5,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 30,
+    "wholesaleUnitsSold": 600,
+    "directUnitsSold": 350,
+    "products": [
+      { "id": "p1", "name": "STL Digital Files", "ppu": 0, "weight": 0, "suggestedPrice": 20 },
+      { "id": "p2", "name": "Starter Set (Rules + 10 Minis)", "ppu": 18, "weight": 2.0, "suggestedPrice": 65 },
+      { "id": "p3", "name": "Expansion Pack (8 Minis)", "ppu": 12, "weight": 1.0, "suggestedPrice": 40 },
+      { "id": "p4", "name": "Playmat (Neoprene)", "ppu": 4, "weight": 0.5, "suggestedPrice": 20 }
+    ],
+    "tiers": [
+      { "name": "Digital STLs Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 20, "pct": 15, "shippingCost": 0 },
+      { "name": "Starter Set", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 70, "pct": 40, "shippingCost": 10 },
+      { "name": "Starter + Expansion", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 105, "pct": 30, "shippingCost": 12 },
+      { "name": "All-In (Starter + Expansion + Playmat)", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 120, "pct": 15, "shippingCost": 14 }
+    ]
+  }
+}

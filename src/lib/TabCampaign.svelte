@@ -85,7 +85,7 @@
         {#if state.projectType === 'own'}
           Antidote's own game. All profit belongs to Antidote (minus any deal partner commission).
         {:else}
-          Supporting a creator's release. Antidote fronts costs, gets reimbursed, then splits profit with the creator.
+          Supporting a creator's release. Antidote may help front costs, gets reimbursed, then splits profit with the creator.
         {/if}
       </p>
     </div>

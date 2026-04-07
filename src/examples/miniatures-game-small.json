@@ -1,0 +1,44 @@
+{
+  "label": "Miniatures Game (Small)",
+  "sub": "~800 backers",
+  "type": "Miniatures Game",
+  "size": "Small",
+  "values": {
+    "projectName": "Miniatures Game (Small)",
+    "devCost": 20000,
+    "devLineItems": [
+      { "name": "Concept Art (Characters)", "cost": 2000 },
+      { "name": "Sculpting / 3D Modeling (8 minis)", "cost": 8000 },
+      { "name": "Steel Mold Tooling", "cost": 4000 },
+      { "name": "Illustration (Rulebook + Cards)", "cost": 2000 },
+      { "name": "Graphic Design", "cost": 1500 },
+      { "name": "Game Design / Development", "cost": 1500 },
+      { "name": "Rulebook Writing + Editing", "cost": 800 },
+      { "name": "Art Direction", "cost": 200 }
+    ],
+    "marketingCost": 10000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 3000 },
+      { "name": "KS Ad Campaign", "cost": 4000 },
+      { "name": "Influencer / Reviewer", "cost": 2000 },
+      { "name": "Video Production", "cost": 1000 }
+    ],
+    "printRun": 1200,
+    "totalBackers": 800,
+    "platformFeeRate": 13.5,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 20,
+    "wholesaleUnitsSold": 250,
+    "directUnitsSold": 120,
+    "products": [
+      { "id": "p1", "name": "STL Digital Files", "ppu": 0, "weight": 0, "suggestedPrice": 15 },
+      { "id": "p2", "name": "Starter Set (Rules + 8 Minis)", "ppu": 12, "weight": 1.2, "suggestedPrice": 45 }
+    ],
+    "tiers": [
+      { "name": "Digital STLs Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 15, "pct": 20, "shippingCost": 0 },
+      { "name": "Starter Set", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 50, "pct": 60, "shippingCost": 8 },
+      { "name": "2x Starter (2-Player)", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 2 }], "price": 90, "pct": 20, "shippingCost": 10 }
+    ]
+  }
+}

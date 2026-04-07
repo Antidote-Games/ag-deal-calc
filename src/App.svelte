@@ -29,13 +29,27 @@
 
   let activeTab = $state('campaign');
 
+  // Get unique product types for scenario selection
+  const productTypes = [...new Set(presets.map(p => p.type))].sort();
+  let selectedType = $state(productTypes[0] || '');
+
+  // Get available sizes for the selected type
+  let availableSizes = $derived(
+    presets
+      .filter(p => p.type === selectedType)
+      .sort((a, b) => {
+        const sizeOrder = { Small: 1, Moderate: 2, Large: 3 };
+        return (sizeOrder[a.size] || 99) - (sizeOrder[b.size] || 99);
+      })
+  );
+
   let nextProductId = $state(10);
   function genProductId() { return 'p' + (nextProductId++); }
 
   let state = $state({
     projectName: 'Untitled Campaign',
     projectType: 'own', // 'own' or 'partner'
-    antidoteProfitPct: 24,
+    antidoteProfitPct: 25,
     supportContract: false,
     // Creator budget contributions (partner projects only)
     creatorDevCost: 0,
@@ -51,7 +65,7 @@
     printRun: 0,
     devCost: 0,
     marketingCost: 0,
-    platformFeeRate: 8,
+    platformFeeRate: 13.5,
     ipEnabled: false,
     ipAdvance: 0,
     ipRoyaltyRate: 0,
@@ -329,9 +343,9 @@
 
   function applyPreset(preset) {
     const v = preset.values;
-    // Reset all toggles/modes to defaults
-    state.projectType = v.projectType || 'own';
-    state.antidoteProfitPct = v.antidoteProfitPct ?? 24;
+    // Preserve user's project type selection, only apply preset values for product-specific settings
+    // state.projectType is NOT reset here — user controls this separately
+    state.antidoteProfitPct = v.antidoteProfitPct ?? 25;
     state.supportContract = v.supportContract ?? false;
     state.creatorDevCost = v.creatorDevCost ?? 0;
     state.creatorMarketingCost = v.creatorMarketingCost ?? 0;
@@ -428,7 +442,7 @@
     // Apply with defaults for any missing fields
     state.projectName = s.projectName ?? 'Untitled Campaign';
     state.projectType = s.projectType ?? 'own';
-    state.antidoteProfitPct = s.antidoteProfitPct ?? 24;
+    state.antidoteProfitPct = s.antidoteProfitPct ?? 25;
     state.supportContract = s.supportContract ?? false;
     state.creatorDevCost = s.creatorDevCost ?? 0;
     state.creatorMarketingCost = s.creatorMarketingCost ?? 0;
@@ -508,15 +522,32 @@
   <!-- Presets -->
   <div class="mb-6">
     <div class="text-xs font-semibold text-gray-mid uppercase tracking-wider mb-2">Scenarios</div>
-    <div class="flex flex-wrap gap-2">
-      {#each presets as preset}
-        <button
-          class="px-3 py-1.5 text-xs font-medium rounded-lg border border-purple/20 bg-white hover:bg-purple hover:text-white transition-colors"
-          onclick={() => applyPreset(preset)}
+    <div class="flex flex-wrap items-center gap-4">
+      <!-- Product Type Selector -->
+      <div class="flex items-center gap-2">
+        <label for="product-type" class="text-sm text-gray-mid">Type:</label>
+        <select
+          id="product-type"
+          bind:value={selectedType}
+          class="px-3 py-1.5 text-sm font-medium rounded-lg border border-purple/20 bg-white focus:outline-none focus:border-purple"
         >
-          {preset.label} <span class="opacity-60">{preset.sub}</span>
-        </button>
-      {/each}
+          {#each productTypes as type}
+            <option value={type}>{type}</option>
+          {/each}
+        </select>
+      </div>
+      <!-- Size Buttons -->
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-gray-mid">Size:</span>
+        {#each availableSizes as preset}
+          <button
+            class="px-3 py-1.5 text-xs font-medium rounded-lg border border-purple/20 bg-white hover:bg-purple hover:text-white transition-colors"
+            onclick={() => applyPreset(preset)}
+          >
+            {preset.size} <span class="opacity-60">{preset.sub}</span>
+          </button>
+        {/each}
+      </div>
     </div>
   </div>
 

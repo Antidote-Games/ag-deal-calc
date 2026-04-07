@@ -1,0 +1,40 @@
+{
+  "label": "TTRPG Book (Small)",
+  "sub": "~500 backers",
+  "type": "TTRPG Book",
+  "size": "Small",
+  "values": {
+    "projectName": "TTRPG Book (Small)",
+    "devCost": 18000,
+    "devLineItems": [
+      { "name": "Illustration (15x FC, mixed)", "cost": 5000 },
+      { "name": "Cover Art", "cost": 700 },
+      { "name": "Writing (50K words)", "cost": 6000 },
+      { "name": "Editing (50K words)", "cost": 3000 },
+      { "name": "Layout (100 pages)", "cost": 1200 },
+      { "name": "Cartography (4 maps)", "cost": 800 },
+      { "name": "Art Direction", "cost": 1000 },
+      { "name": "Trade Dress", "cost": 300 }
+    ],
+    "marketingCost": 5000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 1500 },
+      { "name": "KS Ad Campaign", "cost": 2500 },
+      { "name": "Video Production", "cost": 1000 }
+    ],
+    "printRun": 800,
+    "totalBackers": 500,
+    "platformFeeRate": 13.5,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "products": [
+      { "id": "p1", "name": "Digital PDF", "ppu": 0, "weight": 0, "suggestedPrice": 18 },
+      { "id": "p2", "name": "Hardcover Book (100+ pg)", "ppu": 8, "weight": 1.0, "suggestedPrice": 40 }
+    ],
+    "tiers": [
+      { "name": "PDF Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 18, "pct": 35, "shippingCost": 0 },
+      { "name": "Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 45, "pct": 50, "shippingCost": 7 },
+      { "name": "2x Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 2 }], "price": 80, "pct": 15, "shippingCost": 10 }
+    ]
+  }
+}

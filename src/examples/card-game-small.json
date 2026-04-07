@@ -1,0 +1,41 @@
+{
+  "label": "Card Game (Small)",
+  "sub": "~600 backers",
+  "type": "Card Game",
+  "size": "Small",
+  "values": {
+    "projectName": "Card Game (Small)",
+    "devCost": 6000,
+    "devLineItems": [
+      { "name": "Card Illustration (30 cards)", "cost": 2500 },
+      { "name": "Graphic Design (Card Frames + Box)", "cost": 1500 },
+      { "name": "Game Design / Development", "cost": 1000 },
+      { "name": "Rulebook Writing + Editing", "cost": 600 },
+      { "name": "Art Direction", "cost": 400 }
+    ],
+    "marketingCost": 4000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 1200 },
+      { "name": "KS Ad Campaign", "cost": 1800 },
+      { "name": "Influencer / Reviewer", "cost": 600 },
+      { "name": "Video Production", "cost": 400 }
+    ],
+    "printRun": 1000,
+    "totalBackers": 600,
+    "platformFeeRate": 13.5,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 8,
+    "wholesaleUnitsSold": 250,
+    "directUnitsSold": 120,
+    "products": [
+      { "id": "p1", "name": "Core Card Game", "ppu": 2.5, "weight": 0.4, "suggestedPrice": 18 },
+      { "id": "p2", "name": "Card Sleeves (50-pack)", "ppu": 1, "weight": 0.1, "suggestedPrice": 5 }
+    ],
+    "tiers": [
+      { "name": "Core Game", "products": [{ "productId": "p1", "qty": 1 }], "price": 18, "pct": 65, "shippingCost": 4 },
+      { "name": "Core + Sleeves", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 22, "pct": 25, "shippingCost": 4 },
+      { "name": "2x Core (Gift Pack)", "products": [{ "productId": "p1", "qty": 2 }], "price": 32, "pct": 10, "shippingCost": 5 }
+    ]
+  }
+}

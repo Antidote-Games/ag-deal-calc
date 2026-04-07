@@ -265,7 +265,7 @@
     </div>
 
     <Slider label="Platform Fee %" bind:value={inputState.platformFeeRate} min={0} max={15} step={0.5} format={(v) => Number(v).toFixed(1) + '%'} />
-    <p class="text-xs text-gray-mid -mt-2">Kickstarter + payment processing. Industry standard ~8%.</p>
+    <p class="text-xs text-gray-mid -mt-2">Kickstarter 5% + BackerKit 5% + Card Processing 3.5% = 13.5% total.</p>
   </Card>
 </div>
 

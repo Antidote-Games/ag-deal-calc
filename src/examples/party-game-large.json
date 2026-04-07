@@ -1,0 +1,47 @@
+{
+  "label": "Party Game (Large)",
+  "sub": "~4K backers",
+  "type": "Party Game",
+  "size": "Large",
+  "values": {
+    "projectName": "Party Game (Large)",
+    "devCost": 25000,
+    "devLineItems": [
+      { "name": "Illustration (40x FC Mixed)", "cost": 8000 },
+      { "name": "Graphic Design (Cards + Box)", "cost": 5000 },
+      { "name": "Game Design / Development", "cost": 5000 },
+      { "name": "Rulebook Writing + Editing", "cost": 2000 },
+      { "name": "Art Direction", "cost": 3000 },
+      { "name": "Trade Dress", "cost": 1000 },
+      { "name": "Playtesting", "cost": 1000 }
+    ],
+    "marketingCost": 35000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 10000 },
+      { "name": "KS Ad Campaign", "cost": 12000 },
+      { "name": "Influencer / Reviewer", "cost": 6000 },
+      { "name": "Video Production", "cost": 4000 },
+      { "name": "Email Marketing", "cost": 3000 }
+    ],
+    "printRun": 6000,
+    "totalBackers": 4000,
+    "platformFeeRate": 13.5,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "wholesalePrice": 18,
+    "wholesaleUnitsSold": 1200,
+    "directUnitsSold": 700,
+    "products": [
+      { "id": "p1", "name": "Party Game (Standard)", "ppu": 4, "weight": 0.8, "suggestedPrice": 28 },
+      { "id": "p2", "name": "Party Game (Deluxe Box)", "ppu": 8, "weight": 1.5, "suggestedPrice": 45 },
+      { "id": "p3", "name": "Expansion Pack 1", "ppu": 2.5, "weight": 0.3, "suggestedPrice": 15 },
+      { "id": "p4", "name": "Expansion Pack 2", "ppu": 2.5, "weight": 0.3, "suggestedPrice": 15 }
+    ],
+    "tiers": [
+      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 30, "pct": 40, "shippingCost": 6 },
+      { "name": "Deluxe", "products": [{ "productId": "p2", "qty": 1 }], "price": 50, "pct": 28, "shippingCost": 8 },
+      { "name": "Deluxe + Expansions", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 75, "pct": 22, "shippingCost": 9 },
+      { "name": "Ultimate Party (2x Deluxe + All Expansions)", "products": [{ "productId": "p2", "qty": 2 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 115, "pct": 10, "shippingCost": 12 }
+    ]
+  }
+}

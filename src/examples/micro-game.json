@@ -1,6 +1,8 @@
 {
   "label": "Micro Game (Small)",
   "sub": "~600 backers",
+  "type": "Micro Game",
+  "size": "Small",
   "values": {
     "projectName": "Micro Game (Small)",
     "devCost": 5000,
@@ -20,7 +22,7 @@
     ],
     "printRun": 1000,
     "totalBackers": 600,
-    "platformFeeRate": 8,
+    "platformFeeRate": 13.5,
     "ipAdvance": 0,
     "ipRoyaltyRate": 0,
     "wholesalePrice": 10,
