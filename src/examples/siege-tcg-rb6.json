@@ -1,0 +1,63 @@
+{
+  "label": "Rainbow Six Siege TCG (Ubisoft License)",
+  "sub": "Op. House of Cards · ~10K backers",
+  "type": "Licensed TCG",
+  "size": "Large",
+  "values": {
+    "projectName": "Siege TCG — Operation House of Cards",
+    "ipEnabled": true,
+    "ipAdvance": 200000,
+    "ipRoyaltyRate": 12,
+    "devCost": 150000,
+    "devLineItems": [
+      { "name": "Card Illustration (~150 pieces, mixed FC)", "cost": 48000 },
+      { "name": "Operator Art (20 operators, premium)", "cost": 12000 },
+      { "name": "Card Frames / Templates / Iconography", "cost": 15000 },
+      { "name": "Box / Package Design (Starter, Premium, Collector)", "cost": 10000 },
+      { "name": "Game Design / Development", "cost": 35000 },
+      { "name": "Playtesting", "cost": 8000 },
+      { "name": "Rulebook Writing + Editing", "cost": 6000 },
+      { "name": "Layout / Graphic Design", "cost": 8000 },
+      { "name": "Tokens / Die / Component Design", "cost": 5000 },
+      { "name": "Licensor Approval Coordination", "cost": 3000 }
+    ],
+    "marketingCost": 80000,
+    "marketingLineItems": [
+      { "name": "KS Ad Campaign (Meta / Reddit)", "cost": 25000 },
+      { "name": "Campaign Video Production (trailer)", "cost": 12000 },
+      { "name": "Influencer / Streamer / Reviewer", "cost": 18000 },
+      { "name": "Convention Reveal (PAX Unplugged)", "cost": 10000 },
+      { "name": "Community / Email / Pledge Manager", "cost": 8000 },
+      { "name": "PR / Press", "cost": 7000 }
+    ],
+    "printRun": 12000,
+    "totalBackers": 10000,
+    "platformFeeRate": 13.5,
+    "products": [
+      { "id": "p1", "name": "Situation Starter Box", "ppu": 5.5, "weight": 0.9, "suggestedPrice": 34.99 },
+      { "id": "p2", "name": "Booster Pack (~12 cards, 1 foil)", "ppu": 0.55, "weight": 0.05, "suggestedPrice": 4.99 },
+      { "id": "p3", "name": "Booster Box (24 packs)", "ppu": 11, "weight": 1.0, "suggestedPrice": 109.99 },
+      { "id": "p4", "name": "Preconstructed Deck", "ppu": 2, "weight": 0.2, "suggestedPrice": 19.99 },
+      { "id": "p5", "name": "Premium Box (collector entry)", "ppu": 10, "weight": 1.2, "suggestedPrice": 49.99 },
+      { "id": "p6", "name": "Collector Box (non-random)", "ppu": 12, "weight": 1.0, "suggestedPrice": 59.99 },
+      { "id": "p7", "name": "Event Pack (limited)", "ppu": 2.5, "weight": 0.15, "suggestedPrice": 24.99 }
+    ],
+    "tiers": [
+      { "name": "Operative (1 Situation Starter)", "products": [{ "productId": "p1", "qty": 1 }], "price": 40, "pct": 45, "shippingCost": 6 },
+      { "name": "Squad (2 Situations + Booster Box)", "products": [{ "productId": "p1", "qty": 2 }, { "productId": "p3", "qty": 1 }], "price": 160, "pct": 30, "shippingCost": 14 },
+      { "name": "Collector (Full set: Premium + Collector + Box + Starter)", "products": [{ "productId": "p5", "qty": 1 }, { "productId": "p6", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p1", "qty": 1 }], "price": 260, "pct": 15, "shippingCost": 18 },
+      { "name": "Founder (Everything + KS-exclusive chase)", "products": [{ "productId": "p1", "qty": 2 }, { "productId": "p3", "qty": 2 }, { "productId": "p5", "qty": 1 }, { "productId": "p6", "qty": 1 }], "price": 450, "pct": 10, "shippingCost": 22 }
+    ],
+    "addons": [
+      { "productId": "p3", "price": 90, "attachRate": 40, "shippingCost": 8 },
+      { "productId": "p4", "price": 18, "attachRate": 25, "shippingCost": 3 },
+      { "productId": "p5", "price": 45, "attachRate": 15, "shippingCost": 6 }
+    ],
+    "postKsSales": [
+      { "productId": "p2", "msrp": 4.99, "wholesalePrice": 2.5, "directUnits": 20000, "wholesaleUnits": 480000 },
+      { "productId": "p1", "msrp": 34.99, "wholesalePrice": 17.5, "directUnits": 5000, "wholesaleUnits": 35000 },
+      { "productId": "p4", "msrp": 19.99, "wholesalePrice": 10, "directUnits": 3000, "wholesaleUnits": 27000 },
+      { "productId": "p5", "msrp": 49.99, "wholesalePrice": 25, "directUnits": 2000, "wholesaleUnits": 13000 }
+    ]
+  }
+}
