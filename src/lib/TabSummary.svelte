@@ -41,7 +41,7 @@
           </tr>
           {#if calc.ipEnabled}
             <tr class="bg-amber-50/60">
-              <td class="py-2">- IP Advance</td>
+              <td class="py-2">- IP Advance / MG</td>
               <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.ipAdvance)}</td>
             </tr>
           {/if}
@@ -89,8 +89,8 @@
             <!-- IP Royalties -->
             {#if calc.ipEnabled}
               <tr class="bg-amber-50/30">
-                <td class="py-2">- IP Royalties on KS ({(calc.ipRoyaltyRate * 100).toFixed(1)}%)</td>
-                <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.ipRoyaltyKS)}</td>
+                <td class="py-2">- IP Royalties on KS (beyond MG)</td>
+                <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.royaltyDueKS)}</td>
               </tr>
             {/if}
 
@@ -106,8 +106,8 @@
               </tr>
               {#if calc.ipEnabled}
                 <tr class="bg-amber-50/30">
-                  <td class="py-2">- Post-KS IP Royalties</td>
-                  <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.totalPostKsIPRoyalty)}</td>
+                  <td class="py-2">- Post-KS IP Royalties (beyond MG)</td>
+                  <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.royaltyDuePostKs)}</td>
                 </tr>
               {/if}
               <tr class="bg-amber-50/30">
@@ -120,8 +120,8 @@
             <!-- Own Title: standard flow -->
             {#if calc.ipEnabled}
               <tr class="bg-amber-50/30">
-                <td class="py-2">- IP Royalties on KS ({(calc.ipRoyaltyRate * 100).toFixed(1)}%)</td>
-                <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.ipRoyaltyKS)}</td>
+                <td class="py-2">- IP Royalties on KS (beyond MG)</td>
+                <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.royaltyDueKS)}</td>
               </tr>
             {/if}
             {#if calc.dealPartnerActive && calc.partnerCommission > 0}
@@ -146,8 +146,8 @@
             </tr>
             {#if calc.ipEnabled}
               <tr class="bg-amber-50/30">
-                <td class="py-2">- Post-KS IP Royalties</td>
-                <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.totalPostKsIPRoyalty)}</td>
+                <td class="py-2">- Post-KS IP Royalties (beyond MG)</td>
+                <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.royaltyDuePostKs)}</td>
               </tr>
             {/if}
             {#if calc.dealPartnerActive && calc.partnerRetailBonus > 0}

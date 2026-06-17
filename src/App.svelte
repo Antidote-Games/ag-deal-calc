@@ -265,6 +265,21 @@
     const totalPostKsRevenue = wholesaleRevenue + directRevenue;
     const totalPostKsIPRoyalty = totalPostKsRevenue * ipRoyaltyRate;
     const totalPostKsUnits = wholesaleUnitsSold + directUnitsSold;
+
+    // IP Advance / MG: the advance is a minimum guarantee against royalties, not a fee on top.
+    // Earned royalties recoup the advance first (KS sales chronologically first, then post-KS);
+    // only royalties beyond the advance are paid on top. Total IP cost = max(advance, earned royalties).
+    const earnedRoyaltyKS = ipRoyaltyKS;                 // gross royalty earned on KS revenue
+    const earnedRoyaltyPostKs = totalPostKsIPRoyalty;    // gross royalty earned on post-KS revenue
+    const earnedRoyaltyTotal = earnedRoyaltyKS + earnedRoyaltyPostKs;
+    const royaltyDueKS = Math.max(0, earnedRoyaltyKS - ipAdvance);
+    const advanceRemainingAfterKS = Math.max(0, ipAdvance - earnedRoyaltyKS);
+    const royaltyDuePostKs = Math.max(0, earnedRoyaltyPostKs - advanceRemainingAfterKS);
+    const royaltyDue = royaltyDueKS + royaltyDuePostKs;          // = max(0, earnedRoyaltyTotal - ipAdvance)
+    const ipRecouped = Math.min(ipAdvance, earnedRoyaltyTotal);  // advance paid down by royalties
+    const unrecoupedAdvance = ipAdvance - ipRecouped;            // forfeited minimum when sales are weak
+    const ipEarnedOut = ipAdvance > 0 && earnedRoyaltyTotal >= ipAdvance;
+    const totalIpCost = ipAdvance + royaltyDue;                  // = max(ipAdvance, earnedRoyaltyTotal)
     // Deal partners (own titles only). Each partner's rate is stacked: it applies to the
     // same base (KS profit / post-KS revenue) as every other partner, not cascaded.
     const dealPartnerBreakdown = (isPartnerProject ? [] : (state.dealPartners || [])).map((p, i) => {
@@ -281,13 +296,13 @@
     const totalPartnerCommissionRate = dealPartnerBreakdown.reduce((sum, p) => sum + p.commissionRate, 0);
     const totalPartnerRetailBonusRate = dealPartnerBreakdown.reduce((sum, p) => sum + p.retailBonusRate, 0);
     const antidoteKS = isPartnerProject
-      ? antidoteKsShare - ipRoyaltyKS
-      : ksProfit - partnerCommission - ipRoyaltyKS;
+      ? antidoteKsShare - royaltyDueKS
+      : ksProfit - partnerCommission - royaltyDueKS;
 
     // Post-KS split for partner projects with support contract
     let postKsCreatorShare = 0;
     let postKsAntidoteShare = 0;
-    const postKsNetBeforeSplit = totalPostKsRevenue - totalPostKsIPRoyalty;
+    const postKsNetBeforeSplit = totalPostKsRevenue - royaltyDuePostKs;
     if (isPartnerProject && state.supportContract) {
       postKsCreatorShare = postKsNetBeforeSplit * creatorProfitPct;
       postKsAntidoteShare = postKsNetBeforeSplit * antidoteProfitPct;
@@ -302,15 +317,15 @@
     let totalExpenses;
     if (isPartnerProject) {
       if (ksProfit >= 0) {
-        // Antidote gets their share of profit minus IP royalties
-        netProfit = antidoteKsShare - ipRoyaltyKS + (state.supportContract ? postKsAntidoteShare : 0);
+        // Antidote gets their share of profit minus IP royalties due (after MG recoupment)
+        netProfit = antidoteKsShare - royaltyDueKS + (state.supportContract ? postKsAntidoteShare : 0);
       } else {
-        // Antidote absorbs their share of loss plus IP royalties
-        netProfit = -antidoteLoss - ipRoyaltyKS + (state.supportContract ? postKsAntidoteShare : 0);
+        // Antidote absorbs their share of loss plus IP royalties due
+        netProfit = -antidoteLoss - royaltyDueKS + (state.supportContract ? postKsAntidoteShare : 0);
       }
       totalExpenses = grossRevenue - netProfit;
     } else {
-      totalExpenses = ksCosts + ipRoyaltyKS + partnerCommission + overageCostAntidote + totalPostKsIPRoyalty + partnerRetailBonus;
+      totalExpenses = ksCosts + royaltyDueKS + partnerCommission + overageCostAntidote + royaltyDuePostKs + partnerRetailBonus;
       netProfit = grossRevenue - totalExpenses;
     }
 
@@ -328,6 +343,10 @@
       physicalBackers, overageUnits, overageCost, overageCostAntidote,
       // IP
       ipEnabled: state.ipEnabled, ipRoyaltyKS, ipRoyaltyRate,
+      // IP Advance / MG recoupment
+      earnedRoyaltyKS, earnedRoyaltyPostKs, earnedRoyaltyTotal,
+      royaltyDueKS, royaltyDuePostKs, royaltyDue,
+      ipRecouped, unrecoupedAdvance, ipEarnedOut, totalIpCost,
       // Project type
       isPartnerProject, showPostKs,
       // Partner project splits
