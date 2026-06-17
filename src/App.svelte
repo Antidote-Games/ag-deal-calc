@@ -69,10 +69,9 @@
     ipEnabled: false,
     ipAdvance: 0,
     ipRoyaltyRate: 0,
-    // Deal partner (own titles only)
-    partnerEnabled: false,
-    partnerCommissionRate: 20,
-    partnerRetailBonusRate: 3,
+    // Deal partners (own titles only) — list of { name, commissionRate, retailBonusRate }
+    // Each partner takes a % of KS profit and a % of post-KS retail revenue.
+    dealPartners: [],
     // Post-KS sales (per product)
     postKsSales: [],
     tiers: [],
@@ -238,15 +237,6 @@
       }
     }
 
-    // Deal partner commission (own titles only)
-    const dealPartnerActive = !isPartnerProject && state.partnerEnabled;
-    const partnerCommissionRate = dealPartnerActive ? (Number(state.partnerCommissionRate) || 0) : 0;
-    const partnerRetailBonusRate = dealPartnerActive ? (Number(state.partnerRetailBonusRate) || 0) : 0;
-    const partnerCommission = Math.max(0, ksProfit * (partnerCommissionRate / 100));
-    const antidoteKS = isPartnerProject
-      ? antidoteKsShare - ipRoyaltyKS
-      : ksProfit - partnerCommission - ipRoyaltyKS;
-
     // Overage — creator's cost on partner projects, Antidote's on own titles
     const overageCostAntidote = isPartnerProject ? 0 : overageCost;
 
@@ -275,7 +265,24 @@
     const totalPostKsRevenue = wholesaleRevenue + directRevenue;
     const totalPostKsIPRoyalty = totalPostKsRevenue * ipRoyaltyRate;
     const totalPostKsUnits = wholesaleUnitsSold + directUnitsSold;
-    const partnerRetailBonus = totalPostKsRevenue * (partnerRetailBonusRate / 100);
+    // Deal partners (own titles only). Each partner's rate is stacked: it applies to the
+    // same base (KS profit / post-KS revenue) as every other partner, not cascaded.
+    const dealPartnerBreakdown = (isPartnerProject ? [] : (state.dealPartners || [])).map((p, i) => {
+      const name = (p.name || '').trim() || `Partner ${i + 1}`;
+      const commissionRate = Number(p.commissionRate) || 0;
+      const retailBonusRate = Number(p.retailBonusRate) || 0;
+      const commission = Math.max(0, ksProfit * (commissionRate / 100));
+      const retailBonus = totalPostKsRevenue * (retailBonusRate / 100);
+      return { name, commissionRate, retailBonusRate, commission, retailBonus, total: commission + retailBonus };
+    });
+    const dealPartnerActive = dealPartnerBreakdown.length > 0;
+    const partnerCommission = dealPartnerBreakdown.reduce((sum, p) => sum + p.commission, 0);
+    const partnerRetailBonus = dealPartnerBreakdown.reduce((sum, p) => sum + p.retailBonus, 0);
+    const totalPartnerCommissionRate = dealPartnerBreakdown.reduce((sum, p) => sum + p.commissionRate, 0);
+    const totalPartnerRetailBonusRate = dealPartnerBreakdown.reduce((sum, p) => sum + p.retailBonusRate, 0);
+    const antidoteKS = isPartnerProject
+      ? antidoteKsShare - ipRoyaltyKS
+      : ksProfit - partnerCommission - ipRoyaltyKS;
 
     // Post-KS split for partner projects with support contract
     let postKsCreatorShare = 0;
@@ -331,7 +338,7 @@
       creatorKsShare, antidoteKsShare, creatorLoss, antidoteLoss,
       postKsCreatorShare, postKsAntidoteShare,
       // Deal partner (own titles)
-      dealPartnerActive, partnerCommission, partnerCommissionRate, partnerRetailBonusRate, partnerRetailBonus, antidoteKS,
+      dealPartnerActive, dealPartnerBreakdown, partnerCommission, partnerRetailBonus, totalPartnerCommissionRate, totalPartnerRetailBonusRate, antidoteKS,
       // Post-KS sales
       postKsSalesBreakdown, wholesaleRevenue, directRevenue, wholesaleUnitsSold, directUnitsSold,
       // Combined post-KS
@@ -340,6 +347,25 @@
       grossRevenue, totalExpenses, netProfit,
     };
   });
+
+  // Normalize deal partners from either the new list form or legacy single-partner fields.
+  function migrateDealPartners(src) {
+    if (Array.isArray(src.dealPartners)) {
+      return src.dealPartners.map(p => ({
+        name: p.name ?? '',
+        commissionRate: p.commissionRate ?? 0,
+        retailBonusRate: p.retailBonusRate ?? 0,
+      }));
+    }
+    if (src.partnerEnabled) {
+      return [{
+        name: 'Deal Partner',
+        commissionRate: src.partnerCommissionRate ?? 20,
+        retailBonusRate: src.partnerRetailBonusRate ?? 3,
+      }];
+    }
+    return [];
+  }
 
   function applyPreset(preset) {
     const v = preset.values;
@@ -351,9 +377,7 @@
     state.creatorMarketingCost = v.creatorMarketingCost ?? 0;
     state.creatorIpAdvance = v.creatorIpAdvance ?? 0;
     state.ipEnabled = v.ipEnabled ?? false;
-    state.partnerEnabled = v.partnerEnabled ?? false;
-    state.partnerCommissionRate = v.partnerCommissionRate ?? 20;
-    state.partnerRetailBonusRate = v.partnerRetailBonusRate ?? 3;
+    state.dealPartners = migrateDealPartners(v);
     // Core values
     state.projectName = v.projectName;
     state.devCost = v.devCost;
@@ -414,9 +438,7 @@
         ipEnabled: state.ipEnabled,
         ipAdvance: state.ipAdvance,
         ipRoyaltyRate: state.ipRoyaltyRate,
-        partnerEnabled: state.partnerEnabled,
-        partnerCommissionRate: state.partnerCommissionRate,
-        partnerRetailBonusRate: state.partnerRetailBonusRate,
+        dealPartners: state.dealPartners,
         postKsSales: state.postKsSales,
         tiers: state.tiers,
         addons: state.addons,
@@ -458,9 +480,7 @@
     state.ipEnabled = s.ipEnabled ?? false;
     state.ipAdvance = s.ipAdvance ?? 0;
     state.ipRoyaltyRate = s.ipRoyaltyRate ?? 0;
-    state.partnerEnabled = s.partnerEnabled ?? false;
-    state.partnerCommissionRate = s.partnerCommissionRate ?? 20;
-    state.partnerRetailBonusRate = s.partnerRetailBonusRate ?? 3;
+    state.dealPartners = migrateDealPartners(s);
     state.postKsSales = s.postKsSales ?? [];
     state.tiers = s.tiers ?? [];
     state.addons = s.addons ?? [];

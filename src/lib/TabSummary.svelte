@@ -126,7 +126,7 @@
             {/if}
             {#if calc.dealPartnerActive && calc.partnerCommission > 0}
               <tr class="bg-amber-50/30">
-                <td class="py-2">- Deal Partner Commission ({calc.partnerCommissionRate}%)</td>
+                <td class="py-2">- Deal Partner Commission ({calc.totalPartnerCommissionRate}%)</td>
                 <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.partnerCommission)}</td>
               </tr>
             {/if}
@@ -152,7 +152,7 @@
             {/if}
             {#if calc.dealPartnerActive && calc.partnerRetailBonus > 0}
               <tr class="bg-amber-50/30">
-                <td class="py-2">- Deal Partner Retail Bonus ({calc.partnerRetailBonusRate}%)</td>
+                <td class="py-2">- Deal Partner Retail Bonus ({calc.totalPartnerRetailBonusRate}%)</td>
                 <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.partnerRetailBonus)}</td>
               </tr>
             {/if}
