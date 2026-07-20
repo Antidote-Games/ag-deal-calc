@@ -1,0 +1,49 @@
+{
+  "label": "Box Game Small (Dice)",
+  "sub": "Push-your-luck dice racing · ~800 backers",
+  "type": "Box Game",
+  "size": "Small",
+  "values": {
+    "projectName": "Box Game Small (Dice)",
+    "devCost": 15500,
+    "devLineItems": [
+      { "name": "Track Art (10 spreads / 20pp spiral book)", "cost": 4000 },
+      { "name": "Ship Illustration (9 ships)", "cost": 2500 },
+      { "name": "Graphic Design (Brand + Components)", "cost": 2500 },
+      { "name": "Game Design / Development", "cost": 2000 },
+      { "name": "Rulebook Writing + Editing", "cost": 1000 },
+      { "name": "Art Direction", "cost": 1000 },
+      { "name": "Resin Master Tooling (premium ship add-on, 9 ships)", "cost": 2500 }
+    ],
+    "marketingCost": 8000,
+    "marketingLineItems": [
+      { "name": "Social Media Ads", "cost": 2500 },
+      { "name": "KS Ad Campaign", "cost": 3500 },
+      { "name": "Influencer / Reviewer", "cost": 1500 },
+      { "name": "Video Production", "cost": 500 }
+    ],
+    "printRun": 1200,
+    "totalBackers": 800,
+    "platformFeeRate": 13.5,
+    "ipEnabled": false,
+    "ipAdvance": 0,
+    "ipRoyaltyRate": 0,
+    "products": [
+      { "id": "p1", "name": "Standard (flat plastic standees)", "ppu": 8.5, "weight": 1.3, "suggestedPrice": 42 },
+      { "id": "p2", "name": "Deluxe (premium box/dice, flat standees)", "ppu": 10.5, "weight": 1.5, "suggestedPrice": 58 },
+      { "id": "p3", "name": "Premium Resin Ship Set (9)", "ppu": 22.5, "weight": 0.6, "suggestedPrice": 60 }
+    ],
+    "tiers": [
+      { "name": "Standard Edition", "products": [{ "productId": "p1", "qty": 1 }], "price": 42, "pct": 55, "shippingCost": 8 },
+      { "name": "Deluxe Edition", "products": [{ "productId": "p2", "qty": 1 }], "price": 58, "pct": 30, "shippingCost": 9 },
+      { "name": "2x Standard (Gift Pack)", "products": [{ "productId": "p1", "qty": 2 }], "price": 78, "pct": 10, "shippingCost": 12 },
+      { "name": "2x Deluxe", "products": [{ "productId": "p2", "qty": 2 }], "price": 108, "pct": 5, "shippingCost": 14 }
+    ],
+    "addons": [
+      { "productId": "p3", "price": 60, "attachRate": 30, "shippingCost": 5 }
+    ],
+    "postKsSales": [
+      { "productId": "p1", "msrp": 45, "wholesalePrice": 20, "directUnits": 100, "wholesaleUnits": 180 }
+    ]
+  }
+}
