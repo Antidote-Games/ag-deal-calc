@@ -1,43 +1,75 @@
-# Svelte + Vite
+# Antidote Games — Campaign Planner (`ag-deal-calc`)
 
-This template should help get you started developing with Svelte in Vite.
+An internal deal calculator for modeling crowdfunding (Kickstarter-style) tabletop
+campaigns. Plan campaigns, model revenue, and validate the economics of a deal
+before committing to it.
 
-## Recommended IDE Setup
+**Live:** https://antidote-games.github.io/ag-deal-calc/
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+> The app is gated behind a client-side passkey. Note this is a soft gate for
+> convenience, not real security — the app and its data ship in the public JS
+> bundle. Don't treat anything here as confidential.
 
-## Need an official Svelte framework?
+## What it does
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+The planner takes campaign inputs and derives a full P&L across several tabs:
 
-## Technical considerations
+- **Campaign** — backers, print run, pledge tiers (with per-tier product mixes,
+  pricing, backer %, and shipping), and add-ons.
+- **Products** — a catalog of products with per-unit cost (PPU), weight, and
+  suggested price, referenced by tiers and add-ons.
+- **Budget** — dev and marketing costs as itemized line items.
+- **IP & Royalties** — IP advances treated as a minimum guarantee (MG) recoupable
+  against royalties, royalty rates, earn-out, and unrecouped advance.
+- **KS Analysis** — KS revenue, the six cost deductions, KS profit, and
+  break-even backer count.
+- **Retail & Inventory** — post-KS direct and wholesale sales, overage/inventory.
+- **Profit Share** — own-title deal-partner commissions/retail bonuses, or
+  partner-project splits (Antidote vs. creator) including loss-sharing by
+  contribution ratio.
+- **Summary** — combined P&L from Antidote's perspective, plus save/load of
+  named scenarios.
 
-**Why use this over SvelteKit?**
+### Scenarios
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+The **Scenarios** picker loads preset campaigns (by product type and size) from
+JSON files in [`src/examples/`](src/examples/). Each preset is a self-contained
+snapshot of inputs — add a new `.json` file there and it appears automatically
+(they're loaded via `import.meta.glob`).
 
-This template contains as little as possible to get started with Vite + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+## Tech stack
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+- [Svelte 5](https://svelte.dev/) (runes) + [Vite 6](https://vite.dev/)
+- [Tailwind CSS v4](https://tailwindcss.com/) (via `@tailwindcss/vite`)
+- Deployed to GitHub Pages
 
-**Why include `.vscode/extensions.json`?**
+## Development
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+With Node (22+ recommended):
 
-**Why enable `checkJs` in the JS template?**
-
-It is likely that most cases of changing variable types in runtime are likely to be accidental, rather than deliberate. This provides advanced typechecking out of the box. Should you like to take advantage of the dynamically-typed nature of JavaScript, it is trivial to change the configuration.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/sveltejs/svelte-hmr/tree/master/packages/svelte-hmr#preservation-of-local-state).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```js
-// store.js
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+```bash
+npm install     # runs a postinstall step to fix native bindings on Node 24+
+npm run dev      # start the dev server
+npm run build    # production build to dist/
+npm run preview  # preview the production build
 ```
+
+Deno is also supported:
+
+```bash
+deno task dev
+deno task build
+deno task preview
+```
+
+> `scripts/fix-bindings.js` runs on `postinstall` to work around an
+> [npm optional-dependencies bug](https://github.com/npm/cli/issues/4828) on
+> Node 24+ by installing the platform-specific Rollup/Tailwind/LightningCSS
+> native bindings.
+
+## Deployment
+
+Pushing to `main` triggers [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml),
+which builds the app and publishes `dist/` to GitHub Pages. `vite.config.js` sets
+`base: '/ag-deal-calc/'` to match the Pages subpath, so the build only works
+correctly under that path.
