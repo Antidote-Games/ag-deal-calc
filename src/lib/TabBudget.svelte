@@ -232,7 +232,7 @@
     {/if}
 
     {@const overage = Math.max(0, inputState.printRun - calc.physicalBackers)}
-    {@const postKsPlanned = (inputState.postKsSales || []).reduce((sum, s) => sum + (Number(s.directUnits) || 0) + (Number(s.wholesaleUnits) || 0), 0)}
+    {@const postKsPlanned = calc.totalPostKsUnits}
     {@const suggestedRun = calc.physicalBackers + postKsPlanned}
     {@const unallocated = overage - postKsPlanned}
 
@@ -244,9 +244,7 @@
         <span class="text-right font-semibold text-purple">{overage.toLocaleString()}</span>
         {#if inputState.projectType === 'own' || inputState.supportContract}
           <span class="text-gray-mid">Post-KS planned</span>
-          {@const directTotal = (inputState.postKsSales || []).reduce((sum, s) => sum + (Number(s.directUnits) || 0), 0)}
-          {@const wholesaleTotal = (inputState.postKsSales || []).reduce((sum, s) => sum + (Number(s.wholesaleUnits) || 0), 0)}
-          <span class="text-right font-semibold">{postKsPlanned.toLocaleString()} <span class="font-normal text-gray-mid">({wholesaleTotal.toLocaleString()}W + {directTotal.toLocaleString()}D)</span></span>
+          <span class="text-right font-semibold">{postKsPlanned.toLocaleString()} <span class="font-normal text-gray-mid">({calc.wholesaleUnitsSold.toLocaleString()}W + {calc.directUnitsSold.toLocaleString()}D)</span></span>
           <span class="text-gray-mid">Unallocated</span>
           <span class="text-right font-semibold {unallocated < 0 ? 'text-pink-hot' : unallocated === 0 ? 'text-green-700' : 'text-amber-600'}">{unallocated.toLocaleString()}{unallocated < 0 ? ' (short!)' : ''}</span>
         {:else}
@@ -255,12 +253,16 @@
         {/if}
       </div>
       {#if inputState.projectType === 'own' || inputState.supportContract}
-        <button
-          onclick={() => inputState.printRun = suggestedRun}
-          class="mt-2 w-full py-1.5 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors"
-        >
-          Match to post-KS plan ({suggestedRun.toLocaleString()} units)
-        </button>
+        {#if inputState.autoOverageD2C}
+          <p class="mt-2 text-xs text-purple font-medium">Auto D2C is on — the post-KS plan follows the print run automatically (see Retail & Inventory).</p>
+        {:else}
+          <button
+            onclick={() => inputState.printRun = suggestedRun}
+            class="mt-2 w-full py-1.5 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors"
+          >
+            Match to post-KS plan ({suggestedRun.toLocaleString()} units)
+          </button>
+        {/if}
       {/if}
     </div>
 

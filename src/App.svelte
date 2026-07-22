@@ -78,6 +78,10 @@
     dealPartners: [],
     // Post-KS sales (per product)
     postKsSales: [],
+    // Auto D2C: post-KS plan follows the print run — the entire overage is sold
+    // direct, split across products by backer-demand mix. Manual unit entries
+    // are kept but ignored while this is on.
+    autoOverageD2C: false,
     tiers: [],
     // Addons — products backers can add to any tier
     addons: [],
@@ -87,11 +91,9 @@
   // Validations
   let validations = $derived(() => {
     const tierPctTotal = state.tiers.reduce((sum, t) => sum + (Number(t.pct) || 0), 0);
-    const totalRetailUnits = (state.postKsSales || []).reduce((sum, s) => sum + (Number(s.directUnits) || 0) + (Number(s.wholesaleUnits) || 0), 0);
     return {
       tierPctOff: Math.abs(tierPctTotal - 100) > 0.01,
       tierPctTotal,
-      totalRetailUnits,
     };
   });
 
@@ -190,12 +192,6 @@
       .filter(t => t.costPerUnit > 0)
       .reduce((sum, t) => sum + t.backers, 0);
     const overageUnits = Math.max(0, printRun - physicalBackers);
-    const overageCost = (state.postKsSales || []).reduce((sum, s) => {
-      const product = getProduct(s.productId);
-      const ppu = product ? Number(product.ppu) || 0 : 0;
-      const units = (Number(s.directUnits) || 0) + (Number(s.wholesaleUnits) || 0);
-      return sum + (units * ppu);
-    }, 0);
 
     // IP Royalties (not a KS Profit deduction — separate expense)
     const ipRoyaltyKS = ksRevenue * ipRoyaltyRate;
@@ -236,19 +232,46 @@
       }
     }
 
-    // Overage — creator's cost on partner projects, Antidote's on own titles
-    const overageCostAntidote = isPartnerProject ? 0 : overageCost;
-
     // Post-KS sales — per product
     const showPostKs = !isPartnerProject || state.supportContract;
+
+    // Auto D2C: allocate the entire overage as direct sales, split across the
+    // post-KS products proportionally to their share of backer demand.
+    const autoOverage = !!state.autoOverageD2C;
+    const autoDirectByProduct = {};
+    if (autoOverage) {
+      const entries = state.postKsSales || [];
+      const backerUnitsByProduct = {};
+      state.tiers.forEach((t, i) => {
+        (t.products || []).forEach(tp => {
+          backerUnitsByProduct[tp.productId] = (backerUnitsByProduct[tp.productId] || 0) + tierBreakdown[i].backers * (Number(tp.qty) || 0);
+        });
+      });
+      (state.addons || []).forEach((a, i) => {
+        backerUnitsByProduct[a.productId] = (backerUnitsByProduct[a.productId] || 0) + addonBreakdown[i].unitsSold;
+      });
+      const weights = entries.map(s => backerUnitsByProduct[s.productId] || 0);
+      const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+      let remaining = overageUnits;
+      entries.forEach((s, i) => {
+        const share = i === entries.length - 1
+          ? remaining
+          : Math.min(remaining, totalWeight > 0
+              ? Math.round(overageUnits * (weights[i] / totalWeight))
+              : Math.round(overageUnits / entries.length));
+        remaining -= share;
+        autoDirectByProduct[s.productId] = share;
+      });
+    }
+
     const postKsSalesBreakdown = (state.postKsSales || []).map(s => {
       const product = getProduct(s.productId);
       const name = product?.name || '?';
       const ppu = product ? Number(product.ppu) || 0 : 0;
       const msrpPrice = Math.round((Number(s.msrp) || 0) * 100) / 100;
       const wholesalePrice = Math.round((Number(s.wholesalePrice) || 0) * 100) / 100;
-      const directUnits = showPostKs ? (Number(s.directUnits) || 0) : 0;
-      const wholesaleUnits = showPostKs ? (Number(s.wholesaleUnits) || 0) : 0;
+      const directUnits = showPostKs ? (autoOverage ? (autoDirectByProduct[s.productId] || 0) : Number(s.directUnits) || 0) : 0;
+      const wholesaleUnits = (showPostKs && !autoOverage) ? (Number(s.wholesaleUnits) || 0) : 0;
       const directRevenue = directUnits * msrpPrice;
       const wholesaleRevenue = wholesaleUnits * wholesalePrice;
       const totalRevenue = directRevenue + wholesaleRevenue;
@@ -264,6 +287,18 @@
     const totalPostKsRevenue = wholesaleRevenue + directRevenue;
     const totalPostKsIPRoyalty = totalPostKsRevenue * ipRoyaltyRate;
     const totalPostKsUnits = wholesaleUnitsSold + directUnitsSold;
+
+    // Overage cost — every printed unit is paid for. Planned post-KS units are
+    // costed at their product's PPU; unallocated overage (printed but not planned
+    // for sale anywhere) at the average cost of a physical backer bundle.
+    const plannedOverageCost = postKsSalesBreakdown.reduce((sum, s) => sum + s.totalUnits * s.ppu, 0);
+    const unallocatedUnits = Math.max(0, overageUnits - totalPostKsUnits);
+    const physicalTierMfgCost = tierBreakdown.filter(t => t.costPerUnit > 0).reduce((sum, t) => sum + t.mfgCost, 0);
+    const avgUnitPpu = physicalBackers > 0 ? physicalTierMfgCost / physicalBackers : 0;
+    const unallocatedCost = unallocatedUnits * avgUnitPpu;
+    const overageCost = plannedOverageCost + unallocatedCost;
+    // Overage — creator's cost on partner projects, Antidote's on own titles
+    const overageCostAntidote = isPartnerProject ? 0 : overageCost;
 
     // IP Advance / MG: the advance is a minimum guarantee against royalties, not a fee on top.
     // Earned royalties recoup the advance first (KS sales chronologically first, then post-KS);
@@ -340,6 +375,7 @@
       devCost, marketingCost, ipAdvance,
       // Overage
       physicalBackers, overageUnits, overageCost, overageCostAntidote,
+      plannedOverageCost, unallocatedUnits, unallocatedCost, autoOverage,
       // IP
       ipEnabled: state.ipEnabled, ipRoyaltyKS, ipRoyaltyRate,
       // IP Advance / MG recoupment
@@ -412,6 +448,7 @@
       // Legacy preset — no post-KS sales
       state.postKsSales = [];
     }
+    state.autoOverageD2C = v.autoOverageD2C ?? false;
     if (v.products) {
       state.products = v.products.map(p => ({ ...p }));
       state.tiers = v.tiers.map((t, i) => ({
@@ -460,6 +497,7 @@
         ipRoyaltyRate: state.ipRoyaltyRate,
         dealPartners: state.dealPartners,
         postKsSales: state.postKsSales,
+        autoOverageD2C: state.autoOverageD2C,
         tiers: state.tiers,
         addons: state.addons,
       })),
@@ -503,6 +541,7 @@
     state.ipRoyaltyRate = s.ipRoyaltyRate ?? 0;
     state.dealPartners = migrateDealPartners(s);
     state.postKsSales = s.postKsSales ?? [];
+    state.autoOverageD2C = s.autoOverageD2C ?? false;
     state.tiers = s.tiers ?? [];
     state.addons = s.addons ?? [];
   }

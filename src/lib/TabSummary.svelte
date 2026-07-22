@@ -133,7 +133,7 @@
               </tr>
             {/if}
             <tr class="bg-amber-50/30">
-              <td class="py-2">- Overage Manufacturing ({calc.overageUnits.toLocaleString()} units)</td>
+              <td class="py-2">- Overage Manufacturing ({calc.overageUnits.toLocaleString()} units{calc.unallocatedUnits > 0 ? `, ${calc.unallocatedUnits.toLocaleString()} unallocated` : ''})</td>
               <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.overageCostAntidote)}</td>
             </tr>
 

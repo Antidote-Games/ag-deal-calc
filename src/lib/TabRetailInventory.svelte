@@ -28,16 +28,28 @@
 </script>
 
 <!-- Overage / Inventory -->
-<div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
   <Metric label="Overage Units" value={calc.overageUnits.toLocaleString()} sub="Print run minus physical backer units" variant="default" />
-  <Metric label="Inventory Investment" value={fmt(calc.overageCost)} sub="Post-KS planned units x PPU" variant="warning" />
+  <Metric label="Inventory Investment" value={fmt(calc.overageCost)} sub="All overage units x PPU" variant="warning" />
   <Metric label="Post-KS Units Planned" value={calc.totalPostKsUnits.toLocaleString()} sub={calc.totalPostKsUnits > calc.overageUnits ? 'Exceeds overage!' : 'Within overage'} variant={calc.totalPostKsUnits > calc.overageUnits ? 'danger' : 'success'} />
+  <Metric label="Unallocated Units" value={calc.unallocatedUnits.toLocaleString()} sub={calc.unallocatedUnits > 0 ? fmt(calc.unallocatedCost) + ' sunk cost, no sales plan' : 'All overage has a sales plan'} variant={calc.unallocatedUnits > 0 ? 'danger' : 'success'} />
 </div>
 
 <!-- Post-KS Sales Planner -->
 <div class="mb-5">
   <Card title="Post-KS Sales Planner">
     <p class="text-xs text-gray-mid mb-4">Select products you'll sell after the campaign. Set MSRP, wholesale price, and expected units per channel. Digital products are excluded.</p>
+
+    <div class="flex items-center gap-3 mb-4">
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" bind:checked={state.autoOverageD2C} class="sr-only peer" />
+        <div class="w-11 h-6 bg-gray-light rounded-full peer peer-checked:bg-purple transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
+      </label>
+      <span class="text-sm font-medium text-gray-mid">Auto: sell 100% of overage direct (D2C)</span>
+    </div>
+    {#if state.autoOverageD2C}
+      <p class="text-xs text-gray-mid mb-4 -mt-2">Unit counts follow the print run automatically — the entire overage is allocated to direct sales, split across products by backer-demand mix. Wholesale is zero. Toggle off to enter units manually.</p>
+    {/if}
 
     {#if state.postKsSales.length > 0}
       <div class="overflow-x-auto mb-3">
@@ -70,12 +82,20 @@
                     class="w-20 mx-auto block px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
                 </td>
                 <td class="py-2">
-                  <input type="number" bind:value={state.postKsSales[i].directUnits} min="0" step="25"
-                    class="w-20 mx-auto block px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
+                  {#if state.autoOverageD2C}
+                    <div class="text-center font-semibold text-purple">{sale.directUnits.toLocaleString()}</div>
+                  {:else}
+                    <input type="number" bind:value={state.postKsSales[i].directUnits} min="0" step="25"
+                      class="w-20 mx-auto block px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
+                  {/if}
                 </td>
                 <td class="py-2">
-                  <input type="number" bind:value={state.postKsSales[i].wholesaleUnits} min="0" step="25"
-                    class="w-20 mx-auto block px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
+                  {#if state.autoOverageD2C}
+                    <div class="text-center font-semibold text-gray-mid">0</div>
+                  {:else}
+                    <input type="number" bind:value={state.postKsSales[i].wholesaleUnits} min="0" step="25"
+                      class="w-20 mx-auto block px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
+                  {/if}
                 </td>
                 <td class="py-2 text-right text-purple font-semibold">{fmtFull(sale.directRevenue)}</td>
                 <td class="py-2 text-right text-purple font-semibold">{fmtFull(sale.wholesaleRevenue)}</td>
