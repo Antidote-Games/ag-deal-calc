@@ -7,7 +7,17 @@
     "projectName": "Siege TCG — Operation House of Cards",
     "ipEnabled": true,
     "ipAdvance": 200000,
-    "ipRoyaltyRate": 12,
+    "ipRoyaltyStructure": "brackets",
+    "ipBrackets": [
+      { "upTo": 200000, "rate": 8 },
+      { "upTo": 500000, "rate": 10 },
+      { "upTo": null, "rate": 12 }
+    ],
+    "ipChannels": [
+      { "key": "ks", "label": "Kickstarter", "rate": 12, "basis": "net" },
+      { "key": "direct", "label": "D2C", "rate": 12, "basis": "net" },
+      { "key": "wholesale", "label": "Wholesale", "rate": 12, "basis": "net" }
+    ],
     "devCost": 150000,
     "devLineItems": [
       { "name": "Card Illustration (~150 pieces, mixed FC)", "cost": 48000 },

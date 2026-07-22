@@ -72,7 +72,24 @@
     platformFeeRate: 13.5,
     ipEnabled: false,
     ipAdvance: 0,
-    ipRoyaltyRate: 0,
+    // Royalty structure: 'flat' uses each channel's own rate; 'brackets' uses a
+    // marginal schedule over cumulative royalty-base revenue across the whole
+    // deal (KS first, then post-KS), like tax brackets.
+    ipRoyaltyStructure: 'flat',
+    // Per-channel royalty config. basis 'net' = % of revenue collected;
+    // 'msrp' = units x MSRP x rate regardless of realized price (post-KS
+    // channels only — KS is always on money collected).
+    ipChannels: [
+      { key: 'ks', label: 'Kickstarter', rate: 0, basis: 'net' },
+      { key: 'direct', label: 'D2C', rate: 0, basis: 'net' },
+      { key: 'wholesale', label: 'Wholesale', rate: 0, basis: 'net' },
+    ],
+    // Brackets in ascending order; upTo null = everything above the last threshold.
+    ipBrackets: [
+      { upTo: 200000, rate: 8 },
+      { upTo: 500000, rate: 10 },
+      { upTo: null, rate: 12 },
+    ],
     // Deal partners (own titles only) — list of { name, commissionRate, retailBonusRate }
     // Each partner takes a % of KS profit and a % of post-KS retail revenue.
     dealPartners: [],
@@ -132,7 +149,10 @@
     const shippingSubsidy = Number(state.shippingSubsidy) || 0;
     const platformFeeRate = (Number(state.platformFeeRate) || 0) / 100;
     const ipAdvance = state.ipEnabled ? (Number(state.ipAdvance) || 0) : 0;
-    const ipRoyaltyRate = state.ipEnabled ? (Number(state.ipRoyaltyRate) || 0) / 100 : 0;
+    const royStructure = state.ipRoyaltyStructure || 'flat';
+    const royChannels = state.ipChannels || [];
+    const chan = key => royChannels.find(c => c.key === key) || { rate: 0, basis: 'net' };
+    const chanRate = key => state.ipEnabled ? (Number(chan(key).rate) || 0) / 100 : 0;
 
     // Tier breakdown — cost per unit from products
     const basePrice = Number(state.tiers[0]?.price) || 0;
@@ -192,9 +212,6 @@
       .filter(t => t.costPerUnit > 0)
       .reduce((sum, t) => sum + t.backers, 0);
     const overageUnits = Math.max(0, printRun - physicalBackers);
-
-    // IP Royalties (not a KS Profit deduction — separate expense)
-    const ipRoyaltyKS = ksRevenue * ipRoyaltyRate;
 
     const isPartnerProject = state.projectType === 'partner';
     const antidoteProfitPct = (Number(state.antidoteProfitPct) || 0) / 100;
@@ -276,8 +293,7 @@
       const wholesaleRevenue = wholesaleUnits * wholesalePrice;
       const totalRevenue = directRevenue + wholesaleRevenue;
       const totalUnits = directUnits + wholesaleUnits;
-      const totalIPRoyalty = totalRevenue * ipRoyaltyRate;
-      return { productId: s.productId, name, ppu, msrpPrice, wholesalePrice, directUnits, wholesaleUnits, directRevenue, wholesaleRevenue, totalRevenue, totalUnits, totalIPRoyalty };
+      return { productId: s.productId, name, ppu, msrpPrice, wholesalePrice, directUnits, wholesaleUnits, directRevenue, wholesaleRevenue, totalRevenue, totalUnits };
     });
 
     const wholesaleRevenue = postKsSalesBreakdown.reduce((sum, s) => sum + s.wholesaleRevenue, 0);
@@ -285,7 +301,6 @@
     const wholesaleUnitsSold = postKsSalesBreakdown.reduce((sum, s) => sum + s.wholesaleUnits, 0);
     const directUnitsSold = postKsSalesBreakdown.reduce((sum, s) => sum + s.directUnits, 0);
     const totalPostKsRevenue = wholesaleRevenue + directRevenue;
-    const totalPostKsIPRoyalty = totalPostKsRevenue * ipRoyaltyRate;
     const totalPostKsUnits = wholesaleUnitsSold + directUnitsSold;
 
     // Overage cost — every printed unit is paid for. Planned post-KS units are
@@ -300,11 +315,52 @@
     // Overage — creator's cost on partner projects, Antidote's on own titles
     const overageCostAntidote = isPartnerProject ? 0 : overageCost;
 
+    // Royalty base per channel. 'net' = revenue actually collected; 'msrp' =
+    // units x MSRP regardless of realized price (matters mostly for wholesale,
+    // where money collected is well below sticker).
+    const royaltyBaseKS = ksRevenue;
+    const royaltyBaseDirect = chan('direct').basis === 'msrp'
+      ? postKsSalesBreakdown.reduce((sum, s) => sum + s.directUnits * s.msrpPrice, 0)
+      : directRevenue;
+    const royaltyBaseWholesale = chan('wholesale').basis === 'msrp'
+      ? postKsSalesBreakdown.reduce((sum, s) => sum + s.wholesaleUnits * s.msrpPrice, 0)
+      : wholesaleRevenue;
+    const royaltyBasePostKs = royaltyBaseDirect + royaltyBaseWholesale;
+    const royaltyBaseTotal = royaltyBaseKS + royaltyBasePostKs;
+
+    // Marginal bracket schedule over cumulative base, like tax brackets.
+    // Revenue above the last finite threshold pays the last bracket's rate.
+    const royBrackets = state.ipBrackets || [];
+    function bracketRoyalty(x) {
+      let royalty = 0, prev = 0, lastRate = 0;
+      for (const b of royBrackets) {
+        const cap = (b.upTo == null || b.upTo === '') ? Infinity : Number(b.upTo) || 0;
+        lastRate = (Number(b.rate) || 0) / 100;
+        royalty += Math.max(0, Math.min(x, cap) - prev) * lastRate;
+        prev = cap;
+        if (x <= cap) return royalty;
+      }
+      return royalty + Math.max(0, x - prev) * lastRate;
+    }
+
+    let earnedRoyaltyKS = 0, earnedRoyaltyDirect = 0, earnedRoyaltyWholesale = 0;
+    if (state.ipEnabled && royStructure === 'brackets') {
+      // Brackets consume cumulative base across the whole deal: KS revenue
+      // first, then post-KS. Post-KS royalty is attributed pro-rata by base.
+      earnedRoyaltyKS = bracketRoyalty(royaltyBaseKS);
+      const postKsRoyalty = bracketRoyalty(royaltyBaseTotal) - earnedRoyaltyKS;
+      earnedRoyaltyDirect = royaltyBasePostKs > 0 ? postKsRoyalty * (royaltyBaseDirect / royaltyBasePostKs) : 0;
+      earnedRoyaltyWholesale = royaltyBasePostKs > 0 ? postKsRoyalty * (royaltyBaseWholesale / royaltyBasePostKs) : 0;
+    } else if (state.ipEnabled) {
+      earnedRoyaltyKS = royaltyBaseKS * chanRate('ks');
+      earnedRoyaltyDirect = royaltyBaseDirect * chanRate('direct');
+      earnedRoyaltyWholesale = royaltyBaseWholesale * chanRate('wholesale');
+    }
+    const earnedRoyaltyPostKs = earnedRoyaltyDirect + earnedRoyaltyWholesale;
+
     // IP Advance / MG: the advance is a minimum guarantee against royalties, not a fee on top.
     // Earned royalties recoup the advance first (KS sales chronologically first, then post-KS);
     // only royalties beyond the advance are paid on top. Total IP cost = max(advance, earned royalties).
-    const earnedRoyaltyKS = ipRoyaltyKS;                 // gross royalty earned on KS revenue
-    const earnedRoyaltyPostKs = totalPostKsIPRoyalty;    // gross royalty earned on post-KS revenue
     const earnedRoyaltyTotal = earnedRoyaltyKS + earnedRoyaltyPostKs;
     const royaltyDueKS = Math.max(0, earnedRoyaltyKS - ipAdvance);
     const advanceRemainingAfterKS = Math.max(0, ipAdvance - earnedRoyaltyKS);
@@ -314,6 +370,16 @@
     const unrecoupedAdvance = ipAdvance - ipRecouped;            // forfeited minimum when sales are weak
     const ipEarnedOut = ipAdvance > 0 && earnedRoyaltyTotal >= ipAdvance;
     const totalIpCost = ipAdvance + royaltyDue;                  // = max(ipAdvance, earnedRoyaltyTotal)
+
+    // Effective royalty rates for sanity checks / deal comparison. Per-unit and
+    // %-of-net are on actual units sold and money collected, whatever the basis.
+    const royaltyUnits = state.tiers.reduce((sum, t, i) =>
+      sum + tierBreakdown[i].backers * (t.products || []).reduce((s, tp) => s + (Number(tp.qty) || 0), 0), 0)
+      + addonBreakdown.reduce((s, a) => s + a.unitsSold, 0)
+      + totalPostKsUnits;
+    const netCollected = ksRevenue + totalPostKsRevenue;
+    const effectiveRoyaltyPerUnit = royaltyUnits > 0 ? earnedRoyaltyTotal / royaltyUnits : 0;
+    const effectiveRoyaltyPctNet = netCollected > 0 ? earnedRoyaltyTotal / netCollected : 0;
     // Deal partners (own titles only). Each partner's rate is stacked: it applies to the
     // same base (KS profit / post-KS revenue) as every other partner, not cascaded.
     const dealPartnerBreakdown = (isPartnerProject ? [] : (state.dealPartners || [])).map((p, i) => {
@@ -377,9 +443,11 @@
       physicalBackers, overageUnits, overageCost, overageCostAntidote,
       plannedOverageCost, unallocatedUnits, unallocatedCost, autoOverage,
       // IP
-      ipEnabled: state.ipEnabled, ipRoyaltyKS, ipRoyaltyRate,
+      ipEnabled: state.ipEnabled, ipRoyaltyStructure: royStructure,
+      royaltyBaseKS, royaltyBaseDirect, royaltyBaseWholesale, royaltyBasePostKs, royaltyBaseTotal,
+      royaltyUnits, netCollected, effectiveRoyaltyPerUnit, effectiveRoyaltyPctNet,
       // IP Advance / MG recoupment
-      earnedRoyaltyKS, earnedRoyaltyPostKs, earnedRoyaltyTotal,
+      earnedRoyaltyKS, earnedRoyaltyDirect, earnedRoyaltyWholesale, earnedRoyaltyPostKs, earnedRoyaltyTotal,
       royaltyDueKS, royaltyDuePostKs, royaltyDue,
       ipRecouped, unrecoupedAdvance, ipEarnedOut, totalIpCost,
       // Project type
@@ -396,11 +464,34 @@
       // Post-KS sales
       postKsSalesBreakdown, wholesaleRevenue, directRevenue, wholesaleUnitsSold, directUnitsSold,
       // Combined post-KS
-      totalPostKsRevenue, totalPostKsIPRoyalty, totalPostKsUnits, postKsMargin,
+      totalPostKsRevenue, totalPostKsUnits, postKsMargin,
       // Summary
       grossRevenue, totalExpenses, netProfit,
     };
   });
+
+  // Normalize royalty config from either the new structured form or the legacy
+  // single flat rate (applied to every channel).
+  function migrateRoyalty(src) {
+    const legacy = Number(src.ipRoyaltyRate) || 0;
+    return {
+      structure: src.ipRoyaltyStructure ?? 'flat',
+      channels: Array.isArray(src.ipChannels)
+        ? src.ipChannels.map(c => ({ basis: 'net', ...c }))
+        : [
+            { key: 'ks', label: 'Kickstarter', rate: legacy, basis: 'net' },
+            { key: 'direct', label: 'D2C', rate: legacy, basis: 'net' },
+            { key: 'wholesale', label: 'Wholesale', rate: legacy, basis: 'net' },
+          ],
+      brackets: Array.isArray(src.ipBrackets)
+        ? src.ipBrackets.map(b => ({ ...b }))
+        : [
+            { upTo: 200000, rate: 8 },
+            { upTo: 500000, rate: 10 },
+            { upTo: null, rate: 12 },
+          ],
+    };
+  }
 
   // Normalize deal partners from either the new list form or legacy single-partner fields.
   function migrateDealPartners(src) {
@@ -441,7 +532,10 @@
     state.totalBackers = v.totalBackers;
     state.platformFeeRate = v.platformFeeRate;
     state.ipAdvance = v.ipAdvance;
-    state.ipRoyaltyRate = v.ipRoyaltyRate;
+    const royalty = migrateRoyalty(v);
+    state.ipRoyaltyStructure = royalty.structure;
+    state.ipChannels = royalty.channels;
+    state.ipBrackets = royalty.brackets;
     if (v.postKsSales) {
       state.postKsSales = v.postKsSales.map(s => ({ ...s }));
     } else {
@@ -494,7 +588,9 @@
         platformFeeRate: state.platformFeeRate,
         ipEnabled: state.ipEnabled,
         ipAdvance: state.ipAdvance,
-        ipRoyaltyRate: state.ipRoyaltyRate,
+        ipRoyaltyStructure: state.ipRoyaltyStructure,
+        ipChannels: state.ipChannels,
+        ipBrackets: state.ipBrackets,
         dealPartners: state.dealPartners,
         postKsSales: state.postKsSales,
         autoOverageD2C: state.autoOverageD2C,
@@ -538,7 +634,10 @@
     state.platformFeeRate = s.platformFeeRate ?? 13.5;
     state.ipEnabled = s.ipEnabled ?? false;
     state.ipAdvance = s.ipAdvance ?? 0;
-    state.ipRoyaltyRate = s.ipRoyaltyRate ?? 0;
+    const royalty = migrateRoyalty(s);
+    state.ipRoyaltyStructure = royalty.structure;
+    state.ipChannels = royalty.channels;
+    state.ipBrackets = royalty.brackets;
     state.dealPartners = migrateDealPartners(s);
     state.postKsSales = s.postKsSales ?? [];
     state.autoOverageD2C = s.autoOverageD2C ?? false;
