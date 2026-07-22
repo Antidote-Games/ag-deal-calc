@@ -36,10 +36,10 @@
       { "id": "p4", "name": "Map Poster", "ppu": 2, "weight": 0.1, "suggestedPrice": 10 }
     ],
     "tiers": [
-      { "name": "PDF Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 15, "pct": 25, "shippingCost": 0 },
-      { "name": "Softcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 32, "pct": 40, "shippingCost": 5 },
-      { "name": "Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 45, "pct": 25, "shippingCost": 6 },
-      { "name": "Hardcover + Map + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 55, "pct": 10, "shippingCost": 7 }
+      { "name": "PDF Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 15, "pct": 25 },
+      { "name": "Softcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 32, "pct": 40 },
+      { "name": "Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 45, "pct": 25 },
+      { "name": "Hardcover + Map + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 55, "pct": 10 }
     ]
   }
 }

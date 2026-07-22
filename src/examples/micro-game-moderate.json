@@ -35,10 +35,10 @@
       { "id": "p3", "name": "Mini Expansion", "ppu": 2, "weight": 0.2, "suggestedPrice": 10 }
     ],
     "tiers": [
-      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 22, "pct": 50, "shippingCost": 4 },
-      { "name": "Premium", "products": [{ "productId": "p2", "qty": 1 }], "price": 32, "pct": 25, "shippingCost": 5 },
-      { "name": "Premium + Expansion", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 40, "pct": 18, "shippingCost": 5 },
-      { "name": "2x Premium", "products": [{ "productId": "p2", "qty": 2 }], "price": 58, "pct": 7, "shippingCost": 6 }
+      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 22, "pct": 50 },
+      { "name": "Premium", "products": [{ "productId": "p2", "qty": 1 }], "price": 32, "pct": 25 },
+      { "name": "Premium + Expansion", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 40, "pct": 18 },
+      { "name": "2x Premium", "products": [{ "productId": "p2", "qty": 2 }], "price": 58, "pct": 7 }
     ]
   }
 }

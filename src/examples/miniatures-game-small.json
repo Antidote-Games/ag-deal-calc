@@ -36,9 +36,9 @@
       { "id": "p2", "name": "Starter Set (Rules + 8 Minis)", "ppu": 12, "weight": 1.2, "suggestedPrice": 45 }
     ],
     "tiers": [
-      { "name": "Digital STLs Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 15, "pct": 20, "shippingCost": 0 },
-      { "name": "Starter Set", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 50, "pct": 60, "shippingCost": 8 },
-      { "name": "2x Starter (2-Player)", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 2 }], "price": 90, "pct": 20, "shippingCost": 10 }
+      { "name": "Digital STLs Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 15, "pct": 20 },
+      { "name": "Starter Set", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 50, "pct": 60 },
+      { "name": "2x Starter (2-Player)", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 2 }], "price": 90, "pct": 20 }
     ]
   }
 }

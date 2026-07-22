@@ -17,8 +17,7 @@
     const adjRevenue = calc.ksRevenue * ratio;
     const adjBkrMfg = calc.backerMfgCost * ratio;
     const adjPlatform = adjRevenue * (Number(inputState.platformFeeRate) / 100);
-    const adjShipping = calc.shippingCost * ratio;
-    const adjCosts = calc.devCost + calc.marketingCost + calc.ipAdvance + adjBkrMfg + adjPlatform + adjShipping;
+    const adjCosts = calc.devCost + calc.marketingCost + calc.ipAdvance + calc.shippingSubsidy + adjBkrMfg + adjPlatform;
     const adjProfit = adjRevenue - adjCosts;
     return { backers: adjBackers, revenue: adjRevenue, costs: adjCosts, profit: adjProfit };
   });
@@ -34,7 +33,7 @@
 
 <!-- Cost Breakdown -->
 <div class="mb-5">
-  <Card title="KS Cost Breakdown (6 Deductions)">
+  <Card title="KS Cost Breakdown">
     <div class="overflow-x-auto">
       <table class="w-full text-sm">
         <thead>
@@ -51,7 +50,7 @@
             { name: 'IP Advance', val: calc.ipAdvance },
             { name: 'Manufacturing (backer units)', val: calc.backerMfgCost },
             { name: 'Platform Fees', val: calc.platformFees },
-            { name: 'Shipping & Fulfillment', val: calc.shippingCost },
+            { name: 'Shipping Subsidy', val: calc.shippingSubsidy },
           ] as item}
             <tr class="border-b border-gray-light/20 hover:bg-cream/50">
               <td class="py-2">{item.name}</td>
@@ -85,14 +84,12 @@
             <th class="py-2 text-right text-xs font-semibold text-gray-mid">Revenue</th>
             <th class="py-2 text-center text-xs font-semibold text-gray-mid">Mfg/Unit</th>
             <th class="py-2 text-right text-xs font-semibold text-gray-mid">Mfg Cost</th>
-            <th class="py-2 text-center text-xs font-semibold text-gray-mid">Ship/Unit</th>
-            <th class="py-2 text-right text-xs font-semibold text-gray-mid">Ship Cost</th>
             <th class="py-2 text-right text-xs font-semibold text-gray-mid">Margin</th>
           </tr>
         </thead>
         <tbody>
           {#each calc.tierBreakdown as tier, i}
-            {@const margin = tier.revenue - tier.mfgCost - tier.shippingTotal}
+            {@const margin = tier.revenue - tier.mfgCost}
             <tr class="border-b border-gray-light/20 hover:bg-cream/50">
               <td class="py-2">
                 <div class="font-semibold">{tier.name}{i === 0 ? ' *' : ''}</div>
@@ -105,13 +102,11 @@
               <td class="py-2 text-right font-semibold text-purple">{fmtFull(tier.revenue)}</td>
               <td class="py-2 text-center">${tier.costPerUnit.toFixed(2)}</td>
               <td class="py-2 text-right text-pink-hot">{fmtFull(tier.mfgCost)}</td>
-              <td class="py-2 text-center">${tier.shipping.toFixed(2)}</td>
-              <td class="py-2 text-right text-pink-hot">{fmtFull(tier.shippingTotal)}</td>
               <td class="py-2 text-right font-semibold {margin >= 0 ? 'text-green-700' : 'text-pink-hot'}">{fmtFull(margin)}</td>
             </tr>
           {/each}
           {#each calc.addonBreakdown as addon}
-            {@const margin = addon.revenue - addon.mfgCost - addon.shippingTotal}
+            {@const margin = addon.revenue - addon.mfgCost}
             <tr class="border-b border-gray-light/20 bg-blue-light/5 hover:bg-cream/50">
               <td class="py-2">
                 <div class="font-semibold text-gray-mid">Addon: {addon.name}</div>
@@ -122,8 +117,6 @@
               <td class="py-2 text-right font-semibold text-purple">{fmtFull(addon.revenue)}</td>
               <td class="py-2 text-center">${addon.ppu.toFixed(2)}</td>
               <td class="py-2 text-right text-pink-hot">{fmtFull(addon.mfgCost)}</td>
-              <td class="py-2 text-center">${addon.shippingPerUnit.toFixed(2)}</td>
-              <td class="py-2 text-right text-pink-hot">{fmtFull(addon.shippingTotal)}</td>
               <td class="py-2 text-right font-semibold {margin >= 0 ? 'text-green-700' : 'text-pink-hot'}">{fmtFull(margin)}</td>
             </tr>
           {/each}
@@ -134,16 +127,14 @@
             <td class="py-2 text-right text-purple">{fmtFull(calc.ksRevenue)}</td>
             <td class="py-2"></td>
             <td class="py-2 text-right text-pink-hot">{fmtFull(calc.backerMfgCost)}</td>
-            <td class="py-2"></td>
-            <td class="py-2 text-right text-pink-hot">{fmtFull(calc.shippingCost)}</td>
-            <td class="py-2 text-right text-purple">{fmtFull(calc.ksRevenue - calc.backerMfgCost - calc.shippingCost)}</td>
+            <td class="py-2 text-right text-purple">{fmtFull(calc.ksRevenue - calc.backerMfgCost)}</td>
           </tr>
         </tfoot>
       </table>
     </div>
 
     <div class="bg-blue-light/10 border-l-4 border-l-blue-light rounded p-3 mt-4 text-xs text-purple leading-relaxed">
-      PPU per tier is calculated from assigned products. Each tier can contain different products at different quantities. Shipping is set manually per tier based on weight and destination.
+      PPU per tier is calculated from assigned products. Each tier can contain different products at different quantities. Shipping is charged to backers in the pledge manager and isn't a campaign cost — use the Shipping Subsidy on the Budget tab if you plan to eat part of it.
     </div>
   </Card>
 </div>

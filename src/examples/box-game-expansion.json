@@ -34,9 +34,9 @@
       { "id": "p2", "name": "Expansion (Large Box)", "ppu": 8, "weight": 1.5, "suggestedPrice": 40 }
     ],
     "tiers": [
-      { "name": "Small Expansion", "products": [{ "productId": "p1", "qty": 1 }], "price": 25, "pct": 55, "shippingCost": 5 },
-      { "name": "Large Expansion", "products": [{ "productId": "p2", "qty": 1 }], "price": 40, "pct": 30, "shippingCost": 7 },
-      { "name": "Both Expansions", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 60, "pct": 15, "shippingCost": 9 }
+      { "name": "Small Expansion", "products": [{ "productId": "p1", "qty": 1 }], "price": 25, "pct": 55 },
+      { "name": "Large Expansion", "products": [{ "productId": "p2", "qty": 1 }], "price": 40, "pct": 30 },
+      { "name": "Both Expansions", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 60, "pct": 15 }
     ]
   }
 }

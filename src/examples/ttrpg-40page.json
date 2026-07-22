@@ -38,10 +38,10 @@
       { "id": "p3", "name": "Hardcover Book (40pg)", "ppu": 7, "weight": 0.8, "suggestedPrice": 30 }
     ],
     "tiers": [
-      { "name": "PDF Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 12, "pct": 30, "shippingCost": 0 },
-      { "name": "Softcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 30, "pct": 40, "shippingCost": 5 },
-      { "name": "Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 40, "pct": 25, "shippingCost": 6 },
-      { "name": "Hardcover + Softcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 60, "pct": 5, "shippingCost": 8 }
+      { "name": "PDF Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 12, "pct": 30 },
+      { "name": "Softcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 30, "pct": 40 },
+      { "name": "Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 40, "pct": 25 },
+      { "name": "Hardcover + Softcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 60, "pct": 5 }
     ]
   }
 }

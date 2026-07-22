@@ -269,6 +269,20 @@
   </Card>
 </div>
 
+<div class="mb-5">
+  <Card title="Shipping Subsidy">
+    <p class="text-xs text-gray-mid mb-3">
+      Backers pay their own shipping via the pledge manager, so shipping is not a campaign cost.
+      Only enter an amount here if you plan to eat part of it — free-shipping promos, EU-friendly
+      pricing, or a buffer for under-collection and replacement shipments. Usually $0.
+    </p>
+    <label class="text-sm font-medium text-gray-mid block">Net Shipping Cost (Total $)
+      <input type="number" bind:value={inputState.shippingSubsidy} min="0" step="100"
+        class="w-full px-3 py-2 border border-gray-light rounded-lg text-sm focus:outline-none focus:border-purple" />
+    </label>
+  </Card>
+</div>
+
 <!-- Fixed cost summary -->
 <div class="bg-cream rounded-xl p-4 text-center">
   {#if isPartner}

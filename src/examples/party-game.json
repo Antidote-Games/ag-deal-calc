@@ -36,10 +36,10 @@
       { "id": "p3", "name": "Expansion Pack", "ppu": 2, "weight": 0.3, "suggestedPrice": 12 }
     ],
     "tiers": [
-      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 20, "pct": 50, "shippingCost": 5 },
-      { "name": "Deluxe", "products": [{ "productId": "p2", "qty": 1 }], "price": 35, "pct": 25, "shippingCost": 6 },
-      { "name": "Deluxe + Expansion", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 45, "pct": 18, "shippingCost": 7 },
-      { "name": "Party Pack (2x Deluxe + Expansion)", "products": [{ "productId": "p2", "qty": 2 }, { "productId": "p3", "qty": 1 }], "price": 75, "pct": 7, "shippingCost": 10 }
+      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 20, "pct": 50 },
+      { "name": "Deluxe", "products": [{ "productId": "p2", "qty": 1 }], "price": 35, "pct": 25 },
+      { "name": "Deluxe + Expansion", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 45, "pct": 18 },
+      { "name": "Party Pack (2x Deluxe + Expansion)", "products": [{ "productId": "p2", "qty": 2 }, { "productId": "p3", "qty": 1 }], "price": 75, "pct": 7 }
     ]
   }
 }

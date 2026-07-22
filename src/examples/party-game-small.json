@@ -32,9 +32,9 @@
       { "id": "p1", "name": "Party Game (Compact)", "ppu": 2, "weight": 0.4, "suggestedPrice": 15 }
     ],
     "tiers": [
-      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 15, "pct": 65, "shippingCost": 4 },
-      { "name": "2-Pack (Gift)", "products": [{ "productId": "p1", "qty": 2 }], "price": 26, "pct": 25, "shippingCost": 5 },
-      { "name": "Party Pack (4x)", "products": [{ "productId": "p1", "qty": 4 }], "price": 48, "pct": 10, "shippingCost": 7 }
+      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 15, "pct": 65 },
+      { "name": "2-Pack (Gift)", "products": [{ "productId": "p1", "qty": 2 }], "price": 26, "pct": 25 },
+      { "name": "Party Pack (4x)", "products": [{ "productId": "p1", "qty": 4 }], "price": 48, "pct": 10 }
     ]
   }
 }

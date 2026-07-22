@@ -33,10 +33,10 @@
       { "id": "p2", "name": "Micro Game Premium (Upgraded Components)", "ppu": 5, "weight": 0.6, "suggestedPrice": 28 }
     ],
     "tiers": [
-      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 20, "pct": 60, "shippingCost": 4 },
-      { "name": "Premium", "products": [{ "productId": "p2", "qty": 1 }], "price": 28, "pct": 25, "shippingCost": 4 },
-      { "name": "2x Standard (Gift Pack)", "products": [{ "productId": "p1", "qty": 2 }], "price": 35, "pct": 10, "shippingCost": 5 },
-      { "name": "2x Premium", "products": [{ "productId": "p2", "qty": 2 }], "price": 50, "pct": 5, "shippingCost": 6 }
+      { "name": "Standard", "products": [{ "productId": "p1", "qty": 1 }], "price": 20, "pct": 60 },
+      { "name": "Premium", "products": [{ "productId": "p2", "qty": 1 }], "price": 28, "pct": 25 },
+      { "name": "2x Standard (Gift Pack)", "products": [{ "productId": "p1", "qty": 2 }], "price": 35, "pct": 10 },
+      { "name": "2x Premium", "products": [{ "productId": "p2", "qty": 2 }], "price": 50, "pct": 5 }
     ]
   }
 }

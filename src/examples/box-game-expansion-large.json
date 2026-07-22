@@ -39,10 +39,10 @@
       { "id": "p4", "name": "Promo Pack", "ppu": 2, "weight": 0.2, "suggestedPrice": 12 }
     ],
     "tiers": [
-      { "name": "Standard Expansion", "products": [{ "productId": "p1", "qty": 1 }], "price": 45, "pct": 40, "shippingCost": 8 },
-      { "name": "Deluxe Expansion", "products": [{ "productId": "p2", "qty": 1 }], "price": 75, "pct": 32, "shippingCost": 10 },
-      { "name": "Deluxe + Playmat", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 92, "pct": 18, "shippingCost": 11 },
-      { "name": "All-In (Deluxe + Playmat + Promo)", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 100, "pct": 10, "shippingCost": 12 }
+      { "name": "Standard Expansion", "products": [{ "productId": "p1", "qty": 1 }], "price": 45, "pct": 40 },
+      { "name": "Deluxe Expansion", "products": [{ "productId": "p2", "qty": 1 }], "price": 75, "pct": 32 },
+      { "name": "Deluxe + Playmat", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 92, "pct": 18 },
+      { "name": "All-In (Deluxe + Playmat + Promo)", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 100, "pct": 10 }
     ]
   }
 }

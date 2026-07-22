@@ -65,6 +65,10 @@
     printRun: 0,
     devCost: 0,
     marketingCost: 0,
+    // Backers pay shipping via the pledge manager, so it's not a campaign cost.
+    // This is the optional net amount Antidote chooses to eat (free-shipping
+    // promos, under-collection buffer). Usually 0.
+    shippingSubsidy: 0,
     platformFeeRate: 13.5,
     ipEnabled: false,
     ipAdvance: 0,
@@ -123,6 +127,7 @@
     const printRun = Number(state.printRun) || 0;
     const devCost = Number(state.devCost) || 0;
     const marketingCost = Number(state.marketingCost) || 0;
+    const shippingSubsidy = Number(state.shippingSubsidy) || 0;
     const platformFeeRate = (Number(state.platformFeeRate) || 0) / 100;
     const ipAdvance = state.ipEnabled ? (Number(state.ipAdvance) || 0) : 0;
     const ipRoyaltyRate = state.ipEnabled ? (Number(state.ipRoyaltyRate) || 0) / 100 : 0;
@@ -133,18 +138,16 @@
       const name = t.name || `Tier ${i + 1}`;
       const price = Number(t.price) || 0;
       const pct = Number(t.pct) || 0;
-      const shipping = Number(t.shippingCost) || 0;
       const backers = Math.round(totalBackers * (pct / 100));
       const revenue = backers * price;
       const costPerUnit = tierPpu(t);
       const weight = tierWeight(t);
       const mfgCost = backers * costPerUnit;
-      const shippingTotal = backers * shipping;
       const productList = (t.products || []).map(tp => {
         const p = getProduct(tp.productId);
         return { name: p?.name || '?', qty: tp.qty, ppu: p ? Number(p.ppu) || 0 : 0 };
       });
-      return { name, price, pct, backers, revenue, costPerUnit, weight, mfgCost, shipping, shippingTotal, productList };
+      return { name, price, pct, backers, revenue, costPerUnit, weight, mfgCost, productList };
     });
 
     // Addon breakdown
@@ -157,32 +160,28 @@
       const unitsSold = Math.round(totalBackers * attachRate);
       const revenue = unitsSold * price;
       const mfgCost = unitsSold * ppu;
-      const shippingPerUnit = Number(a.shippingCost) || 0;
-      const shippingTotal = unitsSold * shippingPerUnit;
-      return { name, price, ppu, attachRate: a.attachRate, unitsSold, revenue, mfgCost, shippingPerUnit, shippingTotal };
+      return { name, price, ppu, attachRate: a.attachRate, unitsSold, revenue, mfgCost };
     });
 
     const addonRevenue = addonBreakdown.reduce((sum, a) => sum + a.revenue, 0);
     const addonMfgCost = addonBreakdown.reduce((sum, a) => sum + a.mfgCost, 0);
-    const addonShippingCost = addonBreakdown.reduce((sum, a) => sum + a.shippingTotal, 0);
 
     // KS Revenue (tiers + addons)
     const tierRevenue = tierBreakdown.reduce((sum, t) => sum + t.revenue, 0);
     const ksRevenue = tierRevenue + addonRevenue;
     const avgPledge = totalBackers > 0 ? ksRevenue / totalBackers : 0;
 
-    // KS Costs — all 6 deductions (backer units only for mfg)
+    // KS Costs — 5 deductions plus any shipping subsidy (backer units only for mfg).
+    // Shipping itself is backer-paid via the pledge manager, so it never appears here.
     const backerMfgCost = tierBreakdown.reduce((sum, t) => sum + t.mfgCost, 0) + addonMfgCost;
     const platformFees = ksRevenue * platformFeeRate;
-    const shippingCost = tierBreakdown.reduce((sum, t) => sum + t.shippingTotal, 0) + addonShippingCost;
-    const ksCosts = devCost + marketingCost + ipAdvance + backerMfgCost + platformFees + shippingCost;
+    const ksCosts = devCost + marketingCost + ipAdvance + backerMfgCost + platformFees + shippingSubsidy;
     const ksProfit = ksRevenue - ksCosts;
 
     // Break-even backers
     const avgMfgPerBacker = totalBackers > 0 ? backerMfgCost / totalBackers : 0;
-    const avgShipPerBacker = totalBackers > 0 ? shippingCost / totalBackers : 0;
-    const fixedCosts = devCost + marketingCost + ipAdvance;
-    const revenuePerBacker = avgPledge * (1 - platformFeeRate) - avgMfgPerBacker - avgShipPerBacker;
+    const fixedCosts = devCost + marketingCost + ipAdvance + shippingSubsidy;
+    const revenuePerBacker = avgPledge * (1 - platformFeeRate) - avgMfgPerBacker;
     const breakEvenBackers = revenuePerBacker > 0 ? Math.ceil(fixedCosts / revenuePerBacker) : Infinity;
 
     // Overage / Inventory (separate from KS costs)
@@ -215,8 +214,8 @@
     const antidoteDevCost = devCost - creatorDevCost;
     const antidoteMarketingCost = marketingCost - creatorMarketingCost;
     const antidoteIpAdvance = ipAdvance - creatorIpAdvance;
-    // Antidote always fronts operational costs (mfg, platform, shipping)
-    const antidoteTotalContribution = antidoteDevCost + antidoteMarketingCost + antidoteIpAdvance + backerMfgCost + platformFees + shippingCost;
+    // Antidote always fronts operational costs (mfg, platform, any shipping subsidy)
+    const antidoteTotalContribution = antidoteDevCost + antidoteMarketingCost + antidoteIpAdvance + backerMfgCost + platformFees + shippingSubsidy;
     const totalBudget = antidoteTotalContribution + creatorTotalContribution;
     const antidoteContribRatio = totalBudget > 0 ? antidoteTotalContribution / totalBudget : 1;
     const creatorContribRatio = totalBudget > 0 ? creatorTotalContribution / totalBudget : 0;
@@ -333,9 +332,9 @@
       // Tier
       tierBreakdown, basePrice, tierRevenue,
       // Addons
-      addonBreakdown, addonRevenue, addonMfgCost, addonShippingCost,
+      addonBreakdown, addonRevenue, addonMfgCost,
       // KS
-      ksRevenue, avgPledge, backerMfgCost, platformFees, shippingCost,
+      ksRevenue, avgPledge, backerMfgCost, platformFees, shippingSubsidy,
       ksCosts, ksProfit, fixedCosts, revenuePerBacker, breakEvenBackers,
       // Costs
       devCost, marketingCost, ipAdvance,
@@ -401,6 +400,7 @@
     state.projectName = v.projectName;
     state.devCost = v.devCost;
     state.marketingCost = v.marketingCost;
+    state.shippingSubsidy = v.shippingSubsidy ?? 0;
     state.printRun = v.printRun;
     state.totalBackers = v.totalBackers;
     state.platformFeeRate = v.platformFeeRate;
@@ -417,7 +417,7 @@
       state.tiers = v.tiers.map((t, i) => ({
         name: t.name || `Tier ${i + 1}`,
         products: (t.products || []).map(tp => ({ ...tp })),
-        price: t.price, pct: t.pct, shippingCost: t.shippingCost,
+        price: t.price, pct: t.pct,
       }));
     } else {
       // Legacy preset without products — create a single product from old PPU
@@ -426,7 +426,7 @@
       state.tiers = v.tiers.map((t, i) => ({
         name: t.name || `Tier ${i + 1}`,
         products: [{ productId: 'p1', qty: 1 }],
-        price: t.price, pct: t.pct, shippingCost: t.shippingCost,
+        price: t.price, pct: t.pct,
       }));
     }
     state.addons = (v.addons || []).map(a => ({ ...a }));
@@ -453,6 +453,7 @@
         printRun: state.printRun,
         devCost: state.devCost,
         marketingCost: state.marketingCost,
+        shippingSubsidy: state.shippingSubsidy,
         platformFeeRate: state.platformFeeRate,
         ipEnabled: state.ipEnabled,
         ipAdvance: state.ipAdvance,
@@ -495,7 +496,8 @@
     state.printRun = s.printRun ?? 0;
     state.devCost = s.devCost ?? 0;
     state.marketingCost = s.marketingCost ?? 0;
-    state.platformFeeRate = s.platformFeeRate ?? 8;
+    state.shippingSubsidy = s.shippingSubsidy ?? 0;
+    state.platformFeeRate = s.platformFeeRate ?? 13.5;
     state.ipEnabled = s.ipEnabled ?? false;
     state.ipAdvance = s.ipAdvance ?? 0;
     state.ipRoyaltyRate = s.ipRoyaltyRate ?? 0;

@@ -43,15 +43,15 @@
       { "id": "p7", "name": "Event Pack (limited)", "ppu": 2.5, "weight": 0.15, "suggestedPrice": 24.99 }
     ],
     "tiers": [
-      { "name": "Operative (1 Situation Starter)", "products": [{ "productId": "p1", "qty": 1 }], "price": 40, "pct": 45, "shippingCost": 6 },
-      { "name": "Squad (2 Situations + Booster Box)", "products": [{ "productId": "p1", "qty": 2 }, { "productId": "p3", "qty": 1 }], "price": 160, "pct": 30, "shippingCost": 14 },
-      { "name": "Collector (Full set: Premium + Collector + Box + Starter)", "products": [{ "productId": "p5", "qty": 1 }, { "productId": "p6", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p1", "qty": 1 }], "price": 260, "pct": 15, "shippingCost": 18 },
-      { "name": "Founder (Everything + KS-exclusive chase)", "products": [{ "productId": "p1", "qty": 2 }, { "productId": "p3", "qty": 2 }, { "productId": "p5", "qty": 1 }, { "productId": "p6", "qty": 1 }], "price": 450, "pct": 10, "shippingCost": 22 }
+      { "name": "Operative (1 Situation Starter)", "products": [{ "productId": "p1", "qty": 1 }], "price": 40, "pct": 45 },
+      { "name": "Squad (2 Situations + Booster Box)", "products": [{ "productId": "p1", "qty": 2 }, { "productId": "p3", "qty": 1 }], "price": 160, "pct": 30 },
+      { "name": "Collector (Full set: Premium + Collector + Box + Starter)", "products": [{ "productId": "p5", "qty": 1 }, { "productId": "p6", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p1", "qty": 1 }], "price": 260, "pct": 15 },
+      { "name": "Founder (Everything + KS-exclusive chase)", "products": [{ "productId": "p1", "qty": 2 }, { "productId": "p3", "qty": 2 }, { "productId": "p5", "qty": 1 }, { "productId": "p6", "qty": 1 }], "price": 450, "pct": 10 }
     ],
     "addons": [
-      { "productId": "p3", "price": 90, "attachRate": 40, "shippingCost": 8 },
-      { "productId": "p4", "price": 18, "attachRate": 25, "shippingCost": 3 },
-      { "productId": "p5", "price": 45, "attachRate": 15, "shippingCost": 6 }
+      { "productId": "p3", "price": 90, "attachRate": 40 },
+      { "productId": "p4", "price": 18, "attachRate": 25 },
+      { "productId": "p5", "price": 45, "attachRate": 15 }
     ],
     "postKsSales": [
       { "productId": "p2", "msrp": 4.99, "wholesalePrice": 2.5, "directUnits": 20000, "wholesaleUnits": 480000 },

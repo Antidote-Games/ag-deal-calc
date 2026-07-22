@@ -40,11 +40,11 @@
       { "id": "p4", "name": "GM Screen", "ppu": 3, "weight": 0.4, "suggestedPrice": 15 }
     ],
     "tiers": [
-      { "name": "PDF Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 20, "pct": 25, "shippingCost": 0 },
-      { "name": "Standard Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 55, "pct": 40, "shippingCost": 8 },
-      { "name": "Premium Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 80, "pct": 20, "shippingCost": 9 },
-      { "name": "Premium + GM Screen + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 100, "pct": 12, "shippingCost": 10 },
-      { "name": "Collector (2x Premium + GM Screen)", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 2 }, { "productId": "p4", "qty": 1 }], "price": 160, "pct": 3, "shippingCost": 14 }
+      { "name": "PDF Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 20, "pct": 25 },
+      { "name": "Standard Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 55, "pct": 40 },
+      { "name": "Premium Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 80, "pct": 20 },
+      { "name": "Premium + GM Screen + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 100, "pct": 12 },
+      { "name": "Collector (2x Premium + GM Screen)", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 2 }, { "productId": "p4", "qty": 1 }], "price": 160, "pct": 3 }
     ]
   }
 }

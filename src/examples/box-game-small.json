@@ -36,10 +36,10 @@
       { "id": "p2", "name": "Box Game (Deluxe)", "ppu": 10, "weight": 2.0, "suggestedPrice": 50 }
     ],
     "tiers": [
-      { "name": "Standard Edition", "products": [{ "productId": "p1", "qty": 1 }], "price": 38, "pct": 55, "shippingCost": 8 },
-      { "name": "Deluxe Edition", "products": [{ "productId": "p2", "qty": 1 }], "price": 55, "pct": 30, "shippingCost": 10 },
-      { "name": "2x Standard (Gift Pack)", "products": [{ "productId": "p1", "qty": 2 }], "price": 68, "pct": 10, "shippingCost": 12 },
-      { "name": "2x Deluxe", "products": [{ "productId": "p2", "qty": 2 }], "price": 100, "pct": 5, "shippingCost": 14 }
+      { "name": "Standard Edition", "products": [{ "productId": "p1", "qty": 1 }], "price": 38, "pct": 55 },
+      { "name": "Deluxe Edition", "products": [{ "productId": "p2", "qty": 1 }], "price": 55, "pct": 30 },
+      { "name": "2x Standard (Gift Pack)", "products": [{ "productId": "p1", "qty": 2 }], "price": 68, "pct": 10 },
+      { "name": "2x Deluxe", "products": [{ "productId": "p2", "qty": 2 }], "price": 100, "pct": 5 }
     ]
   }
 }

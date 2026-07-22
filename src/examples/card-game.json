@@ -35,10 +35,10 @@
       { "id": "p3", "name": "Card Sleeves (100-pack)", "ppu": 1.5, "weight": 0.1, "suggestedPrice": 8 }
     ],
     "tiers": [
-      { "name": "Core Game", "products": [{ "productId": "p1", "qty": 1 }], "price": 25, "pct": 55, "shippingCost": 5 },
-      { "name": "Core + Expansion", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 38, "pct": 28, "shippingCost": 6 },
-      { "name": "Core + Expansion + Sleeves", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 45, "pct": 12, "shippingCost": 6 },
-      { "name": "2x Everything", "products": [{ "productId": "p1", "qty": 2 }, { "productId": "p2", "qty": 2 }, { "productId": "p3", "qty": 2 }], "price": 80, "pct": 5, "shippingCost": 8 }
+      { "name": "Core Game", "products": [{ "productId": "p1", "qty": 1 }], "price": 25, "pct": 55 },
+      { "name": "Core + Expansion", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 38, "pct": 28 },
+      { "name": "Core + Expansion + Sleeves", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 45, "pct": 12 },
+      { "name": "2x Everything", "products": [{ "productId": "p1", "qty": 2 }, { "productId": "p2", "qty": 2 }, { "productId": "p3", "qty": 2 }], "price": 80, "pct": 5 }
     ]
   }
 }

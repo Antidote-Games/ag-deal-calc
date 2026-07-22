@@ -42,10 +42,10 @@
       { "id": "p5", "name": "Miniatures Expansion", "ppu": 8, "weight": 0.8, "suggestedPrice": 35 }
     ],
     "tiers": [
-      { "name": "Standard Edition", "products": [{ "productId": "p1", "qty": 1 }], "price": 65, "pct": 35, "shippingCost": 12 },
-      { "name": "Premium Edition", "products": [{ "productId": "p2", "qty": 1 }], "price": 110, "pct": 30, "shippingCost": 15 },
-      { "name": "Premium + Playmat", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 135, "pct": 18, "shippingCost": 16 },
-      { "name": "All-In (Premium + All Extras)", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }, { "productId": "p5", "qty": 1 }], "price": 185, "pct": 17, "shippingCost": 18 }
+      { "name": "Standard Edition", "products": [{ "productId": "p1", "qty": 1 }], "price": 65, "pct": 35 },
+      { "name": "Premium Edition", "products": [{ "productId": "p2", "qty": 1 }], "price": 110, "pct": 30 },
+      { "name": "Premium + Playmat", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 135, "pct": 18 },
+      { "name": "All-In (Premium + All Extras)", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }, { "productId": "p5", "qty": 1 }], "price": 185, "pct": 17 }
     ]
   }
 }

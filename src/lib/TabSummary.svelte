@@ -53,10 +53,12 @@
             <td class="py-2">- Platform Fees ({Number(state.platformFeeRate).toFixed(1)}%)</td>
             <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.platformFees)}</td>
           </tr>
-          <tr class="bg-amber-50/60">
-            <td class="py-2">- Shipping & Fulfillment</td>
-            <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.shippingCost)}</td>
-          </tr>
+          {#if calc.shippingSubsidy > 0}
+            <tr class="bg-amber-50/60">
+              <td class="py-2">- Shipping Subsidy</td>
+              <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.shippingSubsidy)}</td>
+            </tr>
+          {/if}
 
           <!-- KS Profit -->
           <tr class="font-bold border-y-2 {calc.ksProfit >= 0 ? 'bg-green-50 border-green-400' : 'bg-red-50 border-pink-hot'}">

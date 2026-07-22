@@ -33,9 +33,9 @@
       { "id": "p2", "name": "Card Sleeves (50-pack)", "ppu": 1, "weight": 0.1, "suggestedPrice": 5 }
     ],
     "tiers": [
-      { "name": "Core Game", "products": [{ "productId": "p1", "qty": 1 }], "price": 18, "pct": 65, "shippingCost": 4 },
-      { "name": "Core + Sleeves", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 22, "pct": 25, "shippingCost": 4 },
-      { "name": "2x Core (Gift Pack)", "products": [{ "productId": "p1", "qty": 2 }], "price": 32, "pct": 10, "shippingCost": 5 }
+      { "name": "Core Game", "products": [{ "productId": "p1", "qty": 1 }], "price": 18, "pct": 65 },
+      { "name": "Core + Sleeves", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 22, "pct": 25 },
+      { "name": "2x Core (Gift Pack)", "products": [{ "productId": "p1", "qty": 2 }], "price": 32, "pct": 10 }
     ]
   }
 }

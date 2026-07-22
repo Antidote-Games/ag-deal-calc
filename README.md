@@ -15,13 +15,16 @@ before committing to it.
 The planner takes campaign inputs and derives a full P&L across several tabs:
 
 - **Campaign** — backers, print run, pledge tiers (with per-tier product mixes,
-  pricing, backer %, and shipping), and add-ons.
+  pricing, and backer %), and add-ons. Shipping is charged to backers via the
+  pledge manager, so it isn't modeled as a campaign cost — an optional shipping
+  subsidy on the Budget tab covers the rare case where Antidote eats part of it.
 - **Products** — a catalog of products with per-unit cost (PPU), weight, and
   suggested price, referenced by tiers and add-ons.
-- **Budget** — dev and marketing costs as itemized line items.
+- **Budget** — dev and marketing costs as itemized line items, plus the optional
+  shipping subsidy.
 - **IP & Royalties** — IP advances treated as a minimum guarantee (MG) recoupable
   against royalties, royalty rates, earn-out, and unrecouped advance.
-- **KS Analysis** — KS revenue, the six cost deductions, KS profit, and
+- **KS Analysis** — KS revenue, the cost deductions, KS profit, and
   break-even backer count.
 - **Retail & Inventory** — post-KS direct and wholesale sales, overage/inventory.
 - **Profit Share** — own-title deal-partner commissions/retail bonuses, or

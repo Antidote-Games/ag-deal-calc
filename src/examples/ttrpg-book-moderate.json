@@ -36,10 +36,10 @@
       { "id": "p4", "name": "GM Screen", "ppu": 3, "weight": 0.4, "suggestedPrice": 15 }
     ],
     "tiers": [
-      { "name": "PDF Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 18, "pct": 30, "shippingCost": 0 },
-      { "name": "Standard Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 50, "pct": 40, "shippingCost": 7 },
-      { "name": "Premium Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 68, "pct": 20, "shippingCost": 8 },
-      { "name": "Premium + GM Screen + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 80, "pct": 10, "shippingCost": 9 }
+      { "name": "PDF Only", "products": [{ "productId": "p1", "qty": 1 }], "price": 18, "pct": 30 },
+      { "name": "Standard Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }], "price": 50, "pct": 40 },
+      { "name": "Premium Hardcover + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 68, "pct": 20 },
+      { "name": "Premium + GM Screen + PDF", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 80, "pct": 10 }
     ]
   }
 }

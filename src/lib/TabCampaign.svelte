@@ -31,7 +31,6 @@
       productId,
       price: product ? Number(product.suggestedPrice) || 0 : 0,
       attachRate: 20,
-      shippingCost: (product && Number(product.weight) > 0) ? 2 : 0,
     }];
   }
 
@@ -164,7 +163,7 @@
         {/if}
       </div>
 
-      <div class="grid grid-cols-5 gap-3 mb-3">
+      <div class="grid grid-cols-4 gap-3 mb-3">
         <div>
           <div class="text-[10px] uppercase text-gray-mid mb-1">Price ($)</div>
           <div class="flex gap-1">
@@ -176,11 +175,6 @@
         <div>
           <div class="text-[10px] uppercase text-gray-mid mb-1">% Backers</div>
           <input type="number" bind:value={tier.pct} min="0" max="100" step="1"
-            class="w-full px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
-        </div>
-        <div>
-          <div class="text-[10px] uppercase text-gray-mid mb-1">Shipping ($)</div>
-          <input type="number" bind:value={tier.shippingCost} min="0" step="0.5"
             class="w-full px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
         </div>
         <div>
@@ -234,13 +228,13 @@
 
   <div class="flex items-center justify-between mt-3">
     <button
-      onclick={() => state.tiers = [...state.tiers, { name: `Tier ${state.tiers.length + 1}`, products: [], price: 0, pct: 0, shippingCost: 0 }]}
+      onclick={() => state.tiers = [...state.tiers, { name: `Tier ${state.tiers.length + 1}`, products: [], price: 0, pct: 0 }]}
       class="px-4 py-2 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors"
     >
       + Add Tier
     </button>
     <div class="text-xs text-gray-mid">
-      Weight: auto-calculated from products. Shipping: set manually based on weight and destination.
+      Weight: auto-calculated from products. Shipping is charged to backers in the pledge manager, so it's not a campaign cost.
     </div>
   </div>
 </Card>
@@ -258,7 +252,6 @@
               <th class="py-2 text-center text-xs font-semibold text-gray-mid">Price ($)</th>
               <th class="py-2 text-center text-xs font-semibold text-gray-mid">PPU ($)</th>
               <th class="py-2 text-center text-xs font-semibold text-gray-mid">Attach Rate (%)</th>
-              <th class="py-2 text-center text-xs font-semibold text-gray-mid">Ship ($)</th>
               <th class="py-2 text-right text-xs font-semibold text-gray-mid">Est. Units</th>
               <th class="py-2 text-right text-xs font-semibold text-gray-mid">Est. Revenue</th>
               <th class="py-2 w-8"></th>
@@ -277,10 +270,6 @@
                 <td class="py-2 text-center text-gray-mid">${product ? Number(product.ppu).toFixed(2) : '0.00'}</td>
                 <td class="py-2">
                   <input type="number" bind:value={addon.attachRate} min="0" max="100" step="5"
-                    class="w-20 mx-auto block px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
-                </td>
-                <td class="py-2">
-                  <input type="number" bind:value={addon.shippingCost} min="0" step="0.5"
                     class="w-20 mx-auto block px-2 py-1.5 border border-gray-light rounded text-sm text-center focus:outline-none focus:border-purple" />
                 </td>
                 <td class="py-2 text-right font-semibold text-purple">{units.toLocaleString()}</td>

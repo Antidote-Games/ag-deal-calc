@@ -39,10 +39,10 @@
       { "id": "p5", "name": "Playmat", "ppu": 4, "weight": 0.5, "suggestedPrice": 20 }
     ],
     "tiers": [
-      { "name": "Core Game", "products": [{ "productId": "p1", "qty": 1 }], "price": 45, "pct": 40, "shippingCost": 6 },
-      { "name": "Core + Both Expansions", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 75, "pct": 30, "shippingCost": 8 },
-      { "name": "Complete + Sleeves", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 88, "pct": 18, "shippingCost": 8 },
-      { "name": "All-In (Everything + Playmat)", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }, { "productId": "p5", "qty": 1 }], "price": 105, "pct": 12, "shippingCost": 10 }
+      { "name": "Core Game", "products": [{ "productId": "p1", "qty": 1 }], "price": 45, "pct": 40 },
+      { "name": "Core + Both Expansions", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 75, "pct": 30 },
+      { "name": "Complete + Sleeves", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 88, "pct": 18 },
+      { "name": "All-In (Everything + Playmat)", "products": [{ "productId": "p1", "qty": 1 }, { "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }, { "productId": "p5", "qty": 1 }], "price": 105, "pct": 12 }
     ]
   }
 }

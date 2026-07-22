@@ -34,13 +34,13 @@
       { "id": "p3", "name": "Premium Resin Ship Set (9)", "ppu": 22.5, "weight": 0.6, "suggestedPrice": 60 }
     ],
     "tiers": [
-      { "name": "Standard Edition", "products": [{ "productId": "p1", "qty": 1 }], "price": 42, "pct": 55, "shippingCost": 8 },
-      { "name": "Deluxe Edition", "products": [{ "productId": "p2", "qty": 1 }], "price": 58, "pct": 30, "shippingCost": 9 },
-      { "name": "2x Standard (Gift Pack)", "products": [{ "productId": "p1", "qty": 2 }], "price": 78, "pct": 10, "shippingCost": 12 },
-      { "name": "2x Deluxe", "products": [{ "productId": "p2", "qty": 2 }], "price": 108, "pct": 5, "shippingCost": 14 }
+      { "name": "Standard Edition", "products": [{ "productId": "p1", "qty": 1 }], "price": 42, "pct": 55 },
+      { "name": "Deluxe Edition", "products": [{ "productId": "p2", "qty": 1 }], "price": 58, "pct": 30 },
+      { "name": "2x Standard (Gift Pack)", "products": [{ "productId": "p1", "qty": 2 }], "price": 78, "pct": 10 },
+      { "name": "2x Deluxe", "products": [{ "productId": "p2", "qty": 2 }], "price": 108, "pct": 5 }
     ],
     "addons": [
-      { "productId": "p3", "price": 60, "attachRate": 30, "shippingCost": 5 }
+      { "productId": "p3", "price": 60, "attachRate": 30 }
     ],
     "postKsSales": [
       { "productId": "p1", "msrp": 45, "wholesalePrice": 20, "directUnits": 100, "wholesaleUnits": 180 }

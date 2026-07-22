@@ -69,9 +69,9 @@
               <td class="py-2 text-right text-gray-mid">$0</td>
             </tr>
             <tr class="border-b border-gray-light/20 bg-cream/50">
-              <td class="py-2 text-gray-mid">Shipping & Fulfillment</td>
-              <td class="py-2 text-right">{fmtFull(calc.shippingCost)}</td>
-              <td class="py-2 text-right text-purple">{fmtFull(calc.shippingCost)}</td>
+              <td class="py-2 text-gray-mid">Shipping Subsidy</td>
+              <td class="py-2 text-right">{fmtFull(calc.shippingSubsidy)}</td>
+              <td class="py-2 text-right text-purple">{fmtFull(calc.shippingSubsidy)}</td>
               <td class="py-2 text-right text-gray-mid">$0</td>
             </tr>
           </tbody>
@@ -92,7 +92,7 @@
         </table>
       </div>
       <div class="bg-blue-light/10 border-l-4 border-l-blue-light rounded p-3 mt-3 text-xs text-purple leading-relaxed">
-        Operational costs (manufacturing, platform fees, shipping) are always fronted by Antidote. Contribution ratio is used to share losses proportionally if the campaign underperforms.
+        Operational costs (manufacturing, platform fees, any shipping subsidy) are always fronted by Antidote. Backers pay their own shipping via the pledge manager. Contribution ratio is used to share losses proportionally if the campaign underperforms.
       </div>
     </Card>
   </div>
@@ -380,7 +380,7 @@
       <div class="text-sm text-gray-mid leading-relaxed space-y-3">
         <div>
           <div class="font-semibold text-purple mb-1">KS Commission</div>
-          <p>Each partner receives a percentage of <strong>KS Profit</strong> (revenue minus all 6 deductions). Commission only applies when profit is positive.</p>
+          <p>Each partner receives a percentage of <strong>KS Profit</strong> (revenue minus all KS deductions). Commission only applies when profit is positive.</p>
         </div>
         <div>
           <div class="font-semibold text-purple mb-1">Retail Bonus</div>

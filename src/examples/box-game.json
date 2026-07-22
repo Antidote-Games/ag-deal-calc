@@ -41,10 +41,10 @@
       { "id": "p4", "name": "Metal Coin Set", "ppu": 4, "weight": 0.3, "suggestedPrice": 18 }
     ],
     "tiers": [
-      { "name": "Standard Edition", "products": [{ "productId": "p1", "qty": 1 }], "price": 50, "pct": 45, "shippingCost": 10 },
-      { "name": "Premium Edition", "products": [{ "productId": "p2", "qty": 1 }], "price": 75, "pct": 30, "shippingCost": 12 },
-      { "name": "Premium + Playmat", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 95, "pct": 15, "shippingCost": 13 },
-      { "name": "All-In (Premium + Playmat + Coins)", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 115, "pct": 10, "shippingCost": 14 }
+      { "name": "Standard Edition", "products": [{ "productId": "p1", "qty": 1 }], "price": 50, "pct": 45 },
+      { "name": "Premium Edition", "products": [{ "productId": "p2", "qty": 1 }], "price": 75, "pct": 30 },
+      { "name": "Premium + Playmat", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }], "price": 95, "pct": 15 },
+      { "name": "All-In (Premium + Playmat + Coins)", "products": [{ "productId": "p2", "qty": 1 }, { "productId": "p3", "qty": 1 }, { "productId": "p4", "qty": 1 }], "price": 115, "pct": 10 }
     ]
   }
 }
