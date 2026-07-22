@@ -1,14 +1,112 @@
 <script>
   import Card from './Card.svelte';
   import Metric from './Metric.svelte';
-  import { fmt, fmtFull } from './utils.js';
+  import { fmt, fmtFull, downloadCsv, fileSlug } from './utils.js';
 
-  let { appState: state, calc, saveScenario, loadScenario, deleteScenario } = $props();
+  let { appState, calc, saveScenario, loadScenario, deleteScenario, moveScenario } = $props();
+
+  let scenarioName = $state('');
+
+  function save() {
+    saveScenario(scenarioName);
+    scenarioName = '';
+  }
+
+  const comparisonRows = [
+    { label: 'Total Backers', key: 'totalBackers', format: (v) => Number(v).toLocaleString() },
+    { label: 'KS Revenue', key: 'ksRevenue', format: fmtFull },
+    { label: 'KS Costs', key: 'ksCosts', format: fmtFull },
+    { label: 'KS Profit', key: 'ksProfit', format: fmtFull },
+    { label: 'Break-Even Backers', key: 'breakEvenBackers', format: (v) => v === Infinity ? 'N/A' : v.toLocaleString() },
+    { label: 'Partner Commission', key: 'partnerCommission', format: fmtFull },
+    { label: 'Overage Investment', key: 'overageCost', format: fmtFull },
+    { label: 'Wholesale Units Sold', key: 'wholesaleUnitsSold', format: (v) => Number(v).toLocaleString() },
+    { label: 'Wholesale Revenue', key: 'wholesaleRevenue', format: fmtFull },
+    { label: 'D2C Units Sold', key: 'directUnitsSold', format: (v) => Number(v).toLocaleString() },
+    { label: 'Direct Revenue', key: 'directRevenue', format: fmtFull },
+    { label: 'Post-KS Margin', key: 'postKsMargin', format: fmtFull },
+    { label: 'Net Profit', key: 'netProfit', format: fmtFull },
+  ];
+
+  // Raw numbers (not display-formatted) so the spreadsheet can compute on them.
+  function csvNum(v) {
+    return Math.round((Number(v) || 0) * 100) / 100;
+  }
+
+  function exportSummary() {
+    const pct = (v) => (v * 100).toFixed(0);
+    const rows = [
+      ['Campaign', appState.projectName],
+      ['Project Type', calc.isPartnerProject ? 'Partner Project' : 'Own Title'],
+      ['Total Backers', Number(appState.totalBackers) || 0],
+      [],
+      ['Line Item', 'Amount'],
+      ['KS Tier Revenue', csvNum(calc.tierRevenue)],
+    ];
+    if (calc.addonRevenue > 0) rows.push([`Addon Revenue (${calc.addonBreakdown.length} addons)`, csvNum(calc.addonRevenue)]);
+    rows.push(['Dev Cost', -csvNum(calc.devCost)]);
+    rows.push(['Marketing Cost', -csvNum(calc.marketingCost)]);
+    if (calc.ipEnabled) rows.push(['IP Advance / MG', -csvNum(calc.ipAdvance)]);
+    rows.push(['Manufacturing (backer units)', -csvNum(calc.backerMfgCost)]);
+    rows.push([`Platform Fees (${Number(appState.platformFeeRate).toFixed(1)}%)`, -csvNum(calc.platformFees)]);
+    if (calc.shippingSubsidy > 0) rows.push(['Shipping Subsidy', -csvNum(calc.shippingSubsidy)]);
+    rows.push(['KS Profit', csvNum(calc.ksProfit)]);
+    if (calc.isPartnerProject) {
+      if (calc.ksProfit >= 0) {
+        rows.push([`Creator's Share (${pct(calc.creatorProfitPct)}%)`, -csvNum(calc.creatorKsShare)]);
+        rows.push([`Antidote KS Share (${pct(calc.antidoteProfitPct)}%)`, csvNum(calc.antidoteKsShare)]);
+      } else {
+        rows.push([`Antidote absorbs (${pct(calc.antidoteContribRatio)}% of loss)`, -csvNum(calc.antidoteLoss)]);
+        rows.push([`Creator absorbs (${pct(calc.creatorContribRatio)}% of loss)`, -csvNum(calc.creatorLoss)]);
+      }
+      if (calc.ipEnabled) rows.push(['IP Royalties on KS (beyond MG)', -csvNum(calc.royaltyDueKS)]);
+      if (calc.showPostKs) {
+        rows.push([`Wholesale Revenue (${calc.wholesaleUnitsSold} units)`, csvNum(calc.wholesaleRevenue)]);
+        rows.push([`Direct Sales Revenue (${calc.directUnitsSold} units)`, csvNum(calc.directRevenue)]);
+        if (calc.ipEnabled) rows.push(['Post-KS IP Royalties (beyond MG)', -csvNum(calc.royaltyDuePostKs)]);
+        rows.push([`Creator's Post-KS Share (${pct(calc.creatorProfitPct)}%)`, -csvNum(calc.postKsCreatorShare)]);
+      }
+    } else {
+      if (calc.ipEnabled) rows.push(['IP Royalties on KS (beyond MG)', -csvNum(calc.royaltyDueKS)]);
+      if (calc.dealPartnerActive && calc.partnerCommission > 0) rows.push([`Deal Partner Commission (${calc.totalPartnerCommissionRate}%)`, -csvNum(calc.partnerCommission)]);
+      rows.push([`Overage Manufacturing (${calc.overageUnits} units)`, -csvNum(calc.overageCostAntidote)]);
+      rows.push([`Wholesale Revenue (${calc.wholesaleUnitsSold} units)`, csvNum(calc.wholesaleRevenue)]);
+      rows.push([`Direct Sales Revenue (${calc.directUnitsSold} units)`, csvNum(calc.directRevenue)]);
+      if (calc.ipEnabled) rows.push(['Post-KS IP Royalties (beyond MG)', -csvNum(calc.royaltyDuePostKs)]);
+      if (calc.dealPartnerActive && calc.partnerRetailBonus > 0) rows.push([`Deal Partner Retail Bonus (${calc.totalPartnerRetailBonusRate}%)`, -csvNum(calc.partnerRetailBonus)]);
+    }
+    rows.push(['Antidote Net Profit', csvNum(calc.netProfit)]);
+    rows.push([]);
+    rows.push(['Gross Revenue', csvNum(calc.grossRevenue)]);
+    rows.push(['Total Expenses', csvNum(calc.totalExpenses)]);
+    rows.push(['Break-Even Backers', calc.breakEvenBackers === Infinity ? 'N/A' : calc.breakEvenBackers]);
+    downloadCsv(`${fileSlug(appState.projectName)}-summary.csv`, rows);
+  }
+
+  function exportComparison() {
+    const rows = [
+      ['Metric', ...appState.scenarios.map(s => s.name)],
+      ['Saved At', ...appState.scenarios.map(s => s.savedAt)],
+    ];
+    for (const row of comparisonRows) {
+      rows.push([row.label, ...appState.scenarios.map(s => {
+        const v = s.results[row.key];
+        return (v == null || v === Infinity) ? 'N/A' : csvNum(v);
+      })]);
+    }
+    downloadCsv(`${fileSlug(appState.projectName)}-scenarios.csv`, rows);
+  }
 </script>
 
 <!-- P&L -->
 <div class="mb-5">
-  <Card title="Campaign P&L — {state.projectName} {calc.isPartnerProject ? '(Partner Project)' : ''}">
+  <Card title="Campaign P&L — {appState.projectName} {calc.isPartnerProject ? '(Partner Project)' : ''}">
+    <div class="flex justify-end mb-2">
+      <button onclick={exportSummary}
+        class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors">
+        Export Summary (CSV)
+      </button>
+    </div>
     <div class="overflow-x-auto">
       <table class="w-full text-sm">
         <thead>
@@ -50,7 +148,7 @@
             <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.backerMfgCost)}</td>
           </tr>
           <tr class="bg-amber-50/60">
-            <td class="py-2">- Platform Fees ({Number(state.platformFeeRate).toFixed(1)}%)</td>
+            <td class="py-2">- Platform Fees ({Number(appState.platformFeeRate).toFixed(1)}%)</td>
             <td class="py-2 text-right text-pink-hot">{fmtFull(-calc.platformFees)}</td>
           </tr>
           {#if calc.shippingSubsidy > 0}
@@ -186,22 +284,31 @@
   <Metric label="Gross Revenue" value={fmt(calc.grossRevenue)} variant="success" />
   <Metric label="Total Expenses" value={fmt(calc.totalExpenses)} variant="warning" />
   <Metric label="Antidote Net" value={fmt(calc.netProfit)} variant={calc.netProfit >= 0 ? 'success' : 'danger'} />
-  <Metric label="Break-Even" value={calc.breakEvenBackers === Infinity ? 'N/A' : calc.breakEvenBackers.toLocaleString()} sub="backers needed" variant={calc.breakEvenBackers <= state.totalBackers ? 'success' : 'danger'} />
+  <Metric label="Break-Even" value={calc.breakEvenBackers === Infinity ? 'N/A' : calc.breakEvenBackers.toLocaleString()} sub="backers needed" variant={calc.breakEvenBackers <= appState.totalBackers ? 'success' : 'danger'} />
 </div>
 
 <!-- Scenario Comparison -->
 <Card title="Scenario Comparison">
-  <div class="flex items-center gap-3 mb-4">
+  <div class="flex flex-wrap items-center gap-3 mb-4">
+    <input type="text" bind:value={scenarioName} placeholder={appState.projectName}
+      onkeydown={(e) => { if (e.key === 'Enter') save(); }}
+      class="w-64 px-3 py-2 border border-gray-light rounded-lg text-sm focus:outline-none focus:border-purple" />
     <button
-      onclick={saveScenario}
+      onclick={save}
       class="px-4 py-2 bg-purple text-white rounded-lg text-sm font-semibold hover:bg-purple-light transition-colors"
     >
       Save Current as Scenario
     </button>
-    <span class="text-xs text-gray-mid">Saves "{state.projectName}" with current numbers</span>
+    <span class="text-xs text-gray-mid">Name it (e.g., "2,100 backers") or leave blank to use the campaign name</span>
+    {#if appState.scenarios.length > 0}
+      <button onclick={exportComparison}
+        class="ml-auto px-3 py-1.5 text-xs font-semibold rounded-lg border border-purple/30 text-purple hover:bg-purple hover:text-white transition-colors">
+        Export Comparison (CSV)
+      </button>
+    {/if}
   </div>
 
-  {#if state.scenarios.length === 0}
+  {#if appState.scenarios.length === 0}
     <p class="text-sm text-gray-mid">No scenarios saved yet. Adjust inputs, then save to compare.</p>
   {:else}
     <div class="overflow-x-auto">
@@ -209,27 +316,30 @@
         <thead>
           <tr class="border-b-2 border-gray-light/40">
             <th class="py-2 text-left text-xs font-semibold text-gray-mid">Metric</th>
-            {#each state.scenarios as scenario}
-              <th class="py-2 text-right text-xs font-semibold text-gray-mid">{scenario.name}</th>
+            {#each appState.scenarios as scenario, i}
+              <th class="py-2 text-right text-xs font-semibold text-gray-mid">
+                <div class="flex items-center justify-end gap-1">
+                  {#if appState.scenarios.length > 1}
+                    <button onclick={() => moveScenario(i, -1)} disabled={i === 0}
+                      class="px-1 text-purple hover:text-purple-light disabled:opacity-20 disabled:cursor-default"
+                      title="Move left">&lsaquo;</button>
+                  {/if}
+                  <span>{scenario.name}</span>
+                  {#if appState.scenarios.length > 1}
+                    <button onclick={() => moveScenario(i, 1)} disabled={i === appState.scenarios.length - 1}
+                      class="px-1 text-purple hover:text-purple-light disabled:opacity-20 disabled:cursor-default"
+                      title="Move right">&rsaquo;</button>
+                  {/if}
+                </div>
+              </th>
             {/each}
           </tr>
         </thead>
         <tbody>
-          {#each [
-            { label: 'KS Revenue', key: 'ksRevenue', format: fmtFull },
-            { label: 'KS Costs', key: 'ksCosts', format: fmtFull },
-            { label: 'KS Profit', key: 'ksProfit', format: fmtFull },
-            { label: 'Break-Even Backers', key: 'breakEvenBackers', format: (v) => v === Infinity ? 'N/A' : v.toLocaleString() },
-            { label: 'Partner Commission', key: 'partnerCommission', format: fmtFull },
-            { label: 'Overage Investment', key: 'overageCost', format: fmtFull },
-            { label: 'Wholesale Revenue', key: 'wholesaleRevenue', format: fmtFull },
-            { label: 'Direct Revenue', key: 'directRevenue', format: fmtFull },
-            { label: 'Post-KS Margin', key: 'postKsMargin', format: fmtFull },
-            { label: 'Net Profit', key: 'netProfit', format: fmtFull },
-          ] as row}
+          {#each comparisonRows as row}
             <tr class="border-b border-gray-light/20 hover:bg-cream/50 {row.key === 'netProfit' ? 'font-bold bg-cream' : ''}">
               <td class="py-2">{row.label}</td>
-              {#each state.scenarios as scenario}
+              {#each appState.scenarios as scenario}
                 <td class="py-2 text-right {row.key === 'netProfit' ? (scenario.results[row.key] >= 0 ? 'text-green-700' : 'text-pink-hot') : 'text-purple'}">
                   {row.format(scenario.results[row.key] ?? 0)}
                 </td>
@@ -241,7 +351,7 @@
     </div>
 
     <div class="flex flex-wrap gap-2 mt-4">
-      {#each state.scenarios as scenario, i}
+      {#each appState.scenarios as scenario, i}
         <div class="flex items-center gap-1 bg-cream rounded-lg px-3 py-1.5 text-xs">
           <span class="font-semibold text-purple">{scenario.name}</span>
           <span class="text-gray-mid">({scenario.savedAt})</span>

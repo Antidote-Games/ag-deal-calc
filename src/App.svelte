@@ -565,9 +565,10 @@
     state.marketingLineItems = (v.marketingLineItems || []).map(li => ({ ...li }));
   }
 
-  function saveScenario() {
+  function saveScenario(name) {
+    const c = calc();
     const snapshot = {
-      name: state.projectName,
+      name: (typeof name === 'string' && name.trim()) || state.projectName,
       savedAt: new Date().toLocaleString(),
       inputs: JSON.parse(JSON.stringify({
         projectName: state.projectName,
@@ -598,16 +599,19 @@
         addons: state.addons,
       })),
       results: {
-        ksRevenue: calc().ksRevenue,
-        ksCosts: calc().ksCosts,
-        ksProfit: calc().ksProfit,
-        breakEvenBackers: calc().breakEvenBackers,
-        partnerCommission: calc().partnerCommission,
-        overageCost: calc().overageCost,
-        postKsMargin: calc().postKsMargin,
-        wholesaleRevenue: calc().wholesaleRevenue,
-        directRevenue: calc().directRevenue,
-        netProfit: calc().netProfit,
+        totalBackers: Number(state.totalBackers) || 0,
+        ksRevenue: c.ksRevenue,
+        ksCosts: c.ksCosts,
+        ksProfit: c.ksProfit,
+        breakEvenBackers: c.breakEvenBackers,
+        partnerCommission: c.partnerCommission,
+        overageCost: c.overageCost,
+        postKsMargin: c.postKsMargin,
+        wholesaleRevenue: c.wholesaleRevenue,
+        directRevenue: c.directRevenue,
+        directUnitsSold: c.directUnitsSold,
+        wholesaleUnitsSold: c.wholesaleUnitsSold,
+        netProfit: c.netProfit,
       },
     };
     state.scenarios = [...state.scenarios, snapshot];
@@ -647,6 +651,14 @@
 
   function deleteScenario(index) {
     state.scenarios = state.scenarios.filter((_, i) => i !== index);
+  }
+
+  function moveScenario(index, dir) {
+    const target = index + dir;
+    if (target < 0 || target >= state.scenarios.length) return;
+    const next = [...state.scenarios];
+    [next[index], next[target]] = [next[target], next[index]];
+    state.scenarios = next;
   }
 
   let tabs = $derived((() => {
@@ -758,7 +770,7 @@
   {:else if activeTab === 'profit'}
     <TabProfitShare bind:appState={state} calc={calc()} />
   {:else if activeTab === 'summary'}
-    <TabSummary appState={state} calc={calc()} {saveScenario} {loadScenario} {deleteScenario} />
+    <TabSummary appState={state} calc={calc()} {saveScenario} {loadScenario} {deleteScenario} {moveScenario} />
   {/if}
 </div>
 {/if}

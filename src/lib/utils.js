@@ -16,3 +16,23 @@ export function fmtFull(val) {
 export function clamp(val, min, max) {
   return Math.min(max, Math.max(min, val));
 }
+
+// Trigger a browser download of rows (array of arrays) as a CSV file.
+// BOM prefix so Excel detects UTF-8.
+export function downloadCsv(filename, rows) {
+  const csv = rows.map(row => row.map(cell => {
+    const s = String(cell ?? '');
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }).join(',')).join('\r\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+export function fileSlug(name) {
+  return (name || 'campaign').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
